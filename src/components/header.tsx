@@ -3,7 +3,7 @@ import { createClient } from "@/lib/supabase/server";
 import { Button } from "@/components/ui/button";
 import { UserMenu } from "@/components/user-menu";
 import { NotificationBell } from "@/components/notification-bell";
-import { MobileNav } from "@/components/mobile-nav";
+import { MobileHamburger } from "@/components/mobile-nav";
 import { Flag, Calendar, Users, Settings2, Search, BookOpen } from "lucide-react";
 
 export async function Header() {
@@ -32,51 +32,79 @@ export async function Header() {
   ];
 
   return (
-    <>
-      <header className="sticky top-0 z-50 border-b border-[var(--color-border)] bg-[var(--color-bg)]/85 backdrop-blur-md">
-        <div className="mx-auto max-w-7xl px-4 sm:px-6">
-          <div className="flex h-16 items-center justify-between gap-4">
-            <Link href="/" className="flex items-center gap-2 group">
-              <Flag className="h-6 w-6 text-[var(--color-primary)] group-hover:rotate-12 transition-transform" />
-              <span className="text-lg font-black tracking-tight uppercase">
-                Sim<span className="text-[var(--color-primary)]">Universe</span>
-              </span>
-            </Link>
+    <header className="sticky top-0 z-50 border-b border-[var(--color-border)] bg-[var(--color-bg)]/85 backdrop-blur-md">
+      <div className="mx-auto max-w-7xl px-4 sm:px-6">
 
-            <nav className="hidden md:flex items-center gap-1">
-              {nav.map((n) => (
-                <Link
-                  key={n.href}
-                  href={n.href}
-                  className="px-3 py-2 text-sm font-medium uppercase tracking-wider text-[var(--color-fg-muted)] hover:text-[var(--color-fg)] hover:bg-[var(--color-bg-elev)] rounded transition-colors flex items-center gap-2"
-                >
-                  <n.icon className="h-4 w-4" />
-                  {n.label}
+        {/* DESKTOP */}
+        <div className="hidden md:flex h-16 items-center justify-between gap-4">
+          <Link href="/" className="flex items-center gap-2 group">
+            <Flag className="h-6 w-6 text-[var(--color-primary)] group-hover:rotate-12 transition-transform" />
+            <span className="text-lg font-black tracking-tight uppercase">
+              Sim<span className="text-[var(--color-primary)]">Universe</span>
+            </span>
+          </Link>
+
+          <nav className="flex items-center gap-1">
+            {nav.map((n) => (
+              <Link
+                key={n.href}
+                href={n.href}
+                className="px-3 py-2 text-sm font-medium uppercase tracking-wider text-[var(--color-fg-muted)] hover:text-[var(--color-fg)] hover:bg-[var(--color-bg-elev)] rounded transition-colors flex items-center gap-2"
+              >
+                <n.icon className="h-4 w-4" />
+                {n.label}
+              </Link>
+            ))}
+          </nav>
+
+          <div className="flex items-center gap-2">
+            {profile && <NotificationBell initial={notifications} />}
+            {profile ? (
+              <UserMenu profile={profile} />
+            ) : (
+              <>
+                <Link href="/auth/login">
+                  <Button variant="ghost" size="sm">Accedi</Button>
                 </Link>
-              ))}
-            </nav>
-
-            <div className="flex items-center gap-2">
-              {profile && <NotificationBell initial={notifications} />}
-              {profile ? (
-                <UserMenu profile={profile} />
-              ) : (
-                <>
-                  <Link href="/auth/login">
-                    <Button variant="ghost" size="sm">Accedi</Button>
-                  </Link>
-                  <Link href="/auth/register" className="hidden sm:block">
-                    <Button size="sm">Registrati</Button>
-                  </Link>
-                </>
-              )}
-            </div>
+                <Link href="/auth/register">
+                  <Button size="sm">Registrati</Button>
+                </Link>
+              </>
+            )}
           </div>
         </div>
-      </header>
 
-      {/* bottom nav mobile */}
-      <MobileNav />
-    </>
+        {/* MOBILE */}
+        <div className="md:hidden flex h-16 items-center justify-between gap-2">
+          {/* sinistra: profilo o accedi */}
+          <div className="flex items-center gap-1 w-20">
+            {profile ? (
+              <>
+                {<NotificationBell initial={notifications} />}
+                <UserMenu profile={profile} />
+              </>
+            ) : (
+              <Link href="/auth/login">
+                <Button variant="ghost" size="sm">Accedi</Button>
+              </Link>
+            )}
+          </div>
+
+          {/* centro: logo */}
+          <Link href="/" className="flex items-center gap-1.5 group absolute left-1/2 -translate-x-1/2">
+            <Flag className="h-5 w-5 text-[var(--color-primary)] group-hover:rotate-12 transition-transform" />
+            <span className="text-base font-black tracking-tight uppercase">
+              Sim<span className="text-[var(--color-primary)]">Universe</span>
+            </span>
+          </Link>
+
+          {/* destra: hamburger */}
+          <div className="flex justify-end w-20">
+            <MobileHamburger />
+          </div>
+        </div>
+
+      </div>
+    </header>
   );
 }
