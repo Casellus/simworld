@@ -2,11 +2,14 @@ import Link from "next/link";
 import { createClient } from "@/lib/supabase/server";
 import { Card, CardBody, Badge } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
+import { FilterChip } from "@/components/ui/filter-chip";
 import { formatDate } from "@/lib/utils";
 import { GAMES, EVENT_TYPES } from "@/lib/constants";
 import { Calendar, Plus, MapPin, Users } from "lucide-react";
+import { Suspense } from "react";
 
 export const metadata = { title: "Eventi · SimWorld" };
+export const revalidate = 30;
 
 type SP = Promise<{ gioco?: string; tipo?: string }>;
 
@@ -14,19 +17,20 @@ export default async function EventiPage({ searchParams }: { searchParams: SP })
   const sp = await searchParams;
   const supabase = await createClient();
 
+  // resolve game id without extra round-trip when no filter
+  let gameId: string | null = null;
+  if (sp.gioco) {
+    const { data: g } = await supabase.from("games").select("id").eq("slug", sp.gioco).single();
+    gameId = g?.id ?? null;
+  }
+
   let query = supabase
     .from("events")
-    .select("id, slug, title, description, start_at, event_type, track, car_class, max_participants, games(slug, name), teams:host_team_id(name, slug)")
+    .select("id, slug, title, description, start_at, event_type, track, car_class, max_participants, games(slug, name)")
     .gte("start_at", new Date(Date.now() - 86_400_000).toISOString())
     .order("start_at", { ascending: true });
 
-  if (sp.gioco) {
-    const game = GAMES.find((g) => g.slug === sp.gioco);
-    if (game) {
-      const { data: g } = await supabase.from("games").select("id").eq("slug", game.slug).single();
-      if (g) query = query.eq("game_id", g.id);
-    }
-  }
+  if (gameId) query = query.eq("game_id", gameId);
   if (sp.tipo) query = query.eq("event_type", sp.tipo);
 
   const { data: events } = await query;
@@ -45,31 +49,19 @@ export default async function EventiPage({ searchParams }: { searchParams: SP })
         </Link>
       </div>
 
-      <div className="flex flex-wrap gap-2 mb-6">
-        <FilterChip href="/eventi" active={!sp.gioco && !sp.tipo}>
-          Tutti
-        </FilterChip>
-        {GAMES.map((g) => (
-          <FilterChip
-            key={g.slug}
-            href={`/eventi?gioco=${g.slug}${sp.tipo ? `&tipo=${sp.tipo}` : ""}`}
-            active={sp.gioco === g.slug}
-          >
-            {g.short}
-          </FilterChip>
-        ))}
-      </div>
-      <div className="flex flex-wrap gap-2 mb-8">
-        {EVENT_TYPES.map((t) => (
-          <FilterChip
-            key={t.value}
-            href={`/eventi?tipo=${t.value}${sp.gioco ? `&gioco=${sp.gioco}` : ""}`}
-            active={sp.tipo === t.value}
-          >
-            {t.label}
-          </FilterChip>
-        ))}
-      </div>
+      <Suspense>
+        <div className="flex flex-wrap gap-2 mb-4">
+          <FilterChip baseHref="/eventi" paramKey="gioco" value={null} label="Tutti" />
+          {GAMES.map((g) => (
+            <FilterChip key={g.slug} baseHref="/eventi" paramKey="gioco" value={g.slug} label={g.short} />
+          ))}
+        </div>
+        <div className="flex flex-wrap gap-2 mb-8">
+          {EVENT_TYPES.map((t) => (
+            <FilterChip key={t.value} baseHref="/eventi" paramKey="tipo" value={t.value} label={t.label} />
+          ))}
+        </div>
+      </Suspense>
 
       {events && events.length > 0 ? (
         <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
@@ -119,20 +111,5 @@ export default async function EventiPage({ searchParams }: { searchParams: SP })
         </Card>
       )}
     </div>
-  );
-}
-
-function FilterChip({ href, active, children }: { href: string; active: boolean; children: React.ReactNode }) {
-  return (
-    <Link
-      href={href}
-      className={`px-3 py-1.5 rounded text-xs font-semibold uppercase tracking-wider border transition-colors ${
-        active
-          ? "bg-[var(--color-primary)] text-white border-[var(--color-primary)]"
-          : "bg-[var(--color-bg-elev)] text-[var(--color-fg-muted)] border-[var(--color-border)] hover:text-[var(--color-fg)]"
-      }`}
-    >
-      {children}
-    </Link>
   );
 }
