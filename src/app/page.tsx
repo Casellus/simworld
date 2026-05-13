@@ -92,18 +92,18 @@ export default async function Home() {
           {user ? (
             /* ── LOGGED IN HERO ── */
             <div className="max-w-4xl">
-              <Badge variant="success" className="mb-4">
+              <Badge variant="success" className="mb-4 hero-title">
                 <Zap className="h-3 w-3" /> Bentornato nella pit lane
               </Badge>
-              <h1 className="text-4xl md:text-6xl font-black leading-[1.05] tracking-tight uppercase">
+              <h1 className="hero-title text-4xl md:text-6xl font-black leading-[1.05] tracking-tight uppercase">
                 Ciao, <span className="text-[var(--color-primary)]">{displayName}.</span>
                 <br />
                 Pronto a correre?
               </h1>
-              <p className="mt-6 text-lg text-[var(--color-fg-muted)] max-w-2xl">
+              <p className="hero-sub mt-6 text-lg text-[var(--color-fg-muted)] max-w-2xl">
                 Controlla gli ultimi eventi, carica un assetto o trova nuovi compagni di squadra.
               </p>
-              <div className="mt-8 flex flex-wrap gap-3">
+              <div className="hero-cta mt-8 flex flex-wrap gap-3">
                 <Link href="/dashboard">
                   <Button size="lg">
                     <LayoutDashboard className="h-4 w-4" /> Dashboard
@@ -122,7 +122,7 @@ export default async function Home() {
               </div>
 
               {/* STATS ROW */}
-              <div className="mt-10 grid grid-cols-3 gap-4 max-w-sm">
+              <div className="hero-badges mt-10 grid grid-cols-3 gap-4 max-w-sm">
                 <StatChip label="Eventi" value={totalEvents ?? 0} />
                 <StatChip label="Team" value={totalTeams ?? 0} />
                 <StatChip label="Assetti" value={totalSetups ?? 0} />
@@ -131,19 +131,19 @@ export default async function Home() {
           ) : (
             /* ── ANON HERO ── */
             <div className="max-w-3xl">
-              <Badge variant="primary" className="mb-4">
+              <Badge variant="primary" className="mb-4 hero-title">
                 <Zap className="h-3 w-3" /> Hub italiano del sim racing
               </Badge>
-              <h1 className="text-4xl md:text-6xl font-black leading-[1.05] tracking-tight uppercase">
+              <h1 className="hero-title text-4xl md:text-6xl font-black leading-[1.05] tracking-tight uppercase">
                 Tutte le piste,
                 <br />
                 <span className="text-[var(--color-primary)]">una community.</span>
               </h1>
-              <p className="mt-6 text-lg text-[var(--color-fg-muted)] max-w-2xl">
+              <p className="hero-sub mt-6 text-lg text-[var(--color-fg-muted)] max-w-2xl">
                 Tornei, team, assetti e guide per ACC, iRacing, Le Mans Ultimate, Assetto Corsa, AC EVO e F1 25.
                 Crea il tuo team, partecipa agli eventi, condividi assetti.
               </p>
-              <div className="mt-8 flex flex-wrap gap-3">
+              <div className="hero-cta mt-8 flex flex-wrap gap-3">
                 <Link href="/auth/register">
                   <Button size="lg">
                     Inizia ora <ArrowRight className="h-4 w-4" />
@@ -156,7 +156,7 @@ export default async function Home() {
                 </Link>
               </div>
 
-              <div className="mt-10 flex flex-wrap gap-2">
+              <div className="hero-badges mt-10 flex flex-wrap gap-2">
                 {GAMES.map((g) => (
                   <Badge key={g.slug}>{g.short}</Badge>
                 ))}
@@ -340,7 +340,7 @@ export default async function Home() {
               <span className="text-[var(--color-primary)]">per piloti.</span>
             </h2>
             <p className="mt-4 text-[var(--color-fg-muted)]">
-              SimWorld nasce dalla passione per il sim racing italiano. Niente forum dispersivi, niente gruppi
+              SimUniverse nasce dalla passione per il sim racing italiano. Niente forum dispersivi, niente gruppi
               Telegram disorganizzati — una piattaforma dedicata dove trovare tutto quello che ti serve per correre
               al meglio, in italiano, con la tua community.
             </p>

@@ -2,7 +2,7 @@ import Link from "next/link";
 import { LoginForm } from "./login-form";
 import { Flag } from "lucide-react";
 
-export const metadata = { title: "Accedi · SimWorld" };
+export const metadata = { title: "Accedi · SimUniverse" };
 
 export default function LoginPage() {
   return (

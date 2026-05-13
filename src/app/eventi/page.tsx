@@ -8,7 +8,7 @@ import { GAMES, EVENT_TYPES } from "@/lib/constants";
 import { Calendar, Plus, MapPin, Users } from "lucide-react";
 import { Suspense } from "react";
 
-export const metadata = { title: "Eventi · SimWorld" };
+export const metadata = { title: "Eventi · SimUniverse" };
 export const revalidate = 30;
 
 type SP = Promise<{ gioco?: string; tipo?: string }>;
@@ -64,7 +64,7 @@ export default async function EventiPage({ searchParams }: { searchParams: SP })
       </Suspense>
 
       {events && events.length > 0 ? (
-        <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+        <div className="stagger grid gap-4 md:grid-cols-2 lg:grid-cols-3">
           {events.map((e) => (
             <Link key={e.id} href={`/eventi/${e.slug}`}>
               <Card className="h-full hover:border-[var(--color-primary)] transition-colors">

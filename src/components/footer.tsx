@@ -41,7 +41,7 @@ export function Footer() {
         />
       </div>
       <div className="border-t border-[var(--color-border)] py-4 text-center text-xs text-[var(--color-fg-muted)]">
-        © {new Date().getFullYear()} SimWorld — Tutte le piste, una community.
+        © {new Date().getFullYear()} SimUniverse — Tutte le piste, una community.
       </div>
     </footer>
   );

@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Calendar, Users, Settings2, Plus, Settings } from "lucide-react";
 import { formatDate } from "@/lib/utils";
 
-export const metadata = { title: "Dashboard · SimWorld" };
+export const metadata = { title: "Dashboard · SimUniverse" };
 
 export default async function DashboardPage() {
   const profile = await requireProfile();

@@ -9,7 +9,7 @@ import { GAMES } from "@/lib/constants";
 import { one } from "@/lib/types";
 import { Suspense } from "react";
 
-export const metadata = { title: "Cerca pilota/team · SimWorld" };
+export const metadata = { title: "Cerca pilota/team · SimUniverse" };
 export const revalidate = 30;
 
 type SP = Promise<{ tipo?: string; gioco?: string }>;
@@ -63,7 +63,7 @@ export default async function CercaPage({ searchParams }: { searchParams: SP }) 
       </Suspense>
 
       {posts && posts.length > 0 ? (
-        <div className="grid gap-4 md:grid-cols-2">
+        <div className="stagger grid gap-4 md:grid-cols-2">
           {posts.map((p) => {
             const game = one<{ name: string; slug: string }>(p.games);
             const team = one<{ name: string; slug: string }>(p.teams);

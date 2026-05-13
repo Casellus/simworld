@@ -4,7 +4,7 @@ import { Card, CardBody, Badge } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Users, Plus, Flag } from "lucide-react";
 
-export const metadata = { title: "Team · SimWorld" };
+export const metadata = { title: "Team · SimUniverse" };
 
 type SP = Promise<{ q?: string; recruiting?: string }>;
 

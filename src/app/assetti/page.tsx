@@ -8,7 +8,7 @@ import { Settings2, Download, ThumbsUp, Plus, MapPin, Car } from "lucide-react";
 import { one } from "@/lib/types";
 import { Suspense } from "react";
 
-export const metadata = { title: "Assetti · SimWorld" };
+export const metadata = { title: "Assetti · SimUniverse" };
 export const revalidate = 30;
 
 type SP = Promise<{ gioco?: string; q?: string }>;
@@ -68,7 +68,7 @@ export default async function AssettiPage({ searchParams }: { searchParams: SP }
       </Suspense>
 
       {setups && setups.length > 0 ? (
-        <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+        <div className="stagger grid gap-4 md:grid-cols-2 lg:grid-cols-3">
           {setups.map((s) => {
             const game = one<{ name: string }>(s.games);
             const author = one<{ username: string; display_name: string | null }>(s.profiles);

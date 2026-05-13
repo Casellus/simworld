@@ -1,4 +1,4 @@
-# SimWorld
+# SimUniverse
 
 Hub italiano del sim racing — tornei, team, assetti, guide per ACC, iRacing, LMU, AC, AC EVO, F1 25.
 

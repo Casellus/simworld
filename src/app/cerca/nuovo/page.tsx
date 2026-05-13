@@ -6,7 +6,7 @@ import { Input, Label, Select, Textarea } from "@/components/ui/input";
 import { Card, CardBody } from "@/components/ui/card";
 import { GAMES } from "@/lib/constants";
 
-export const metadata = { title: "Nuovo annuncio · SimWorld" };
+export const metadata = { title: "Nuovo annuncio · SimUniverse" };
 
 type SP = Promise<{ team?: string; tipo?: string }>;
 

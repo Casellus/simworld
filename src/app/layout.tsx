@@ -8,7 +8,7 @@ const geistSans = Geist({ variable: "--font-geist-sans", subsets: ["latin"] });
 const geistMono = Geist_Mono({ variable: "--font-geist-mono", subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  title: "SimWorld — Hub italiano del Sim Racing",
+  title: "SimUniverse — Hub italiano del Sim Racing",
   description:
     "Tornei, team, assetti e guide per ACC, iRacing, LMU, Assetto Corsa, AC EVO e F1 25. La community italiana del sim racing.",
   keywords: ["sim racing", "ACC", "iRacing", "LMU", "F1 25", "assetto corsa", "tornei", "esports"],

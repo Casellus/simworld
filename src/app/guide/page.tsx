@@ -5,7 +5,7 @@ import { BookOpen } from "lucide-react";
 import { formatDate } from "@/lib/utils";
 import { one } from "@/lib/types";
 
-export const metadata = { title: "Guide · SimWorld" };
+export const metadata = { title: "Guide · SimUniverse" };
 
 export default async function GuidePage() {
   const supabase = await createClient();

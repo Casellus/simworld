@@ -4,7 +4,7 @@ import { Card, CardBody } from "@/components/ui/card";
 import { SettingsForm } from "./settings-form";
 import { one } from "@/lib/types";
 
-export const metadata = { title: "Impostazioni · SimWorld" };
+export const metadata = { title: "Impostazioni · SimUniverse" };
 
 export default async function ImpostazioniPage() {
   const profile = await requireProfile();

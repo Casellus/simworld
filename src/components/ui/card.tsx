@@ -5,7 +5,7 @@ export function Card({ className, ...props }: React.HTMLAttributes<HTMLDivElemen
   return (
     <div
       className={cn(
-        "rounded-lg border border-[var(--color-border)] bg-[var(--color-bg-elev)] overflow-hidden",
+        "rounded-lg border border-[var(--color-border)] bg-[var(--color-bg-elev)] overflow-hidden card-hover",
         className
       )}
       {...props}

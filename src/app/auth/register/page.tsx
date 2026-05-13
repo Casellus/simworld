@@ -2,7 +2,7 @@ import Link from "next/link";
 import { RegisterForm } from "./register-form";
 import { Flag } from "lucide-react";
 
-export const metadata = { title: "Registrati · SimWorld" };
+export const metadata = { title: "Registrati · SimUniverse" };
 
 export default function RegisterPage() {
   return (
