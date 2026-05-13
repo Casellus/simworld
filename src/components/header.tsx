@@ -2,6 +2,7 @@ import Link from "next/link";
 import { createClient } from "@/lib/supabase/server";
 import { Button } from "@/components/ui/button";
 import { UserMenu } from "@/components/user-menu";
+import { NotificationBell } from "@/components/notification-bell";
 import { Flag, Calendar, Users, Settings2, Search, BookOpen } from "lucide-react";
 
 export async function Header() {
@@ -11,13 +12,14 @@ export async function Header() {
   } = await supabase.auth.getUser();
 
   let profile = null;
+  let notifications: { id: string; title: string; body: string | null; link: string | null; read: boolean; created_at: string }[] = [];
   if (user) {
-    const { data } = await supabase
-      .from("profiles")
-      .select("username, display_name, avatar_url")
-      .eq("id", user.id)
-      .single();
-    profile = data;
+    const [{ data: profileData }, { data: notifData }] = await Promise.all([
+      supabase.from("profiles").select("username, display_name, avatar_url").eq("id", user.id).single(),
+      supabase.from("notifications").select("id, title, body, link, read, created_at").eq("user_id", user.id).order("created_at", { ascending: false }).limit(20),
+    ]);
+    profile = profileData;
+    notifications = notifData ?? [];
   }
 
   const nav = [
@@ -53,6 +55,7 @@ export async function Header() {
           </nav>
 
           <div className="flex items-center gap-2">
+            {profile && <NotificationBell initial={notifications} />}
             {profile ? (
               <UserMenu profile={profile} />
             ) : (
