@@ -30,13 +30,12 @@ export async function Header() {
 
   return (
     <header className="sticky top-0 z-50 border-b border-[var(--color-border)] bg-[var(--color-bg)]/85 backdrop-blur-md">
-      <div className="racing-stripe" />
       <div className="mx-auto max-w-7xl px-4 sm:px-6">
         <div className="flex h-16 items-center justify-between gap-4">
           <Link href="/" className="flex items-center gap-2 group">
             <Flag className="h-6 w-6 text-[var(--color-primary)] group-hover:rotate-12 transition-transform" />
             <span className="text-lg font-black tracking-tight uppercase">
-              Sim<span className="text-[var(--color-primary)]">World</span>
+              Sim<span className="text-[var(--color-primary)]">Universe</span>
             </span>
           </Link>
 
