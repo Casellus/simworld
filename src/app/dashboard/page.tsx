@@ -3,7 +3,8 @@ import { requireProfile } from "@/lib/auth";
 import { createClient } from "@/lib/supabase/server";
 import { Card, CardBody, CardHeader, Badge } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Calendar, Users, Settings2, Plus, Settings } from "lucide-react";
+import { Calendar, Users, Settings2, Plus, Settings, Bell } from "lucide-react";
+import { NotificationsPanel } from "./notifications-panel";
 import { formatDate } from "@/lib/utils";
 
 export const metadata = { title: "Dashboard · SimUniverse" };
@@ -12,7 +13,7 @@ export default async function DashboardPage() {
   const profile = await requireProfile();
   const supabase = await createClient();
 
-  const [{ data: myEvents }, { data: myTeams }, { data: mySetups }, { data: myPosts }] = await Promise.all([
+  const [{ data: myEvents }, { data: myTeams }, { data: mySetups }, { data: myPosts }, { data: myNotifications }] = await Promise.all([
     supabase
       .from("events")
       .select("id, slug, title, start_at, event_type")
@@ -32,6 +33,12 @@ export default async function DashboardPage() {
       .eq("user_id", profile.id)
       .order("created_at", { ascending: false })
       .limit(5),
+    supabase
+      .from("notifications")
+      .select("id, title, body, link, read, created_at")
+      .eq("user_id", profile.id)
+      .order("created_at", { ascending: false })
+      .limit(20),
   ]);
 
   return (
@@ -54,6 +61,12 @@ export default async function DashboardPage() {
           </Link>
         </div>
       </div>
+
+      {myNotifications && myNotifications.length > 0 && (
+        <div className="mb-8 border border-[var(--color-border)] rounded-lg p-4 bg-[var(--color-bg-elev)]">
+          <NotificationsPanel notifications={myNotifications} />
+        </div>
+      )}
 
       <div className="grid gap-6 lg:grid-cols-2">
         <Section

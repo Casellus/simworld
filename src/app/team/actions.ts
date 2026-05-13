@@ -131,12 +131,55 @@ export async function updateApplication(applicationId: string, status: "accepted
   const { data: { user } } = await supabase.auth.getUser();
   if (!user) return { error: "Non autorizzato" };
 
+  // fetch application to get team_id + applicant user_id
+  const { data: app } = await supabase
+    .from("team_applications")
+    .select("id, team_id, user_id")
+    .eq("id", applicationId)
+    .single();
+  if (!app) return { error: "Candidatura non trovata" };
+
+  // verify caller is team owner
+  const { data: team } = await supabase
+    .from("teams")
+    .select("id, slug, owner_id")
+    .eq("id", app.team_id)
+    .single();
+  if (!team || team.owner_id !== user.id) return { error: "Non autorizzato" };
+
   const { error } = await supabase
     .from("team_applications")
     .update({ status })
     .eq("id", applicationId);
-
   if (error) return { error: error.message };
+
+  if (status === "accepted") {
+    // add to team_members (ignore if already member)
+    await supabase.from("team_members").upsert(
+      { team_id: app.team_id, user_id: app.user_id, role: "pilota" },
+      { onConflict: "team_id,user_id" }
+    );
+
+    // notify applicant
+    await supabase.from("notifications").insert({
+      user_id: app.user_id,
+      type: "application_accepted",
+      title: "Candidatura accettata!",
+      body: `Sei stato accettato nel team ${team.slug}.`,
+      link: `/team/${team.slug}`,
+    });
+  } else {
+    // notify rejection
+    await supabase.from("notifications").insert({
+      user_id: app.user_id,
+      type: "application_rejected",
+      title: "Candidatura non accettata",
+      body: `La tua candidatura al team ${team.slug} non è andata a buon fine.`,
+      link: `/team/${team.slug}`,
+    });
+  }
+
+  revalidatePath(`/team/${team.slug}`);
   revalidatePath("/dashboard");
   return { ok: true };
 }
