@@ -9,6 +9,7 @@ import { formatDate } from "@/lib/utils";
 import { TeamDeleteButton } from "./delete-button";
 import { ApplyButton } from "./apply-button";
 import { ApplicationActions } from "./application-actions";
+import { KickButton } from "./kick-button";
 
 export default async function TeamDetailPage({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params;
@@ -25,7 +26,7 @@ export default async function TeamDetailPage({ params }: { params: Promise<{ slu
   const [{ data: members }, { data: games }, { data: { user } }] = await Promise.all([
     supabase
       .from("team_members")
-      .select("role, profiles(username, display_name, avatar_url)")
+      .select("user_id, role, profiles(username, display_name, avatar_url)")
       .eq("team_id", team.id),
     supabase.from("team_games").select("games(slug, name)").eq("team_id", team.id),
     supabase.auth.getUser(),
@@ -41,6 +42,7 @@ export default async function TeamDetailPage({ params }: { params: Promise<{ slu
       .select("id")
       .eq("team_id", team.id)
       .eq("user_id", user.id)
+      .eq("status", "pending")
       .maybeSingle();
     alreadyApplied = !!existing;
   }
@@ -208,7 +210,7 @@ export default async function TeamDetailPage({ params }: { params: Promise<{ slu
             {members && members.length > 0 ? (
               <ul className="space-y-3">
                 {members.map((m, idx) => {
-                  const p = one<{ username: string; display_name: string | null }>(m.profiles);
+                  const p = one<{ username: string; display_name: string | null; user_id?: string }>(m.profiles);
                   return (
                     <li key={idx} className="flex items-center gap-3">
                       <div className="h-8 w-8 rounded-full bg-[var(--color-bg-elev-2)] border border-[var(--color-border)] flex items-center justify-center">
@@ -218,6 +220,9 @@ export default async function TeamDetailPage({ params }: { params: Promise<{ slu
                         <div className="font-medium">{p?.display_name || p?.username}</div>
                         <div className="text-xs text-[var(--color-fg-muted)] capitalize">{m.role}</div>
                       </div>
+                      {isOwner && m.user_id && m.user_id !== team.owner_id && (
+                        <KickButton teamId={team.id} userId={m.user_id} />
+                      )}
                     </li>
                   );
                 })}

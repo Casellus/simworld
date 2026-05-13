@@ -1,10 +1,12 @@
 "use client";
 
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { updateApplication } from "../actions";
 
 export function ApplicationActions({ applicationId }: { applicationId: string }) {
+  const router = useRouter();
   const [loading, setLoading] = useState<"accepted" | "rejected" | null>(null);
   const [done, setDone] = useState<"accepted" | "rejected" | null>(null);
 
@@ -13,6 +15,7 @@ export function ApplicationActions({ applicationId }: { applicationId: string })
     await updateApplication(applicationId, status);
     setDone(status);
     setLoading(null);
+    router.refresh();
   }
 
   if (done) {

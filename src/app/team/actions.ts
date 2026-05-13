@@ -2,8 +2,9 @@
 
 import { redirect } from "next/navigation";
 import { revalidatePath } from "next/cache";
-import { createClient } from "@/lib/supabase/server";
+import { createClient, createAdminClient } from "@/lib/supabase/server";
 import { slugify } from "@/lib/utils";
+import { sendApplicationAccepted, sendApplicationRejected } from "@/lib/email";
 
 export async function createTeam(formData: FormData): Promise<void> {
   const supabase = await createClient();
@@ -142,7 +143,7 @@ export async function updateApplication(applicationId: string, status: "accepted
   // verify caller is team owner
   const { data: team } = await supabase
     .from("teams")
-    .select("id, slug, owner_id")
+    .select("id, name, slug, owner_id")
     .eq("id", app.team_id)
     .single();
   if (!team || team.owner_id !== user.id) return { error: "Non autorizzato" };
@@ -152,6 +153,17 @@ export async function updateApplication(applicationId: string, status: "accepted
     .update({ status })
     .eq("id", applicationId);
   if (error) return { error: error.message };
+
+  // fetch applicant email + display name
+  const admin = createAdminClient();
+  const { data: authUser } = await admin.auth.admin.getUserById(app.user_id);
+  const applicantEmail = authUser?.user?.email;
+  const { data: applicantProfile } = await supabase
+    .from("profiles")
+    .select("display_name, username")
+    .eq("id", app.user_id)
+    .single();
+  const pilotName = applicantProfile?.display_name || applicantProfile?.username || "Pilota";
 
   if (status === "accepted") {
     // add to team_members (ignore if already member)
@@ -165,22 +177,58 @@ export async function updateApplication(applicationId: string, status: "accepted
       user_id: app.user_id,
       type: "application_accepted",
       title: "Candidatura accettata!",
-      body: `Sei stato accettato nel team ${team.slug}.`,
+      body: `Sei stato accettato nel team ${team.name}.`,
       link: `/team/${team.slug}`,
     });
+
+    // send email
+    if (applicantEmail) {
+      await sendApplicationAccepted({
+        to: applicantEmail,
+        pilotName,
+        teamName: team.name,
+        teamSlug: team.slug,
+      }).catch(() => {});
+    }
   } else {
     // notify rejection
     await supabase.from("notifications").insert({
       user_id: app.user_id,
       type: "application_rejected",
       title: "Candidatura non accettata",
-      body: `La tua candidatura al team ${team.slug} non è andata a buon fine.`,
+      body: `La tua candidatura al team ${team.name} non è andata a buon fine.`,
       link: `/team/${team.slug}`,
     });
+
+    // send email
+    if (applicantEmail) {
+      await sendApplicationRejected({
+        to: applicantEmail,
+        pilotName,
+        teamName: team.name,
+        teamSlug: team.slug,
+      }).catch(() => {});
+    }
   }
 
   revalidatePath(`/team/${team.slug}`);
   revalidatePath("/dashboard");
+  return { ok: true };
+}
+
+export async function kickMember(teamId: string, userId: string) {
+  const supabase = await createClient();
+  const { data: { user } } = await supabase.auth.getUser();
+  if (!user) return { error: "Non autorizzato" };
+
+  const { data: team } = await supabase.from("teams").select("owner_id").eq("id", teamId).single();
+  if (!team || team.owner_id !== user.id) return { error: "Non autorizzato" };
+  if (userId === user.id) return { error: "Non puoi rimuovere te stesso" };
+
+  const { error } = await supabase.from("team_members").delete().eq("team_id", teamId).eq("user_id", userId);
+  if (error) return { error: error.message };
+
+  revalidatePath(`/team`);
   return { ok: true };
 }
 
