@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 import { UserMenu } from "@/components/user-menu";
 import { NotificationBell } from "@/components/notification-bell";
 import { MobileHamburger } from "@/components/mobile-nav";
-import { Flag, Calendar, Users, Settings2, Search, BookOpen } from "lucide-react";
+import { Calendar, Users, Settings2, Search, BookOpen } from "lucide-react";
 
 export async function Header() {
   const supabase = await createClient();
@@ -38,7 +38,6 @@ export async function Header() {
         {/* DESKTOP */}
         <div className="hidden md:flex h-16 items-center justify-between gap-4">
           <Link href="/" className="flex items-center gap-2 group">
-            <Flag className="h-6 w-6 text-[var(--color-primary)] group-hover:rotate-12 transition-transform" />
             <span className="text-lg font-black tracking-tight uppercase">
               Sim<span className="text-[var(--color-primary)]">Universe</span>
             </span>
@@ -92,7 +91,6 @@ export async function Header() {
 
           {/* centro: logo */}
           <Link href="/" className="flex items-center gap-1.5 group absolute left-1/2 -translate-x-1/2">
-            <Flag className="h-5 w-5 text-[var(--color-primary)] group-hover:rotate-12 transition-transform" />
             <span className="text-base font-black tracking-tight uppercase">
               Sim<span className="text-[var(--color-primary)]">Universe</span>
             </span>
