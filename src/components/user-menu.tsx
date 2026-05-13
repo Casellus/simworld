@@ -44,7 +44,7 @@ export function UserMenu({ profile }: { profile: { username: string; display_nam
       </button>
 
       {open && (
-        <div className="absolute right-0 mt-2 w-56 rounded border border-[var(--color-border)] bg-[var(--color-bg-elev)] py-1 shadow-xl">
+        <div className="absolute left-0 md:left-auto md:right-0 mt-2 w-56 rounded border border-[var(--color-border)] bg-[var(--color-bg-elev)] py-1 shadow-xl z-50">
           <Link
             href={`/profilo/${profile.username}`}
             onClick={() => setOpen(false)}
