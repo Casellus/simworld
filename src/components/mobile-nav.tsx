@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { Calendar, Users, Settings2, Search, BookOpen, X, Menu } from "lucide-react";
@@ -17,6 +17,15 @@ export function MobileHamburger() {
   const [open, setOpen] = useState(false);
   const pathname = usePathname();
 
+  // chiudi su cambio pagina
+  useEffect(() => { setOpen(false); }, [pathname]);
+
+  // blocca scroll body quando aperto
+  useEffect(() => {
+    document.body.style.overflow = open ? "hidden" : "";
+    return () => { document.body.style.overflow = ""; };
+  }, [open]);
+
   return (
     <>
       <button
@@ -24,46 +33,81 @@ export function MobileHamburger() {
         className="flex items-center justify-center h-9 w-9 rounded hover:bg-[var(--color-bg-elev)] transition-colors"
         aria-label="Menu"
       >
-        {open ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
+        <Menu className="h-6 w-6" />
       </button>
 
       {open && (
-        <>
-          {/* overlay */}
-          <div
-            className="fixed inset-0 z-40 bg-black/70"
+        <div
+          style={{
+            position: "fixed",
+            top: 0,
+            left: 0,
+            right: 0,
+            bottom: 0,
+            zIndex: 9999,
+            background: "rgba(10,10,12,0.97)",
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "center",
+            justifyContent: "center",
+            animation: "fadeIn 0.18s ease",
+          }}
+        >
+          <button
             onClick={() => setOpen(false)}
-          />
-          {/* drawer */}
-          <div className="fixed inset-y-0 right-0 z-50 w-72 bg-[var(--color-bg)] border-l border-[var(--color-border)] flex flex-col shadow-2xl">
-            <div className="flex items-center justify-between px-4 h-16 border-b border-[var(--color-border)] mt-[env(safe-area-inset-top)]">
-              <span className="text-sm font-black uppercase tracking-widest">Menu</span>
-              <button onClick={() => setOpen(false)} className="h-9 w-9 flex items-center justify-center rounded hover:bg-[var(--color-bg-elev-2)]">
-                <X className="h-5 w-5" />
-              </button>
-            </div>
-            <nav className="flex-1 overflow-y-auto py-4">
-              {nav.map((n) => {
-                const active = pathname === n.href || pathname.startsWith(n.href + "/");
-                return (
-                  <Link
-                    key={n.href}
-                    href={n.href}
-                    onClick={() => setOpen(false)}
-                    className={`flex items-center gap-3 px-5 py-3 text-sm font-bold uppercase tracking-wider transition-colors ${
-                      active
-                        ? "text-[var(--color-primary)] bg-[var(--color-primary)]/5"
-                        : "text-[var(--color-fg-muted)] hover:text-[var(--color-fg)] hover:bg-[var(--color-bg-elev-2)]"
-                    }`}
-                  >
-                    <n.icon className="h-4 w-4 shrink-0" />
-                    {n.label}
-                  </Link>
-                );
-              })}
-            </nav>
-          </div>
-        </>
+            style={{
+              position: "absolute",
+              top: 24,
+              right: 20,
+              background: "none",
+              border: "none",
+              color: "#f5f5f7",
+              cursor: "pointer",
+              padding: 8,
+            }}
+            aria-label="Chiudi"
+          >
+            <X size={28} />
+          </button>
+
+          <nav style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 8, width: "100%" }}>
+            {nav.map((n, i) => {
+              const active = pathname === n.href || pathname.startsWith(n.href + "/");
+              return (
+                <Link
+                  key={n.href}
+                  href={n.href}
+                  onClick={() => setOpen(false)}
+                  style={{
+                    display: "flex",
+                    alignItems: "center",
+                    gap: 16,
+                    padding: "16px 40px",
+                    width: "100%",
+                    maxWidth: 320,
+                    borderRadius: 12,
+                    textDecoration: "none",
+                    fontSize: 22,
+                    fontWeight: 900,
+                    textTransform: "uppercase",
+                    letterSpacing: 2,
+                    color: active ? "#e10600" : "#f5f5f7",
+                    background: active ? "rgba(225,6,0,0.08)" : "transparent",
+                    animation: `slideUp 0.2s ease ${i * 0.05}s both`,
+                  }}
+                >
+                  <n.icon size={24} />
+                  {n.label}
+                </Link>
+              );
+            })}
+          </nav>
+
+          <style>{`
+            @keyframes fadeIn { from { opacity:0 } to { opacity:1 } }
+            @keyframes slideUp { from { opacity:0; transform:translateY(16px) } to { opacity:1; transform:translateY(0) } }
+          `}</style>
+        </div>
       )}
     </>
   );
