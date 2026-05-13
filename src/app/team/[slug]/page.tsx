@@ -3,13 +3,13 @@ import Link from "next/link";
 import { createClient } from "@/lib/supabase/server";
 import { Card, CardBody, CardHeader, Badge } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Users, Flag, User as UserIcon, Pencil } from "lucide-react";
+import { Flag, Pencil } from "lucide-react";
 import { one } from "@/lib/types";
 import { formatDate } from "@/lib/utils";
 import { TeamDeleteButton } from "./delete-button";
 import { ApplyButton } from "./apply-button";
 import { ApplicationActions } from "./application-actions";
-import { KickButton } from "./kick-button";
+import { RosterCard } from "./roster-card";
 
 export default async function TeamDetailPage({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params;
@@ -200,38 +200,10 @@ export default async function TeamDetailPage({ params }: { params: Promise<{ slu
           )}
         </div>
 
-        <Card>
-          <CardHeader>
-            <h2 className="text-sm font-bold uppercase tracking-wider flex items-center gap-2">
-              <Users className="h-4 w-4" /> Roster ({members?.length || 0})
-            </h2>
-          </CardHeader>
-          <CardBody>
-            {members && members.length > 0 ? (
-              <ul className="space-y-3">
-                {members.map((m, idx) => {
-                  const p = one<{ username: string; display_name: string | null; user_id?: string }>(m.profiles);
-                  return (
-                    <li key={idx} className="flex items-center gap-3">
-                      <div className="h-8 w-8 rounded-full bg-[var(--color-bg-elev-2)] border border-[var(--color-border)] flex items-center justify-center">
-                        <UserIcon className="h-4 w-4" />
-                      </div>
-                      <div className="flex-1 text-sm">
-                        <div className="font-medium">{p?.display_name || p?.username}</div>
-                        <div className="text-xs text-[var(--color-fg-muted)] capitalize">{m.role}</div>
-                      </div>
-                      {isOwner && m.user_id && m.user_id !== team.owner_id && (
-                        <KickButton teamId={team.id} userId={m.user_id} />
-                      )}
-                    </li>
-                  );
-                })}
-              </ul>
-            ) : (
-              <p className="text-sm text-[var(--color-fg-muted)]">Nessun membro.</p>
-            )}
-          </CardBody>
-        </Card>
+        {isOwner
+          ? <RosterCard members={members ?? []} teamId={team.id} ownerId={team.owner_id} editable />
+          : <RosterCard members={members ?? []} teamId={team.id} ownerId={team.owner_id} />
+        }
       </div>
     </div>
   );
