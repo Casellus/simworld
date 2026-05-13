@@ -31,12 +31,12 @@ export function MobileHamburger() {
         <>
           {/* overlay */}
           <div
-            className="fixed inset-0 z-40 bg-black/60 backdrop-blur-sm"
+            className="fixed inset-0 z-40 bg-black/70"
             onClick={() => setOpen(false)}
           />
           {/* drawer */}
-          <div className="fixed top-0 right-0 bottom-0 z-50 w-64 bg-[var(--color-bg-elev)] border-l border-[var(--color-border)] flex flex-col">
-            <div className="flex items-center justify-between px-4 h-16 border-b border-[var(--color-border)]">
+          <div className="fixed inset-y-0 right-0 z-50 w-72 bg-[var(--color-bg)] border-l border-[var(--color-border)] flex flex-col shadow-2xl">
+            <div className="flex items-center justify-between px-4 h-16 border-b border-[var(--color-border)] mt-[env(safe-area-inset-top)]">
               <span className="text-sm font-black uppercase tracking-widest">Menu</span>
               <button onClick={() => setOpen(false)} className="h-9 w-9 flex items-center justify-center rounded hover:bg-[var(--color-bg-elev-2)]">
                 <X className="h-5 w-5" />
