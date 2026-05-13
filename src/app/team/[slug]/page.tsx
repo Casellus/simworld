@@ -5,7 +5,10 @@ import { Card, CardBody, CardHeader, Badge } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Users, Flag, User as UserIcon, Pencil } from "lucide-react";
 import { one } from "@/lib/types";
+import { formatDate } from "@/lib/utils";
 import { TeamDeleteButton } from "./delete-button";
+import { ApplyButton } from "./apply-button";
+import { ApplicationActions } from "./application-actions";
 
 export default async function TeamDetailPage({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params;
@@ -29,6 +32,41 @@ export default async function TeamDetailPage({ params }: { params: Promise<{ slu
   ]);
 
   const isOwner = !!user && user.id === team.owner_id;
+
+  // check if current user already applied
+  let alreadyApplied = false;
+  if (user && !isOwner) {
+    const { data: existing } = await supabase
+      .from("team_applications")
+      .select("id")
+      .eq("team_id", team.id)
+      .eq("user_id", user.id)
+      .maybeSingle();
+    alreadyApplied = !!existing;
+  }
+
+  // owner: fetch pending applications
+  let applications: Array<{
+    id: string;
+    message: string | null;
+    status: string;
+    created_at: string;
+    profiles: { username: string; display_name: string | null } | null;
+  }> = [];
+  if (isOwner) {
+    const { data } = await supabase
+      .from("team_applications")
+      .select("id, message, status, created_at, profiles:user_id(username, display_name)")
+      .eq("team_id", team.id)
+      .order("created_at", { ascending: false });
+    applications = (data ?? []).map((a) => ({
+      ...a,
+      profiles: one<{ username: string; display_name: string | null }>(a.profiles),
+    }));
+  }
+
+  const pending = applications.filter((a) => a.status === "pending");
+  const others = applications.filter((a) => a.status !== "pending");
 
   return (
     <div className="mx-auto max-w-5xl px-4 sm:px-6 py-10">
@@ -60,9 +98,18 @@ export default async function TeamDetailPage({ params }: { params: Promise<{ slu
         </div>
 
         <div className="flex flex-wrap gap-2">
-          {team.recruiting && (
-            <Link href={`/cerca/nuovo?team=${team.slug}`}>
-              <Button variant="outline">Candidati</Button>
+          {team.recruiting && !isOwner && user && (
+            alreadyApplied ? (
+              <div className="px-4 py-2 rounded border border-[var(--color-success)] text-[var(--color-success)] text-sm font-medium">
+                Candidatura inviata
+              </div>
+            ) : (
+              <ApplyButton teamId={team.id} />
+            )
+          )}
+          {team.recruiting && !user && (
+            <Link href="/auth/login">
+              <Button variant="outline">Accedi per candidarti</Button>
             </Link>
           )}
           {isOwner && (
@@ -82,11 +129,7 @@ export default async function TeamDetailPage({ params }: { params: Promise<{ slu
         <div className="flex flex-wrap gap-2 mb-8">
           {games.map((g, idx) => {
             const game = one<{ name: string }>(g.games);
-            return (
-              <Badge variant="primary" key={idx}>
-                {game?.name}
-              </Badge>
-            );
+            return <Badge variant="primary" key={idx}>{game?.name}</Badge>;
           })}
         </div>
       )}
@@ -100,6 +143,56 @@ export default async function TeamDetailPage({ params }: { params: Promise<{ slu
               </CardHeader>
               <CardBody>
                 <p className="whitespace-pre-wrap text-sm">{team.description}</p>
+              </CardBody>
+            </Card>
+          )}
+
+          {/* CANDIDATURE (solo owner) */}
+          {isOwner && (
+            <Card>
+              <CardHeader>
+                <h2 className="text-sm font-bold uppercase tracking-wider flex items-center gap-2">
+                  Candidature ricevute
+                  {pending.length > 0 && (
+                    <span className="inline-flex items-center justify-center h-5 w-5 rounded-full bg-[var(--color-primary)] text-white text-[10px] font-bold">
+                      {pending.length}
+                    </span>
+                  )}
+                </h2>
+              </CardHeader>
+              <CardBody>
+                {applications.length === 0 ? (
+                  <p className="text-sm text-[var(--color-fg-muted)]">Nessuna candidatura ricevuta.</p>
+                ) : (
+                  <div className="space-y-4">
+                    {[...pending, ...others].map((a) => (
+                      <div key={a.id} className="border border-[var(--color-border)] rounded-lg p-3 space-y-2">
+                        <div className="flex items-center justify-between gap-2 flex-wrap">
+                          <div>
+                            <Link
+                              href={`/profilo/${a.profiles?.username}`}
+                              className="font-medium text-sm hover:text-[var(--color-primary)]"
+                            >
+                              {a.profiles?.display_name || a.profiles?.username}
+                            </Link>
+                            <span className="text-xs text-[var(--color-fg-muted)] ml-2">{formatDate(a.created_at)}</span>
+                          </div>
+                          <Badge
+                            variant={a.status === "accepted" ? "success" : a.status === "rejected" ? "default" : "primary"}
+                          >
+                            {a.status === "pending" ? "In attesa" : a.status === "accepted" ? "Accettato" : "Rifiutato"}
+                          </Badge>
+                        </div>
+                        {a.message && (
+                          <p className="text-sm text-[var(--color-fg-muted)] whitespace-pre-wrap">{a.message}</p>
+                        )}
+                        {a.status === "pending" && (
+                          <ApplicationActions applicationId={a.id} />
+                        )}
+                      </div>
+                    ))}
+                  </div>
+                )}
               </CardBody>
             </Card>
           )}

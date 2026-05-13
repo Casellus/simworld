@@ -110,22 +110,34 @@ export async function deleteTeam(teamId: string): Promise<{ error?: string }> {
   return {};
 }
 
-export async function joinTeam(teamId: string) {
+export async function joinTeam(teamId: string, message?: string) {
   const supabase = await createClient();
   const {
     data: { user },
   } = await supabase.auth.getUser();
   if (!user) return { error: "Non autorizzato" };
-  // members add via team_members; only owners can per RLS — fallback: create recruitment_post in real flow
-  // For MVP we mark intent via recruitment_posts instead
-  const { error } = await supabase.from("recruitment_posts").insert({
-    post_type: "cerca_team",
-    user_id: user.id,
+
+  const { error } = await supabase.from("team_applications").insert({
     team_id: teamId,
-    title: "Candidatura al team",
-    description: "Vorrei unirmi a questo team.",
+    user_id: user.id,
+    message: message || null,
   });
   if (error) return { error: error.message };
+  return { ok: true };
+}
+
+export async function updateApplication(applicationId: string, status: "accepted" | "rejected") {
+  const supabase = await createClient();
+  const { data: { user } } = await supabase.auth.getUser();
+  if (!user) return { error: "Non autorizzato" };
+
+  const { error } = await supabase
+    .from("team_applications")
+    .update({ status })
+    .eq("id", applicationId);
+
+  if (error) return { error: error.message };
+  revalidatePath("/dashboard");
   return { ok: true };
 }
 
