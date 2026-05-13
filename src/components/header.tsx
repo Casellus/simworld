@@ -76,7 +76,7 @@ export async function Header() {
       </header>
 
       {/* bottom nav mobile */}
-      <MobileNav nav={nav} />
+      <MobileNav />
     </>
   );
 }

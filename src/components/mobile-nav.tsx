@@ -2,11 +2,17 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import type { LucideIcon } from "lucide-react";
+import { Calendar, Users, Settings2, Search, BookOpen } from "lucide-react";
 
-type NavItem = { href: string; label: string; icon: LucideIcon };
+const nav = [
+  { href: "/eventi", label: "Eventi", icon: Calendar },
+  { href: "/team", label: "Team", icon: Users },
+  { href: "/assetti", label: "Assetti", icon: Settings2 },
+  { href: "/cerca", label: "Cerca", icon: Search },
+  { href: "/guide", label: "Guide", icon: BookOpen },
+];
 
-export function MobileNav({ nav }: { nav: NavItem[] }) {
+export function MobileNav() {
   const pathname = usePathname();
 
   return (
@@ -19,12 +25,10 @@ export function MobileNav({ nav }: { nav: NavItem[] }) {
               <Link
                 href={n.href}
                 className={`flex flex-col items-center justify-center gap-1 h-16 text-[10px] font-bold uppercase tracking-wider transition-colors ${
-                  active
-                    ? "text-[var(--color-primary)]"
-                    : "text-[var(--color-fg-muted)] hover:text-[var(--color-fg)]"
+                  active ? "text-[var(--color-primary)]" : "text-[var(--color-fg-muted)] hover:text-[var(--color-fg)]"
                 }`}
               >
-                <n.icon className={`h-5 w-5 ${active ? "text-[var(--color-primary)]" : ""}`} />
+                <n.icon className="h-5 w-5" />
                 {n.label}
               </Link>
             </li>
