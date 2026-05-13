@@ -1,36 +1,72 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# SimWorld
 
-## Getting Started
+Hub italiano del sim racing — tornei, team, assetti, guide per ACC, iRacing, LMU, AC, AC EVO, F1 25.
 
-First, run the development server:
+Stack: Next.js 16 (App Router, Turbopack) · React 19 · TypeScript · Tailwind v4 · Supabase.
+
+## Dev
 
 ```bash
+npm install
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+http://localhost:3000
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Setup Supabase (prima volta)
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+### 1. Schema DB
+SQL Editor → incolla `supabase/schema.sql` → Run.
 
-## Learn More
+### 2. Storage buckets (public)
+- `setups`
+- `avatars`
+- `team-assets`
+- `event-banners`
 
-To learn more about Next.js, take a look at the following resources:
+### 3. Auth providers
+Authentication → Providers:
+- **Email** abilita
+- **Discord** abilita
+  - https://discord.com/developers/applications → New App
+  - OAuth2 redirect: `https://<project>.supabase.co/auth/v1/callback`
+  - Client ID + Secret → Supabase Discord provider
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+### 4. Auth URL Configuration
+- Site URL: `http://localhost:3000`
+- Redirect URLs: `http://localhost:3000/auth/callback`
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+## Moduli MVP
 
-## Deploy on Vercel
+- **Eventi** (`/eventi`) — crea, lista filtrata, iscrizione
+- **Team** (`/team`) — crea, lista, roster, recruiting flag
+- **Assetti** (`/assetti`) — upload file 5MB max, voti, download counter
+- **Cerca** (`/cerca`) — bacheca cerca pilota / cerca team
+- **Guide** (`/guide`) — articoli (popolare via Supabase dashboard nel MVP)
+- **Profilo** (`/profilo/[username]`) + **Dashboard** (`/dashboard`)
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+## Struttura
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+```
+src/app/         App Router routes
+src/components/  header, footer, ui/
+src/lib/
+  supabase/      client browser + server + proxy session
+  auth.ts        getUser, requireUser
+  constants.ts   GAMES, EVENT_TYPES, SKILL_LEVELS
+  types.ts       one() helper per relazioni nested
+  utils.ts       cn, slugify, formatDate
+proxy.ts         Next.js 16 (ex middleware)
+supabase/schema.sql
+```
+
+## Note Next.js 16
+
+- `middleware` → `proxy.ts`
+- `params`, `searchParams`, `cookies()`, `headers()` async
+- Turbopack default
+
+## Deploy
+
+Vercel → import repo → env vars → deploy.
+Aggiorna Supabase Auth Site URL + Redirect URLs con dominio prod.
