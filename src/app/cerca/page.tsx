@@ -8,6 +8,7 @@ import { formatDate } from "@/lib/utils";
 import { GAMES } from "@/lib/constants";
 import { one } from "@/lib/types";
 import { Suspense } from "react";
+import { PostActions } from "./post-actions";
 
 export const metadata = { title: "Cerca pilota/team · SimUniverse" };
 export const revalidate = 30;
@@ -26,7 +27,7 @@ export default async function CercaPage({ searchParams }: { searchParams: SP }) 
 
   let q = supabase
     .from("recruitment_posts")
-    .select("id, post_type, title, description, contact, created_at, games(name, slug), profiles(username, display_name), teams(name, slug)")
+    .select("id, post_type, title, description, contact, created_at, user_id, games(name, slug), profiles(username, display_name), teams(name, slug, owner_id)")
     .eq("active", true)
     .order("created_at", { ascending: false })
     .limit(50);
@@ -35,6 +36,7 @@ export default async function CercaPage({ searchParams }: { searchParams: SP }) 
   if (gameId) q = q.eq("game_id", gameId);
 
   const { data: posts } = await q;
+  const { data: { user } } = await supabase.auth.getUser();
 
   return (
     <div className="mx-auto max-w-7xl px-4 sm:px-6 py-10">
@@ -71,11 +73,17 @@ export default async function CercaPage({ searchParams }: { searchParams: SP }) 
             return (
               <Card key={p.id}>
                 <CardBody className="space-y-3">
-                  <div className="flex items-center gap-2 flex-wrap">
-                    <Badge variant={p.post_type === "cerca_pilota" ? "accent" : "primary"}>
-                      {p.post_type === "cerca_pilota" ? "Team cerca pilota" : "Pilota cerca team"}
-                    </Badge>
-                    {game?.name && <Badge>{game.name}</Badge>}
+                  <div className="flex items-center justify-between gap-2 flex-wrap">
+                    <div className="flex items-center gap-2 flex-wrap">
+                      <Badge variant={p.post_type === "cerca_pilota" ? "accent" : "primary"}>
+                        {p.post_type === "cerca_pilota" ? "Team cerca pilota" : "Pilota cerca team"}
+                      </Badge>
+                      {game?.name && <Badge>{game.name}</Badge>}
+                    </div>
+                    {/* @ts-expect-error join */}
+                    {user && (p.user_id === user.id || team?.owner_id === user.id) && (
+                      <PostActions postId={p.id} />
+                    )}
                   </div>
                   <h3 className="font-bold text-lg">{p.title}</h3>
                   <p className="text-sm text-[var(--color-fg-muted)] whitespace-pre-wrap">{p.description}</p>

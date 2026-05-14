@@ -52,6 +52,25 @@ export async function createRecruitmentPost(formData: FormData): Promise<void> {
   redirect("/cerca");
 }
 
+export async function deleteRecruitmentPost(postId: string): Promise<{ error?: string }> {
+  const supabase = await createClient();
+  const { data: { user } } = await supabase.auth.getUser();
+  if (!user) return { error: "Non autorizzato" };
+
+  const { data: post } = await supabase.from("recruitment_posts").select("id, user_id, team_id, teams(owner_id)").eq("id", postId).single();
+  if (!post) return { error: "Post non trovato" };
+
+  // @ts-expect-error join
+  const isOwner = post.user_id === user.id || post.teams?.owner_id === user.id;
+  if (!isOwner) return { error: "Non autorizzato" };
+
+  const { error } = await supabase.from("recruitment_posts").delete().eq("id", postId);
+  if (error) return { error: error.message };
+  revalidatePath("/cerca");
+  revalidatePath("/");
+  return {};
+}
+
 export async function closeRecruitmentPost(postId: string) {
   const supabase = await createClient();
   const {
