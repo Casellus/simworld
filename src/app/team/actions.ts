@@ -108,6 +108,7 @@ export async function deleteTeam(teamId: string): Promise<{ error?: string }> {
   if (error) return { error: error.message };
 
   revalidatePath("/team");
+  revalidatePath("/");
   return {};
 }
 

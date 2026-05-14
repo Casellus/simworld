@@ -112,6 +112,7 @@ export async function deleteEvent(eventId: string): Promise<{ error?: string }> 
   if (error) return { error: error.message };
 
   revalidatePath("/eventi");
+  revalidatePath("/");
   return {};
 }
 

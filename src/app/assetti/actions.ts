@@ -44,6 +44,7 @@ export async function uploadSetupFull(formData: FormData): Promise<{ error?: str
   if (dbErr) return { error: dbErr.message };
 
   revalidatePath("/assetti");
+  revalidatePath("/");
   return { id: created.id };
 }
 
@@ -143,6 +144,7 @@ export async function deleteSetup(setupId: string): Promise<{ error?: string }> 
   if (error) return { error: error.message };
 
   revalidatePath("/assetti");
+  revalidatePath("/");
   return {};
 }
 
