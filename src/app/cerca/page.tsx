@@ -6,7 +6,6 @@ import { FilterChip } from "@/components/ui/filter-chip";
 import { Search, Plus, Mail } from "lucide-react";
 import { formatDate } from "@/lib/utils";
 import { GAMES } from "@/lib/constants";
-import { one } from "@/lib/types";
 import { Suspense } from "react";
 import { PostActions } from "./post-actions";
 
@@ -27,7 +26,7 @@ export default async function CercaPage({ searchParams }: { searchParams: SP }) 
 
   let q = supabase
     .from("recruitment_posts")
-    .select("id, post_type, title, description, contact, created_at, user_id, games(name, slug), profiles(username, display_name), teams(name, slug, owner_id)")
+    .select("id, post_type, title, description, contact, created_at, user_id, team_id, games(name, slug)")
     .eq("active", true)
     .order("created_at", { ascending: false })
     .limit(50);
@@ -67,9 +66,9 @@ export default async function CercaPage({ searchParams }: { searchParams: SP }) 
       {posts && posts.length > 0 ? (
         <div className="stagger grid gap-4 md:grid-cols-2">
           {posts.map((p) => {
-            const game = one<{ name: string; slug: string }>(p.games);
-            const team = one<{ name: string; slug: string }>(p.teams);
-            const author = one<{ username: string; display_name: string | null }>(p.profiles);
+            const gameArr = Array.isArray(p.games) ? p.games : p.games ? [p.games] : [];
+            const game = gameArr[0] as { name: string; slug: string } | undefined;
+            const isOwner = user && p.user_id === user.id;
             return (
               <Card key={p.id}>
                 <CardBody className="space-y-3">
@@ -80,25 +79,11 @@ export default async function CercaPage({ searchParams }: { searchParams: SP }) 
                       </Badge>
                       {game?.name && <Badge>{game.name}</Badge>}
                     </div>
-                    {/* @ts-expect-error join */}
-                    {user && (p.user_id === user.id || team?.owner_id === user.id) && (
-                      <PostActions postId={p.id} />
-                    )}
+                    {isOwner && <PostActions postId={p.id} />}
                   </div>
                   <h3 className="font-bold text-lg">{p.title}</h3>
                   <p className="text-sm text-[var(--color-fg-muted)] whitespace-pre-wrap">{p.description}</p>
                   <div className="flex items-center justify-between pt-3 border-t border-[var(--color-border)] text-xs text-[var(--color-fg-muted)]">
-                    <span>
-                      {team?.name ? (
-                        <Link href={`/team/${team.slug}`} className="hover:text-[var(--color-primary)]">
-                          Team: {team.name}
-                        </Link>
-                      ) : author?.username ? (
-                        <Link href={`/profilo/${author.username}`} className="hover:text-[var(--color-primary)]">
-                          {author.display_name || author.username}
-                        </Link>
-                      ) : "—"}
-                    </span>
                     <span>{formatDate(p.created_at)}</span>
                   </div>
                   {p.contact && (
