@@ -87,8 +87,8 @@ export default async function CercaPage({ searchParams }: { searchParams: SP }) 
                     <span>{formatDate(p.created_at)}</span>
                   </div>
                   {p.contact && (
-                    <div className="text-xs flex items-center gap-1 text-[var(--color-fg-muted)]">
-                      <Mail className="h-3 w-3" /> {p.contact}
+                    <div className="text-xs flex items-center gap-1.5 text-[var(--color-fg-muted)]">
+                      <Mail className="h-3 w-3 text-[var(--color-primary)]" /> {p.contact}
                     </div>
                   )}
                 </CardBody>

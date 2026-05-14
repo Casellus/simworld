@@ -82,18 +82,18 @@ export default async function EventiPage({ searchParams }: { searchParams: SP })
                   {e.description && (
                     <p className="text-sm text-[var(--color-fg-muted)] line-clamp-2">{e.description}</p>
                   )}
-                  <div className="text-xs text-[var(--color-fg-muted)] space-y-1 pt-2 border-t border-[var(--color-border)]">
-                    <div className="flex items-center gap-2">
-                      <Calendar className="h-3 w-3" /> {formatDate(e.start_at)}
+                  <div className="text-xs space-y-1.5 pt-2 border-t border-[var(--color-border)]">
+                    <div className="flex items-center gap-2 text-[var(--color-fg-muted)]">
+                      <Calendar className="h-3 w-3 text-[var(--color-primary)]" /> {formatDate(e.start_at)}
                     </div>
                     {e.track && (
-                      <div className="flex items-center gap-2">
-                        <MapPin className="h-3 w-3" /> {e.track}
+                      <div className="flex items-center gap-2 text-[var(--color-fg-muted)]">
+                        <MapPin className="h-3 w-3 text-[var(--color-accent)]" /> {e.track}
                       </div>
                     )}
                     {e.max_participants && (
-                      <div className="flex items-center gap-2">
-                        <Users className="h-3 w-3" /> max {e.max_participants}
+                      <div className="flex items-center gap-2 text-[var(--color-fg-muted)]">
+                        <Users className="h-3 w-3 text-[var(--color-success)]" /> max {e.max_participants}
                       </div>
                     )}
                   </div>

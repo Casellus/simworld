@@ -77,14 +77,14 @@ export default async function AssettiPage({ searchParams }: { searchParams: SP }
                   <CardBody className="space-y-3">
                     <Badge>{game?.name}</Badge>
                     <h3 className="font-bold">{s.title}</h3>
-                    <div className="text-xs text-[var(--color-fg-muted)] space-y-1">
-                      <div className="flex items-center gap-1"><Car className="h-3 w-3" /> {s.car}</div>
-                      <div className="flex items-center gap-1"><MapPin className="h-3 w-3" /> {s.track}</div>
-                      {s.conditions && <div className="italic">{s.conditions}</div>}
+                    <div className="text-xs space-y-1.5">
+                      <div className="flex items-center gap-1.5 text-[var(--color-fg-muted)]"><Car className="h-3 w-3 text-[var(--color-primary)]" /> {s.car}</div>
+                      <div className="flex items-center gap-1.5 text-[var(--color-fg-muted)]"><MapPin className="h-3 w-3 text-[var(--color-accent)]" /> {s.track}</div>
+                      {s.conditions && <div className="italic text-[var(--color-fg-muted)]/70">{s.conditions}</div>}
                     </div>
-                    <div className="flex items-center justify-between pt-2 border-t border-[var(--color-border)] text-xs text-[var(--color-fg-muted)]">
-                      <span className="flex items-center gap-1"><Download className="h-3 w-3" /> {s.downloads}</span>
-                      <span className="flex items-center gap-1"><ThumbsUp className="h-3 w-3" /> {s.rating_sum}</span>
+                    <div className="flex items-center justify-between pt-2 border-t border-[var(--color-border)] text-xs">
+                      <span className="flex items-center gap-1 text-[var(--color-fg-muted)]"><Download className="h-3 w-3 text-[var(--color-primary)]" /> {s.downloads}</span>
+                      <span className="flex items-center gap-1 text-[var(--color-fg-muted)]"><ThumbsUp className="h-3 w-3 text-[var(--color-success)]" /> {s.rating_sum}</span>
                       <span></span>
                     </div>
                   </CardBody>
