@@ -25,7 +25,7 @@ export default async function AssettiPage({ searchParams }: { searchParams: SP }
 
   let q = supabase
     .from("setups")
-    .select("id, title, car, track, conditions, downloads, rating_sum, rating_count, games(slug, name), profiles(username, display_name)")
+    .select("id, title, car, track, conditions, downloads, rating_sum, rating_count, games(slug, name)")
     .order("created_at", { ascending: false })
     .limit(50);
 
@@ -71,7 +71,6 @@ export default async function AssettiPage({ searchParams }: { searchParams: SP }
         <div className="stagger grid gap-4 md:grid-cols-2 lg:grid-cols-3">
           {setups.map((s) => {
             const game = one<{ name: string }>(s.games);
-            const author = one<{ username: string; display_name: string | null }>(s.profiles);
             return (
               <Link key={s.id} href={`/assetti/${s.id}`}>
                 <Card className="h-full hover:border-[var(--color-primary)] transition-colors">
@@ -86,7 +85,7 @@ export default async function AssettiPage({ searchParams }: { searchParams: SP }
                     <div className="flex items-center justify-between pt-2 border-t border-[var(--color-border)] text-xs text-[var(--color-fg-muted)]">
                       <span className="flex items-center gap-1"><Download className="h-3 w-3" /> {s.downloads}</span>
                       <span className="flex items-center gap-1"><ThumbsUp className="h-3 w-3" /> {s.rating_sum}</span>
-                      <span>{author?.username}</span>
+                      <span></span>
                     </div>
                   </CardBody>
                 </Card>
