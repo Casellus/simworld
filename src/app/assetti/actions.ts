@@ -5,8 +5,6 @@ import { revalidatePath } from "next/cache";
 import { createClient, createAdminClient } from "@/lib/supabase/server";
 
 const ALLOWED_EXT = ["json", "sto", "svm", "ini", "svm", "rcd", "txt", "xml", "zip"];
-const ALLOWED_IMG_EXT = ["png", "jpg", "jpeg", "webp"];
-
 export async function uploadSetupFull(formData: FormData): Promise<{ error?: string; id?: string }> {
   const supabase = await createClient();
   const admin = createAdminClient();
@@ -20,7 +18,6 @@ export async function uploadSetupFull(formData: FormData): Promise<{ error?: str
   const conditions = (formData.get("conditions") as string || "").trim() || null;
   const notes = (formData.get("notes") as string || "").trim() || null;
   const setupFile = formData.get("file") as File | null;
-  const imgFile = formData.get("preview_img") as File | null;
 
   if (!title || !game_slug || !car || !track) return { error: "Campi obbligatori mancanti." };
 
@@ -38,20 +35,9 @@ export async function uploadSetupFull(formData: FormData): Promise<{ error?: str
     file_url = admin.storage.from("setups").getPublicUrl(path).data.publicUrl;
   }
 
-  let preview_url: string | null = null;
-  if (imgFile && imgFile.size > 0) {
-    if (imgFile.size > 5 * 1024 * 1024) return { error: "Immagine max 5MB." };
-    const ext = imgFile.name.split(".").pop()?.toLowerCase() || "";
-    if (!ALLOWED_IMG_EXT.includes(ext)) return { error: `Formato non supportato: .${ext}` };
-    const path = `${user.id}/preview-${Date.now()}.${ext}`;
-    const { error: upErr } = await admin.storage.from("setups").upload(path, imgFile, { upsert: false });
-    if (upErr) return { error: `Errore upload immagine: ${upErr.message}` };
-    preview_url = admin.storage.from("setups").getPublicUrl(path).data.publicUrl;
-  }
-
   const { data: created, error: dbErr } = await supabase
     .from("setups")
-    .insert({ user_id: user.id, game_id: game.id, title, car, track, conditions, notes, file_url, preview_url })
+    .insert({ user_id: user.id, game_id: game.id, title, car, track, conditions, notes, file_url })
     .select("id")
     .single();
 

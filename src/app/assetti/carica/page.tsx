@@ -68,12 +68,6 @@ export default function CaricaAssettoPage() {
             </div>
 
             <div>
-              <Label htmlFor="preview_img">Immagine preview (opzionale)</Label>
-              <Input id="preview_img" name="preview_img" type="file" accept=".png,.jpg,.jpeg,.webp" />
-              <p className="text-xs text-[var(--color-fg-muted)] mt-1">PNG, JPG, JPEG, WEBP · max 5MB</p>
-            </div>
-
-            <div>
               <Label htmlFor="file">File assetto (opzionale)</Label>
               <Input id="file" name="file" type="file" accept=".json,.sto,.svm,.ini,.rcd,.txt,.xml,.zip" />
               <p className="text-xs text-[var(--color-fg-muted)] mt-1">.json (ACC), .sto (rF2/LMU), .svm, .ini, .rcd, .xml, .zip · max 5MB</p>
