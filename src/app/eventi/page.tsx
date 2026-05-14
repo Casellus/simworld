@@ -26,7 +26,7 @@ export default async function EventiPage({ searchParams }: { searchParams: SP })
 
   let query = supabase
     .from("events")
-    .select("id, slug, title, description, start_at, event_type, track, car_class, max_participants, games(slug, name)")
+    .select("id, slug, title, description, start_at, event_type, track, car_class, max_participants, banner_url, games(slug, name)")
     .gte("start_at", new Date(Date.now() - 86_400_000).toISOString())
     .order("start_at", { ascending: true });
 
@@ -67,7 +67,11 @@ export default async function EventiPage({ searchParams }: { searchParams: SP })
         <div className="stagger grid gap-4 md:grid-cols-2 lg:grid-cols-3">
           {events.map((e) => (
             <Link key={e.id} href={`/eventi/${e.slug}`}>
-              <Card className="h-full hover:border-[var(--color-primary)] transition-colors">
+              <Card className="h-full hover:border-[var(--color-primary)] transition-colors overflow-hidden">
+                {e.banner_url && (
+                  // eslint-disable-next-line @next/next/no-img-element
+                  <img src={e.banner_url} alt="" className="w-full h-36 object-cover" />
+                )}
                 <CardBody className="space-y-3">
                   <div className="flex items-center gap-2 flex-wrap">
                     <Badge variant="primary">{e.event_type}</Badge>
