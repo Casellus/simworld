@@ -39,7 +39,7 @@ export async function createRecruitmentPost(formData: FormData): Promise<void> {
 
   const { error } = await supabase.from("recruitment_posts").insert({
     post_type,
-    user_id: post_type === "cerca_team" ? user.id : null,
+    user_id: user.id,
     team_id,
     game_id,
     title,
