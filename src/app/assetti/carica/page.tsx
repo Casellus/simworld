@@ -21,13 +21,14 @@ export default function CaricaAssettoPage() {
     const fd = new FormData(e.currentTarget);
     const res = await uploadSetupFull(fd);
 
-    if (res.error) {
-      setError(res.error);
+    if (res.error || !res.id) {
+      setError(res.error || "Errore sconosciuto. Riprova.");
       setLoading(false);
       return;
     }
 
     router.push(`/assetti/${res.id}`);
+    router.refresh();
   }
 
   return (

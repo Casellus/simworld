@@ -6,46 +6,54 @@ import { createClient, createAdminClient } from "@/lib/supabase/server";
 
 const ALLOWED_EXT = ["json", "sto", "svm", "ini", "svm", "rcd", "txt", "xml", "zip"];
 export async function uploadSetupFull(formData: FormData): Promise<{ error?: string; id?: string }> {
-  const supabase = await createClient();
-  const admin = createAdminClient();
-  const { data: { user } } = await supabase.auth.getUser();
-  if (!user) return { error: "Non autorizzato" };
+  try {
+    const supabase = await createClient();
+    const { data: { user } } = await supabase.auth.getUser();
+    if (!user) return { error: "Non autorizzato" };
 
-  const title = (formData.get("title") as string || "").trim();
-  const game_slug = formData.get("game") as string;
-  const car = (formData.get("car") as string || "").trim();
-  const track = (formData.get("track") as string || "").trim();
-  const conditions = (formData.get("conditions") as string || "").trim() || null;
-  const notes = (formData.get("notes") as string || "").trim() || null;
-  const setupFile = formData.get("file") as File | null;
+    const title = (formData.get("title") as string || "").trim();
+    const game_slug = formData.get("game") as string;
+    const car = (formData.get("car") as string || "").trim();
+    const track = (formData.get("track") as string || "").trim();
+    const conditions = (formData.get("conditions") as string || "").trim() || null;
+    const notes = (formData.get("notes") as string || "").trim() || null;
+    const setupFile = formData.get("file") as File | null;
 
-  if (!title || !game_slug || !car || !track) return { error: "Campi obbligatori mancanti." };
+    if (!title || !game_slug || !car || !track) return { error: "Campi obbligatori mancanti." };
 
-  const { data: game } = await supabase.from("games").select("id").eq("slug", game_slug).single();
-  if (!game) return { error: "Gioco non valido." };
+    const { data: game } = await supabase.from("games").select("id").eq("slug", game_slug).single();
+    if (!game) return { error: "Gioco non valido." };
 
-  let file_url: string | null = null;
-  if (setupFile && setupFile.size > 0) {
-    if (setupFile.size > 5 * 1024 * 1024) return { error: "File assetto max 5MB." };
-    const ext = setupFile.name.split(".").pop()?.toLowerCase() || "";
-    if (!ALLOWED_EXT.includes(ext)) return { error: `Estensione non supportata: .${ext}` };
-    const path = `${user.id}/${Date.now()}-${setupFile.name.replace(/[^a-zA-Z0-9._-]/g, "_")}`;
-    const { error: upErr } = await admin.storage.from("setups").upload(path, setupFile, { upsert: false });
-    if (upErr) return { error: `Errore upload file: ${upErr.message}` };
-    file_url = admin.storage.from("setups").getPublicUrl(path).data.publicUrl;
+    let file_url: string | null = null;
+    if (setupFile && setupFile.size > 0) {
+      if (setupFile.size > 5 * 1024 * 1024) return { error: "File assetto max 5MB." };
+      const ext = setupFile.name.split(".").pop()?.toLowerCase() || "";
+      if (!ALLOWED_EXT.includes(ext)) return { error: `Estensione non supportata: .${ext}` };
+      if (!process.env.SUPABASE_SECRET_KEY) return { error: "Server non configurato per upload file. Riprova senza allegare un file." };
+
+      const admin = createAdminClient();
+      const path = `${user.id}/${Date.now()}-${setupFile.name.replace(/[^a-zA-Z0-9._-]/g, "_")}`;
+      const { error: upErr } = await admin.storage.from("setups").upload(path, setupFile, { upsert: false });
+      if (upErr) return { error: `Errore upload file: ${upErr.message}` };
+      file_url = admin.storage.from("setups").getPublicUrl(path).data.publicUrl;
+    }
+
+    const { data: created, error: dbErr } = await supabase
+      .from("setups")
+      .insert({ user_id: user.id, game_id: game.id, title, car, track, conditions, notes, file_url })
+      .select("id")
+      .single();
+
+    if (dbErr) return { error: dbErr.message };
+    if (!created?.id) return { error: "Inserimento non riuscito." };
+
+    revalidatePath("/assetti");
+    revalidatePath("/");
+    return { id: created.id };
+  } catch (e) {
+    const msg = e instanceof Error ? e.message : "Errore sconosciuto";
+    return { error: `Errore server: ${msg}` };
   }
-
-  const { data: created, error: dbErr } = await supabase
-    .from("setups")
-    .insert({ user_id: user.id, game_id: game.id, title, car, track, conditions, notes, file_url })
-    .select("id")
-    .single();
-
-  if (dbErr) return { error: dbErr.message };
-
-  revalidatePath("/assetti");
-  revalidatePath("/");
-  return { id: created.id };
 }
 
 export async function uploadSetup(formData: FormData): Promise<void> {
