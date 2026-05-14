@@ -40,7 +40,7 @@ export function FilterChip({ paramKey, value, label, baseHref }: FilterChipProps
         "px-3.5 py-1.5 rounded-full text-xs font-semibold border transition-colors disabled:opacity-60",
         isActive
           ? "bg-[var(--color-primary)] text-white border-[var(--color-primary)]"
-          : "bg-white text-[var(--color-fg-muted)] border-[var(--color-border)] hover:text-[var(--color-primary)] hover:border-[var(--color-primary)]"
+          : "bg-[var(--color-bg-elev)] text-[var(--color-fg-muted)] border-[var(--color-border)] hover:text-[var(--color-primary)] hover:border-[var(--color-primary)]"
       )}
     >
       {label}

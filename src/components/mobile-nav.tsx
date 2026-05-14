@@ -45,7 +45,7 @@ export function MobileHamburger() {
             width: "100vw",
             height: "100vh",
             zIndex: 99999,
-            background: "#ffffff",
+            background: "#050507",
             display: "flex",
             flexDirection: "column",
             alignItems: "center",
@@ -61,7 +61,7 @@ export function MobileHamburger() {
               right: 20,
               background: "none",
               border: "none",
-              color: "#0b1a33",
+              color: "#f5f7fa",
               cursor: "pointer",
               padding: 8,
             }}
@@ -90,8 +90,8 @@ export function MobileHamburger() {
                     fontSize: 20,
                     fontWeight: 700,
                     fontFamily: "var(--font-heading)",
-                    color: active ? "#0b5fff" : "#0b1a33",
-                    background: active ? "rgba(11,95,255,0.08)" : "transparent",
+                    color: active ? "#2e7dff" : "#f5f7fa",
+                    background: active ? "rgba(46,125,255,0.12)" : "transparent",
                     animation: `slideUp 0.2s ease ${i * 0.05}s both`,
                   }}
                 >
