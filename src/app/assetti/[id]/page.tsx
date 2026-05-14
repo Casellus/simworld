@@ -16,14 +16,20 @@ export default async function SetupDetailPage({ params }: { params: Promise<{ id
 
   const { data: setup } = await supabase
     .from("setups")
-    .select("*, games(name), profiles(username, display_name)")
+    .select("*, games(name)")
     .eq("id", id)
     .single();
 
   if (!setup) notFound();
 
   const game = one<{ name: string }>(setup.games);
-  const author = one<{ username: string; display_name: string | null }>(setup.profiles);
+
+  const { data: authorProfile } = await supabase
+    .from("profiles")
+    .select("username, display_name")
+    .eq("id", setup.user_id)
+    .maybeSingle();
+  const author = authorProfile;
 
   const {
     data: { user },
@@ -42,7 +48,7 @@ export default async function SetupDetailPage({ params }: { params: Promise<{ id
 
   const { data: comments } = await supabase
     .from("setup_comments")
-    .select("id, body, created_at, profiles(username, display_name)")
+    .select("id, body, created_at, user_id")
     .eq("setup_id", id)
     .order("created_at", { ascending: false });
 
@@ -110,23 +116,17 @@ export default async function SetupDetailPage({ params }: { params: Promise<{ id
             <CardBody>
               {comments && comments.length > 0 ? (
                 <ul className="space-y-3">
-                  {comments.map((c) => {
-                    const cp = one<{ username: string; display_name: string | null }>(c.profiles);
-                    return (
-                      <li
-                        key={c.id}
-                        className="text-sm border-b border-[var(--color-border)] pb-3 last:border-0 last:pb-0"
-                      >
-                        <div className="text-xs text-[var(--color-fg-muted)] mb-1">
-                          <span className="font-medium text-[var(--color-fg)]">
-                            {cp?.display_name || cp?.username}
-                          </span>{" "}
-                          · {formatDate(c.created_at)}
-                        </div>
-                        <p className="whitespace-pre-wrap">{c.body}</p>
-                      </li>
-                    );
-                  })}
+                  {comments.map((c) => (
+                    <li
+                      key={c.id}
+                      className="text-sm border-b border-[var(--color-border)] pb-3 last:border-0 last:pb-0"
+                    >
+                      <div className="text-xs text-[var(--color-fg-muted)] mb-1">
+                        {formatDate(c.created_at)}
+                      </div>
+                      <p className="whitespace-pre-wrap">{c.body}</p>
+                    </li>
+                  ))}
                 </ul>
               ) : (
                 <p className="text-sm text-[var(--color-fg-muted)]">Nessun commento ancora.</p>

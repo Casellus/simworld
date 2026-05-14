@@ -7,7 +7,7 @@ import { formatDate } from "@/lib/utils";
 import { one } from "@/lib/types";
 import { Calendar, Users, Settings2, Search, Trophy, Zap, ArrowRight, Flag, Plus, LayoutDashboard } from "lucide-react";
 
-export const revalidate = 60;
+export const dynamic = "force-dynamic";
 
 export default async function Home() {
   const supabase = await createClient();
