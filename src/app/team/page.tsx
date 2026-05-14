@@ -15,7 +15,7 @@ export default async function TeamPage({ searchParams }: { searchParams: SP }) {
 
   let q = supabase
     .from("teams")
-    .select("id, slug, name, description, recruiting, country, team_members(count)")
+    .select("id, slug, name, description, recruiting, country, logo_url, team_members(count)")
     .order("created_at", { ascending: false });
 
   if (sp.q) q = q.ilike("name", `%${sp.q}%`);
@@ -60,8 +60,13 @@ export default async function TeamPage({ searchParams }: { searchParams: SP }) {
               <Card className="h-full hover:border-[var(--color-primary)] transition-colors">
                 <CardBody className="space-y-3">
                   <div className="flex items-center gap-3">
-                    <div className="h-12 w-12 rounded bg-[var(--color-bg-elev-2)] border border-[var(--color-border)] flex items-center justify-center">
-                      <Flag className="h-6 w-6 text-[var(--color-primary)]" />
+                    <div className="h-12 w-12 rounded bg-[var(--color-bg-elev-2)] border border-[var(--color-border)] flex items-center justify-center overflow-hidden shrink-0">
+                      {t.logo_url ? (
+                        // eslint-disable-next-line @next/next/no-img-element
+                        <img src={t.logo_url} alt={t.name} className="h-full w-full object-cover" />
+                      ) : (
+                        <Flag className="h-6 w-6 text-[var(--color-primary)]" />
+                      )}
                     </div>
                     <div className="flex-1">
                       <h3 className="font-bold">{t.name}</h3>
