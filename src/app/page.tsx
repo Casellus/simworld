@@ -87,7 +87,7 @@ export default async function Home() {
     <>
       {/* HERO */}
       <section className="relative overflow-hidden border-b border-[var(--color-border)]">
-        <div className="absolute inset-0 checker-bg opacity-[0.03]" />
+        <div className="absolute inset-0 checker-bg opacity-[0.025]" />
         <div className="relative mx-auto max-w-7xl px-4 sm:px-6 py-20 md:py-28">
           {user ? (
             /* ── LOGGED IN HERO ── */
@@ -95,7 +95,7 @@ export default async function Home() {
               <Badge variant="success" className="mb-4 hero-title">
                 <Zap className="h-3 w-3" /> Bentornato nella pit lane
               </Badge>
-              <h1 className="hero-title text-4xl md:text-6xl font-black leading-[1.05] tracking-tight uppercase">
+              <h1 className="hero-title text-4xl md:text-6xl font-extrabold leading-[1.1] tracking-tight">
                 Ciao, <span className="text-[var(--color-primary)]">{displayName}.</span>
                 <br />
                 Pronto a correre?
@@ -134,7 +134,7 @@ export default async function Home() {
               <Badge variant="primary" className="mb-4 hero-title">
                 <Zap className="h-3 w-3" /> Hub italiano del sim racing
               </Badge>
-              <h1 className="hero-title text-4xl md:text-6xl font-black leading-[1.05] tracking-tight uppercase">
+              <h1 className="hero-title text-4xl md:text-6xl font-extrabold leading-[1.1] tracking-tight">
                 Tutte le piste,
                 <br />
                 <span className="text-[var(--color-primary)]">una community.</span>
@@ -178,7 +178,7 @@ export default async function Home() {
         <section className="border-b border-[var(--color-border)] bg-[var(--color-bg-elev)]">
           <div className="mx-auto max-w-7xl px-4 sm:px-6 py-10 grid gap-6 md:grid-cols-2">
             <div>
-              <h2 className="text-sm font-bold uppercase tracking-wider flex items-center gap-2 mb-4">
+              <h2 className="text-base font-bold flex items-center gap-2 mb-4">
                 <Trophy className="h-4 w-4 text-[var(--color-primary)]" /> I tuoi prossimi eventi
               </h2>
               {myEvents && myEvents.length > 0 ? (
@@ -215,7 +215,7 @@ export default async function Home() {
             </div>
 
             <div>
-              <h2 className="text-sm font-bold uppercase tracking-wider flex items-center gap-2 mb-4">
+              <h2 className="text-base font-bold flex items-center gap-2 mb-4">
                 <Flag className="h-4 w-4 text-[var(--color-primary)]" /> Azioni rapide
               </h2>
               <div className="grid grid-cols-2 gap-3">
@@ -335,7 +335,7 @@ export default async function Home() {
             <Badge variant="primary" className="mb-3">
               <Flag className="h-3 w-3" /> Chi siamo
             </Badge>
-            <h2 className="text-3xl md:text-4xl font-black uppercase tracking-tight">
+            <h2 className="text-3xl md:text-4xl font-extrabold tracking-tight">
               Fatto da piloti,<br />
               <span className="text-[var(--color-primary)]">per piloti.</span>
             </h2>
@@ -386,7 +386,7 @@ export default async function Home() {
         <section className="border-t border-[var(--color-border)] bg-[var(--color-bg-elev)]">
           <div className="mx-auto max-w-7xl px-4 sm:px-6 py-16 text-center">
             <Flag className="h-10 w-10 text-[var(--color-primary)] mx-auto mb-4" />
-            <h2 className="text-3xl md:text-4xl font-black uppercase tracking-tight">
+            <h2 className="text-3xl md:text-4xl font-extrabold tracking-tight">
               Pronto al via?
             </h2>
             <p className="mt-3 text-[var(--color-fg-muted)] max-w-xl mx-auto">
@@ -406,9 +406,9 @@ export default async function Home() {
 
 function StatChip({ label, value }: { label: string; value: number }) {
   return (
-    <div className="bg-[var(--color-bg-elev)] border border-[var(--color-border)] rounded-lg p-3 text-center">
-      <div className="text-2xl font-black text-[var(--color-primary)]">{value}</div>
-      <div className="text-xs text-[var(--color-fg-muted)] uppercase tracking-wider mt-0.5">{label}</div>
+    <div className="bg-white border border-[var(--color-border)] rounded-xl p-3 text-center shadow-sm">
+      <div className="text-2xl font-extrabold text-[var(--color-primary)]">{value}</div>
+      <div className="text-xs text-[var(--color-fg-muted)] mt-0.5">{label}</div>
     </div>
   );
 }
@@ -418,7 +418,7 @@ function FeatureCard({ icon: Icon, title, desc }: { icon: React.ComponentType<{ 
     <Card>
       <CardBody>
         <Icon className="h-6 w-6 text-[var(--color-primary)] mb-3" />
-        <h3 className="font-bold uppercase tracking-wide text-sm mb-1">{title}</h3>
+        <h3 className="font-bold text-base mb-1">{title}</h3>
         <p className="text-sm text-[var(--color-fg-muted)]">{desc}</p>
       </CardBody>
     </Card>
@@ -430,7 +430,7 @@ function AboutCard({ icon, title, desc }: { icon: string; title: string; desc: s
     <Card>
       <CardBody>
         <div className="text-3xl mb-3">{icon}</div>
-        <h3 className="font-bold uppercase tracking-wide text-sm mb-2">{title}</h3>
+        <h3 className="font-bold text-sm mb-2">{title}</h3>
         <p className="text-sm text-[var(--color-fg-muted)]">{desc}</p>
       </CardBody>
     </Card>
@@ -451,10 +451,10 @@ function SectionBlock({
   return (
     <div>
       <div className="flex items-center justify-between mb-4">
-        <h2 className="flex items-center gap-2 text-lg font-black uppercase tracking-wider">
+        <h2 className="flex items-center gap-2 text-lg font-bold">
           <Icon className="h-5 w-5 text-[var(--color-primary)]" /> {title}
         </h2>
-        <Link href={href} className="text-xs uppercase tracking-wider text-[var(--color-fg-muted)] hover:text-[var(--color-primary)]">
+        <Link href={href} className="text-xs font-semibold text-[var(--color-primary)] hover:underline">
           Vedi tutti →
         </Link>
       </div>

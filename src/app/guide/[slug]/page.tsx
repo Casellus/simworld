@@ -27,7 +27,7 @@ export default async function GuidaPage({ params }: { params: Promise<{ slug: st
         {guide.category && <Badge variant="accent">{guide.category}</Badge>}
         {guide.games?.name && <Badge>{guide.games.name}</Badge>}
       </div>
-      <h1 className="text-3xl md:text-5xl font-black uppercase tracking-tight">{guide.title}</h1>
+      <h1 className="text-3xl md:text-5xl font-extrabold tracking-tight">{guide.title}</h1>
       <p className="text-sm text-[var(--color-fg-muted)] mt-3">
         {guide.profiles?.display_name || guide.profiles?.username || "—"} · {formatDate(guide.created_at)}
       </p>

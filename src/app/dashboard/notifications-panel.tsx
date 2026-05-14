@@ -35,7 +35,7 @@ export function NotificationsPanel({ notifications: initial }: { notifications: 
   return (
     <div>
       <div className="flex items-center justify-between mb-3">
-        <h2 className="text-sm font-bold uppercase tracking-wider flex items-center gap-2">
+        <h2 className="text-sm font-bold flex items-center gap-2">
           <Bell className="h-4 w-4 text-[var(--color-primary)]" />
           Notifiche
           {unread > 0 && (

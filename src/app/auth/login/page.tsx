@@ -9,11 +9,11 @@ export default function LoginPage() {
     <div className="mx-auto max-w-md px-4 sm:px-6 py-16">
       <Link href="/" className="flex items-center gap-2 mb-8 justify-center">
         <Flag className="h-6 w-6 text-[var(--color-primary)]" />
-        <span className="text-lg font-black uppercase">
+        <span className="text-lg font-extrabold">
           Sim<span className="text-[var(--color-primary)]">World</span>
         </span>
       </Link>
-      <h1 className="text-3xl font-black uppercase tracking-tight mb-2 text-center">Accedi</h1>
+      <h1 className="text-3xl font-extrabold tracking-tight mb-2 text-center">Accedi</h1>
       <p className="text-sm text-[var(--color-fg-muted)] text-center mb-8">
         Bentornato in pista.
       </p>

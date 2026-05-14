@@ -62,7 +62,7 @@ export default async function SetupDetailPage({ params }: { params: Promise<{ id
         <Badge className="mb-3">{game?.name}</Badge>
         <div className="flex flex-wrap items-start justify-between gap-4">
           <div>
-            <h1 className="text-3xl md:text-4xl font-black uppercase tracking-tight">{setup.title}</h1>
+            <h1 className="text-3xl md:text-4xl font-extrabold tracking-tight">{setup.title}</h1>
             <p className="text-sm text-[var(--color-fg-muted)] mt-2">
               di{" "}
               <Link
@@ -101,7 +101,7 @@ export default async function SetupDetailPage({ params }: { params: Promise<{ id
           {setup.notes && (
             <Card>
               <CardHeader>
-                <h2 className="text-sm font-bold uppercase tracking-wider">Note</h2>
+                <h2 className="text-sm font-bold">Note</h2>
               </CardHeader>
               <CardBody>
                 <p className="whitespace-pre-wrap text-sm">{setup.notes}</p>
@@ -111,7 +111,7 @@ export default async function SetupDetailPage({ params }: { params: Promise<{ id
 
           <Card>
             <CardHeader>
-              <h2 className="text-sm font-bold uppercase tracking-wider">Commenti ({comments?.length || 0})</h2>
+              <h2 className="text-sm font-bold">Commenti ({comments?.length || 0})</h2>
             </CardHeader>
             <CardBody>
               {comments && comments.length > 0 ? (
@@ -179,7 +179,7 @@ function InfoRow({
 }) {
   return (
     <div>
-      <div className="text-[10px] uppercase tracking-wider text-[var(--color-fg-muted)] flex items-center gap-1">
+      <div className="text-xs font-semibold text-[var(--color-fg-muted)] flex items-center gap-1">
         <Icon className="h-3 w-3" /> {label}
       </div>
       <div className="text-sm font-medium mt-0.5">{value}</div>

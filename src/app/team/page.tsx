@@ -27,7 +27,7 @@ export default async function TeamPage({ searchParams }: { searchParams: SP }) {
     <div className="mx-auto max-w-7xl px-4 sm:px-6 py-10">
       <div className="flex flex-wrap items-center justify-between gap-4 mb-8">
         <div>
-          <h1 className="text-3xl md:text-4xl font-black uppercase tracking-tight">Team</h1>
+          <h1 className="text-3xl md:text-4xl font-extrabold tracking-tight">Team</h1>
           <p className="text-[var(--color-fg-muted)] mt-1">Trova squadre o crea la tua.</p>
         </div>
         <Link href="/team/nuovo">
@@ -83,7 +83,7 @@ export default async function TeamPage({ searchParams }: { searchParams: SP }) {
         <Card>
           <CardBody className="text-center py-16">
             <Users className="h-12 w-12 text-[var(--color-fg-muted)] mx-auto mb-3" />
-            <h3 className="font-bold uppercase mb-1">Nessun team</h3>
+            <h3 className="font-bold mb-1">Nessun team</h3>
             <p className="text-sm text-[var(--color-fg-muted)] mb-4">Nessun team trovato.</p>
             <Link href="/team/nuovo">
               <Button>Crea primo team</Button>

@@ -33,7 +33,7 @@ export default async function AdminPage() {
   return (
     <div className="mx-auto max-w-5xl px-4 sm:px-6 py-10 space-y-10">
       <div>
-        <h1 className="text-3xl font-black uppercase tracking-tight mb-1">Pannello Admin</h1>
+        <h1 className="text-3xl font-extrabold tracking-tight mb-1">Pannello Admin</h1>
         <p className="text-sm text-[var(--color-fg-muted)]">Accesso riservato. Gestisci tutti i contenuti della piattaforma.</p>
       </div>
 
@@ -92,7 +92,7 @@ function AdminSection({ title, children }: { title: string; children: React.Reac
   return (
     <Card>
       <CardHeader>
-        <h2 className="font-bold uppercase tracking-wider text-sm">{title}</h2>
+        <h2 className="font-bold text-sm">{title}</h2>
       </CardHeader>
       <CardBody>
         <div className="divide-y divide-[var(--color-border)]">{children}</div>

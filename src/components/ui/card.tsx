@@ -5,7 +5,7 @@ export function Card({ className, ...props }: React.HTMLAttributes<HTMLDivElemen
   return (
     <div
       className={cn(
-        "rounded-lg border border-[var(--color-border)] bg-[var(--color-bg-elev)] overflow-hidden card-hover",
+        "rounded-xl border border-[var(--color-border)] bg-white shadow-sm overflow-hidden card-hover",
         className
       )}
       {...props}
@@ -39,7 +39,7 @@ export function Badge({
   return (
     <span
       className={cn(
-        "inline-flex items-center gap-1 px-2 py-0.5 rounded text-[10px] font-semibold uppercase tracking-wider border",
+        "inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-[11px] font-semibold border",
         variants[variant],
         className
       )}

@@ -45,7 +45,7 @@ export default async function DashboardPage() {
     <div className="mx-auto max-w-7xl px-4 sm:px-6 py-10">
       <div className="flex flex-wrap items-center justify-between gap-4 mb-8">
         <div>
-          <h1 className="text-3xl md:text-4xl font-black uppercase tracking-tight">Dashboard</h1>
+          <h1 className="text-3xl md:text-4xl font-extrabold tracking-tight">Dashboard</h1>
           <p className="text-[var(--color-fg-muted)] mt-1">Benvenuto, {profile.display_name || profile.username}.</p>
         </div>
         <div className="flex gap-2">
@@ -178,7 +178,7 @@ function Section({
   return (
     <Card>
       <CardHeader className="flex items-center justify-between gap-2">
-        <h2 className="text-sm font-bold uppercase tracking-wider flex items-center gap-2">
+        <h2 className="text-sm font-bold flex items-center gap-2">
           <Icon className="h-4 w-4" /> {title}
         </h2>
         <Link href={createHref}>

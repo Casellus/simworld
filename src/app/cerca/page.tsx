@@ -41,7 +41,7 @@ export default async function CercaPage({ searchParams }: { searchParams: SP }) 
     <div className="mx-auto max-w-7xl px-4 sm:px-6 py-10">
       <div className="flex flex-wrap items-center justify-between gap-4 mb-8">
         <div>
-          <h1 className="text-3xl md:text-4xl font-black uppercase tracking-tight">Cerca</h1>
+          <h1 className="text-3xl md:text-4xl font-extrabold tracking-tight">Cerca</h1>
           <p className="text-[var(--color-fg-muted)] mt-1">Cerca pilota o team con cui correre.</p>
         </div>
         <Link href="/cerca/nuovo">
@@ -100,7 +100,7 @@ export default async function CercaPage({ searchParams }: { searchParams: SP }) 
         <Card>
           <CardBody className="text-center py-16">
             <Search className="h-12 w-12 text-[var(--color-fg-muted)] mx-auto mb-3" />
-            <h3 className="font-bold uppercase mb-1">Nessun annuncio</h3>
+            <h3 className="font-bold mb-1">Nessun annuncio</h3>
             <p className="text-sm text-[var(--color-fg-muted)] mb-4">Pubblica il primo.</p>
             <Link href="/cerca/nuovo"><Button>Pubblica annuncio</Button></Link>
           </CardBody>

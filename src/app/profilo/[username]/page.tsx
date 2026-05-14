@@ -48,7 +48,7 @@ export default async function ProfiloPage({ params }: { params: Promise<{ userna
           )}
         </div>
         <div className="flex-1">
-          <h1 className="text-3xl md:text-4xl font-black uppercase tracking-tight">
+          <h1 className="text-3xl md:text-4xl font-extrabold tracking-tight">
             {profile.display_name || profile.username}
           </h1>
           <p className="text-sm text-[var(--color-fg-muted)]">@{profile.username}</p>
@@ -77,7 +77,7 @@ export default async function ProfiloPage({ params }: { params: Promise<{ userna
         {profile.hardware && (
           <Card>
             <CardHeader>
-              <h2 className="text-sm font-bold uppercase tracking-wider flex items-center gap-2">
+              <h2 className="text-sm font-bold flex items-center gap-2">
                 <Cpu className="h-4 w-4" /> Hardware
               </h2>
             </CardHeader>
@@ -90,7 +90,7 @@ export default async function ProfiloPage({ params }: { params: Promise<{ userna
         {userGames && userGames.length > 0 && (
           <Card>
             <CardHeader>
-              <h2 className="text-sm font-bold uppercase tracking-wider">Giochi</h2>
+              <h2 className="text-sm font-bold">Giochi</h2>
             </CardHeader>
             <CardBody>
               <ul className="space-y-2">
@@ -111,7 +111,7 @@ export default async function ProfiloPage({ params }: { params: Promise<{ userna
         {setups && setups.length > 0 && (
           <Card className="md:col-span-2">
             <CardHeader>
-              <h2 className="text-sm font-bold uppercase tracking-wider flex items-center gap-2">
+              <h2 className="text-sm font-bold flex items-center gap-2">
                 <Settings2 className="h-4 w-4" /> Assetti pubblicati
               </h2>
             </CardHeader>
@@ -141,7 +141,7 @@ export default async function ProfiloPage({ params }: { params: Promise<{ userna
         {events && events.length > 0 && (
           <Card className="md:col-span-2">
             <CardHeader>
-              <h2 className="text-sm font-bold uppercase tracking-wider">Eventi</h2>
+              <h2 className="text-sm font-bold">Eventi</h2>
             </CardHeader>
             <CardBody>
               <ul className="grid gap-2 sm:grid-cols-2">

@@ -1,5 +1,4 @@
 import Link from "next/link";
-import { Flag } from "lucide-react";
 
 export function Footer() {
   return (
@@ -7,9 +6,8 @@ export function Footer() {
       <div className="mx-auto max-w-7xl px-4 sm:px-6 py-10 grid gap-8 md:grid-cols-4">
         <div>
           <div className="flex items-center gap-2 mb-3">
-            <Flag className="h-5 w-5 text-[var(--color-primary)]" />
-            <span className="font-black uppercase">
-              Sim<span className="text-[var(--color-primary)]">World</span>
+            <span className="text-lg font-extrabold tracking-tight" style={{ fontFamily: "var(--font-heading)" }}>
+              Sim<span className="text-[var(--color-primary)]">Universe</span>
             </span>
           </div>
           <p className="text-sm text-[var(--color-fg-muted)]">
@@ -50,7 +48,7 @@ export function Footer() {
 function FooterCol({ title, links }: { title: string; links: { href: string; label: string }[] }) {
   return (
     <div>
-      <h4 className="text-xs font-bold uppercase tracking-wider text-[var(--color-fg)] mb-3">{title}</h4>
+      <h4 className="text-sm font-bold text-[var(--color-fg)] mb-3">{title}</h4>
       <ul className="space-y-2">
         {links.map((l) => (
           <li key={l.href}>

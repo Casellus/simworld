@@ -90,7 +90,7 @@ export default async function TeamDetailPage({ params }: { params: Promise<{ slu
             {team.recruiting && <Badge variant="success">Reclutamento aperto</Badge>}
             {team.country && <Badge>{team.country}</Badge>}
           </div>
-          <h1 className="text-3xl md:text-4xl font-black uppercase tracking-tight">{team.name}</h1>
+          <h1 className="text-3xl md:text-4xl font-extrabold tracking-tight">{team.name}</h1>
           <p className="text-sm text-[var(--color-fg-muted)] mt-1">
             Proprietario:{" "}
             <span className="text-[var(--color-fg)] font-medium">
@@ -141,7 +141,7 @@ export default async function TeamDetailPage({ params }: { params: Promise<{ slu
           {team.description && (
             <Card>
               <CardHeader>
-                <h2 className="text-sm font-bold uppercase tracking-wider">Descrizione</h2>
+                <h2 className="text-sm font-bold">Descrizione</h2>
               </CardHeader>
               <CardBody>
                 <p className="whitespace-pre-wrap text-sm">{team.description}</p>
@@ -153,7 +153,7 @@ export default async function TeamDetailPage({ params }: { params: Promise<{ slu
           {isOwner && (
             <Card>
               <CardHeader>
-                <h2 className="text-sm font-bold uppercase tracking-wider flex items-center gap-2">
+                <h2 className="text-sm font-bold flex items-center gap-2">
                   Candidature ricevute
                   {pending.length > 0 && (
                     <span className="inline-flex items-center justify-center h-5 w-5 rounded-full bg-[var(--color-primary)] text-white text-[10px] font-bold">

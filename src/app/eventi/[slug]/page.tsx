@@ -61,7 +61,7 @@ export default async function EventDetailPage({ params }: { params: Promise<{ sl
             </div>
             <div className="flex flex-wrap items-start justify-between gap-4">
               <div>
-                <h1 className="text-3xl md:text-4xl font-black uppercase tracking-tight">{event.title}</h1>
+                <h1 className="text-3xl md:text-4xl font-extrabold tracking-tight">{event.title}</h1>
                 <p className="text-sm text-[var(--color-fg-muted)] mt-2">
                   Organizzato da{" "}
                   <span className="text-[var(--color-fg)] font-medium">{event.profiles?.display_name || event.profiles?.username || "—"}</span>
@@ -83,7 +83,7 @@ export default async function EventDetailPage({ params }: { params: Promise<{ sl
           {event.description && (
             <Card>
               <CardHeader>
-                <h2 className="text-sm font-bold uppercase tracking-wider">Descrizione</h2>
+                <h2 className="text-sm font-bold">Descrizione</h2>
               </CardHeader>
               <CardBody>
                 <p className="whitespace-pre-wrap text-sm">{event.description}</p>
@@ -93,7 +93,7 @@ export default async function EventDetailPage({ params }: { params: Promise<{ sl
 
           <Card>
             <CardHeader>
-              <h2 className="text-sm font-bold uppercase tracking-wider">
+              <h2 className="text-sm font-bold">
                 Partecipanti ({participants?.length || 0}
                 {event.max_participants ? `/${event.max_participants}` : ""})
               </h2>
@@ -145,7 +145,7 @@ function InfoRow({ icon: Icon, label, value }: { icon: React.ComponentType<{ cla
     <div className="flex items-start gap-3">
       <Icon className="h-4 w-4 text-[var(--color-primary)] mt-0.5" />
       <div>
-        <div className="text-[10px] uppercase tracking-wider text-[var(--color-fg-muted)]">{label}</div>
+        <div className="text-xs font-semibold text-[var(--color-fg-muted)]">{label}</div>
         <div className="text-sm font-medium">{value}</div>
       </div>
     </div>

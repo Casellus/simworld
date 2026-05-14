@@ -85,7 +85,7 @@ export function NotificationBell() {
       {open && (
         <div className="absolute left-0 md:left-auto md:right-0 mt-2 w-80 max-w-[90vw] rounded border border-[var(--color-border)] bg-[var(--color-bg-elev)] shadow-xl z-50">
           <div className="flex items-center justify-between px-3 py-2 border-b border-[var(--color-border)]">
-            <span className="text-xs font-bold uppercase tracking-wider">Notifiche</span>
+            <span className="text-xs font-bold">Notifiche</span>
             {unread > 0 && (
               <button onClick={markAllRead} className="text-xs text-[var(--color-fg-muted)] hover:text-[var(--color-fg)] transition-colors">
                 Segna tutte come lette

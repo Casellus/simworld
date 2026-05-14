@@ -35,7 +35,7 @@ export async function Header() {
         {/* DESKTOP */}
         <div className="hidden md:flex h-16 items-center justify-between gap-4">
           <Link href="/" className="flex items-center gap-2 group">
-            <span className="text-lg font-black tracking-tight uppercase">
+            <span className="text-lg font-extrabold tracking-tight" style={{ fontFamily: "var(--font-heading)" }}>
               Sim<span className="text-[var(--color-primary)]">Universe</span>
             </span>
           </Link>
@@ -45,7 +45,7 @@ export async function Header() {
               <Link
                 key={n.href}
                 href={n.href}
-                className="px-3 py-2 text-sm font-medium uppercase tracking-wider text-[var(--color-fg-muted)] hover:text-[var(--color-fg)] hover:bg-[var(--color-bg-elev)] rounded transition-colors flex items-center gap-2"
+                className="px-3 py-2 text-sm font-medium text-[var(--color-fg-muted)] hover:text-[var(--color-primary)] hover:bg-[var(--color-bg-elev)] rounded-lg transition-colors flex items-center gap-2"
               >
                 <n.icon className="h-4 w-4" />
                 {n.label}
@@ -86,7 +86,7 @@ export async function Header() {
           </div>
 
           <Link href="/" className="flex items-center gap-1.5 group absolute left-1/2 -translate-x-1/2">
-            <span className="text-base font-black tracking-tight uppercase">
+            <span className="text-base font-extrabold tracking-tight" style={{ fontFamily: "var(--font-heading)" }}>
               Sim<span className="text-[var(--color-primary)]">Universe</span>
             </span>
           </Link>

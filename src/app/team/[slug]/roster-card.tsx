@@ -28,7 +28,7 @@ export function RosterCard({
   return (
     <Card>
       <CardHeader className="flex items-center justify-between gap-2">
-        <h2 className="text-sm font-bold uppercase tracking-wider flex items-center gap-2">
+        <h2 className="text-sm font-bold flex items-center gap-2">
           <Users className="h-4 w-4" /> Roster ({members.length})
         </h2>
         {editable && (

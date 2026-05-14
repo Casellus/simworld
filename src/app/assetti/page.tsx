@@ -38,7 +38,7 @@ export default async function AssettiPage({ searchParams }: { searchParams: SP }
     <div className="mx-auto max-w-7xl px-4 sm:px-6 py-10">
       <div className="flex flex-wrap items-center justify-between gap-4 mb-8">
         <div>
-          <h1 className="text-3xl md:text-4xl font-black uppercase tracking-tight">Assetti</h1>
+          <h1 className="text-3xl md:text-4xl font-extrabold tracking-tight">Assetti</h1>
           <p className="text-[var(--color-fg-muted)] mt-1">Setup condivisi dalla community.</p>
         </div>
         <Link href="/assetti/carica">
@@ -97,7 +97,7 @@ export default async function AssettiPage({ searchParams }: { searchParams: SP }
         <Card>
           <CardBody className="text-center py-16">
             <Settings2 className="h-12 w-12 text-[var(--color-fg-muted)] mx-auto mb-3" />
-            <h3 className="font-bold uppercase mb-1">Nessun assetto</h3>
+            <h3 className="font-bold mb-1">Nessun assetto</h3>
             <p className="text-sm text-[var(--color-fg-muted)] mb-4">Carica il primo.</p>
             <Link href="/assetti/carica"><Button>Carica assetto</Button></Link>
           </CardBody>

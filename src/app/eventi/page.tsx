@@ -39,7 +39,7 @@ export default async function EventiPage({ searchParams }: { searchParams: SP })
     <div className="mx-auto max-w-7xl px-4 sm:px-6 py-10">
       <div className="flex flex-wrap items-center justify-between gap-4 mb-8">
         <div>
-          <h1 className="text-3xl md:text-4xl font-black uppercase tracking-tight">Eventi</h1>
+          <h1 className="text-3xl md:text-4xl font-extrabold tracking-tight">Eventi</h1>
           <p className="text-[var(--color-fg-muted)] mt-1">Tornei, campionati, amichevoli.</p>
         </div>
         <Link href="/eventi/nuovo">
@@ -106,7 +106,7 @@ export default async function EventiPage({ searchParams }: { searchParams: SP })
         <Card>
           <CardBody className="text-center py-16">
             <Calendar className="h-12 w-12 text-[var(--color-fg-muted)] mx-auto mb-3" />
-            <h3 className="font-bold uppercase mb-1">Nessun evento</h3>
+            <h3 className="font-bold mb-1">Nessun evento</h3>
             <p className="text-sm text-[var(--color-fg-muted)] mb-4">Nessun evento corrisponde ai filtri.</p>
             <Link href="/eventi/nuovo">
               <Button>Crea primo evento</Button>

@@ -19,7 +19,7 @@ export default async function GuidePage() {
   return (
     <div className="mx-auto max-w-7xl px-4 sm:px-6 py-10">
       <div className="mb-8">
-        <h1 className="text-3xl md:text-4xl font-black uppercase tracking-tight">Guide</h1>
+        <h1 className="text-3xl md:text-4xl font-extrabold tracking-tight">Guide</h1>
         <p className="text-[var(--color-fg-muted)] mt-1">Consigli, tutorial, FFB, hardware, tecniche di guida.</p>
       </div>
 
@@ -48,7 +48,7 @@ export default async function GuidePage() {
         <Card>
           <CardBody className="text-center py-16">
             <BookOpen className="h-12 w-12 text-[var(--color-fg-muted)] mx-auto mb-3" />
-            <h3 className="font-bold uppercase mb-1">Guide in arrivo</h3>
+            <h3 className="font-bold mb-1">Guide in arrivo</h3>
             <p className="text-sm text-[var(--color-fg-muted)]">Le prime guide saranno disponibili a breve.</p>
           </CardBody>
         </Card>

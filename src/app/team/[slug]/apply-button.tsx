@@ -41,7 +41,7 @@ export function ApplyButton({ teamId }: { teamId: string }) {
 
   return (
     <div className="border border-[var(--color-border)] rounded-lg p-4 space-y-3 bg-[var(--color-bg-elev)] min-w-[280px]">
-      <p className="text-sm font-bold uppercase tracking-wider">Invia candidatura</p>
+      <p className="text-sm font-bold">Invia candidatura</p>
       <div>
         <Label htmlFor="apply-msg">Messaggio (opzionale)</Label>
         <Textarea
