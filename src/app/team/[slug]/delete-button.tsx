@@ -20,6 +20,7 @@ export function TeamDeleteButton({ teamId }: { teamId: string }) {
       return;
     }
     router.push("/team");
+    router.refresh();
   }
 
   if (confirm) {

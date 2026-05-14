@@ -16,6 +16,7 @@ export function EventDeleteButton({ eventId }: { eventId: string }) {
     const res = await deleteEvent(eventId);
     if (res.error) { alert(res.error); setLoading(false); return; }
     router.push("/eventi");
+    router.refresh();
   }
 
   if (confirm) {

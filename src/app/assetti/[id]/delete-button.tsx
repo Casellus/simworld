@@ -16,6 +16,7 @@ export function SetupDeleteButton({ setupId }: { setupId: string }) {
     const res = await deleteSetup(setupId);
     if (res.error) { alert(res.error); setLoading(false); return; }
     router.push("/assetti");
+    router.refresh();
   }
 
   if (confirm) {
