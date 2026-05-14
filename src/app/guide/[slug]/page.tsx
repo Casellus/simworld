@@ -4,6 +4,8 @@ import { createClient } from "@/lib/supabase/server";
 import { Badge } from "@/components/ui/card";
 import { formatDate } from "@/lib/utils";
 
+export const revalidate = 60;
+
 export default async function GuidaPage({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params;
   const supabase = await createClient();

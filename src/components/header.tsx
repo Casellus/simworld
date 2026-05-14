@@ -8,19 +8,16 @@ import { Calendar, Users, Settings2, Search, BookOpen } from "lucide-react";
 
 export async function Header() {
   const supabase = await createClient();
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
+  const { data: { user } } = await supabase.auth.getUser();
 
   let profile = null;
-  let notifications: { id: string; title: string; body: string | null; link: string | null; read: boolean; created_at: string }[] = [];
   if (user) {
-    const [{ data: profileData }, { data: notifData }] = await Promise.all([
-      supabase.from("profiles").select("username, display_name, avatar_url").eq("id", user.id).single(),
-      supabase.from("notifications").select("id, title, body, link, read, created_at").eq("user_id", user.id).order("created_at", { ascending: false }).limit(20),
-    ]);
-    profile = profileData;
-    notifications = notifData ?? [];
+    const { data } = await supabase
+      .from("profiles")
+      .select("username, display_name, avatar_url")
+      .eq("id", user.id)
+      .single();
+    profile = data;
   }
 
   const nav = [
@@ -57,7 +54,7 @@ export async function Header() {
           </nav>
 
           <div className="flex items-center gap-2">
-            {profile && <NotificationBell initial={notifications} />}
+            {profile && <NotificationBell />}
             {profile ? (
               <UserMenu profile={profile} />
             ) : (
@@ -75,11 +72,10 @@ export async function Header() {
 
         {/* MOBILE */}
         <div className="md:hidden flex h-16 items-center justify-between gap-2">
-          {/* sinistra: profilo o accedi */}
           <div className="flex items-center gap-1 w-20">
             {profile ? (
               <>
-                {<NotificationBell initial={notifications} />}
+                <NotificationBell />
                 <UserMenu profile={profile} />
               </>
             ) : (
@@ -89,14 +85,12 @@ export async function Header() {
             )}
           </div>
 
-          {/* centro: logo */}
           <Link href="/" className="flex items-center gap-1.5 group absolute left-1/2 -translate-x-1/2">
             <span className="text-base font-black tracking-tight uppercase">
               Sim<span className="text-[var(--color-primary)]">Universe</span>
             </span>
           </Link>
 
-          {/* destra: hamburger */}
           <div className="flex justify-end w-20">
             <MobileHamburger />
           </div>

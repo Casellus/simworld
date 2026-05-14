@@ -15,12 +15,27 @@ type Notification = {
   created_at: string;
 };
 
-export function NotificationBell({ initial }: { initial: Notification[] }) {
-  const [notifications, setNotifications] = useState(initial);
+export function NotificationBell() {
+  const [notifications, setNotifications] = useState<Notification[]>([]);
   const [open, setOpen] = useState(false);
+  const [loaded, setLoaded] = useState(false);
   const ref = useRef<HTMLDivElement>(null);
 
   const unread = notifications.filter((n) => !n.read).length;
+
+  // fetch on mount
+  useEffect(() => {
+    const supabase = createClient();
+    supabase
+      .from("notifications")
+      .select("id, title, body, link, read, created_at")
+      .order("created_at", { ascending: false })
+      .limit(20)
+      .then(({ data }) => {
+        setNotifications(data ?? []);
+        setLoaded(true);
+      });
+  }, []);
 
   useEffect(() => {
     function onClick(e: MouseEvent) {
@@ -44,6 +59,14 @@ export function NotificationBell({ initial }: { initial: Notification[] }) {
     setNotifications((n) => n.map((x) => ({ ...x, read: true })));
   }
 
+  if (!loaded) {
+    return (
+      <div className="flex items-center justify-center h-9 w-9">
+        <Bell className="h-5 w-5 text-[var(--color-fg-muted)] opacity-50" />
+      </div>
+    );
+  }
+
   return (
     <div className="relative" ref={ref}>
       <button
@@ -64,10 +87,7 @@ export function NotificationBell({ initial }: { initial: Notification[] }) {
           <div className="flex items-center justify-between px-3 py-2 border-b border-[var(--color-border)]">
             <span className="text-xs font-bold uppercase tracking-wider">Notifiche</span>
             {unread > 0 && (
-              <button
-                onClick={markAllRead}
-                className="text-xs text-[var(--color-fg-muted)] hover:text-[var(--color-fg)] transition-colors"
-              >
+              <button onClick={markAllRead} className="text-xs text-[var(--color-fg-muted)] hover:text-[var(--color-fg)] transition-colors">
                 Segna tutte come lette
               </button>
             )}
@@ -78,16 +98,9 @@ export function NotificationBell({ initial }: { initial: Notification[] }) {
               <li className="px-3 py-4 text-sm text-[var(--color-fg-muted)] text-center">Nessuna notifica.</li>
             ) : (
               notifications.map((n) => (
-                <li
-                  key={n.id}
-                  className={`px-3 py-2.5 text-sm transition-colors ${
-                    n.read ? "" : "bg-[var(--color-primary)]/5"
-                  }`}
-                >
+                <li key={n.id} className={`px-3 py-2.5 text-sm transition-colors ${n.read ? "" : "bg-[var(--color-primary)]/5"}`}>
                   <div className="flex items-start gap-2">
-                    {!n.read && (
-                      <span className="mt-1.5 h-1.5 w-1.5 rounded-full bg-[var(--color-primary)] shrink-0" />
-                    )}
+                    {!n.read && <span className="mt-1.5 h-1.5 w-1.5 rounded-full bg-[var(--color-primary)] shrink-0" />}
                     <div className="flex-1 min-w-0">
                       {n.link ? (
                         <Link
@@ -104,13 +117,7 @@ export function NotificationBell({ initial }: { initial: Notification[] }) {
                       <p className="text-xs text-[var(--color-fg-muted)] mt-0.5">{formatDate(n.created_at)}</p>
                     </div>
                     {!n.read && (
-                      <button
-                        onClick={() => markRead(n.id)}
-                        className="text-xs text-[var(--color-fg-muted)] hover:text-[var(--color-fg)] shrink-0 mt-0.5"
-                        title="Segna come letta"
-                      >
-                        ✓
-                      </button>
+                      <button onClick={() => markRead(n.id)} className="text-xs text-[var(--color-fg-muted)] hover:text-[var(--color-fg)] shrink-0 mt-0.5">✓</button>
                     )}
                   </div>
                 </li>
@@ -119,11 +126,7 @@ export function NotificationBell({ initial }: { initial: Notification[] }) {
           </ul>
 
           <div className="border-t border-[var(--color-border)] px-3 py-2">
-            <Link
-              href="/dashboard"
-              onClick={() => setOpen(false)}
-              className="text-xs text-[var(--color-fg-muted)] hover:text-[var(--color-fg)] transition-colors"
-            >
+            <Link href="/dashboard" onClick={() => setOpen(false)} className="text-xs text-[var(--color-fg-muted)] hover:text-[var(--color-fg)] transition-colors">
               Vedi tutte nella dashboard →
             </Link>
           </div>
