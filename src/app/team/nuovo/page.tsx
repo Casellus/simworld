@@ -65,9 +65,9 @@ export default function NuovoTeamPage() {
     if (logoFile) {
       const ext = logoFile.name.split(".").pop();
       const path = `${user.id}/${slug}.${ext}`;
-      const { error: upErr } = await supabase.storage.from("team-assets").upload(path, logoFile, { upsert: true });
+      const { error: upErr } = await supabase.storage.from("Team-assets").upload(path, logoFile, { upsert: true });
       if (upErr) { setError("Errore upload logo: " + upErr.message); setLoading(false); return; }
-      const { data: urlData } = supabase.storage.from("team-assets").getPublicUrl(path);
+      const { data: urlData } = supabase.storage.from("Team-assets").getPublicUrl(path);
       logo_url = urlData.publicUrl;
     }
 

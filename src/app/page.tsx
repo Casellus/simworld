@@ -69,78 +69,126 @@ export default async function Home() {
       {/* ── CINEMATIC HERO ── */}
       <section className="hero-fullscreen">
         <div className="relative z-10 mx-auto max-w-7xl px-4 sm:px-6 w-full">
-          {user ? (
-            <div className="max-w-4xl">
-              <div className="hero-title inline-flex items-center gap-2 px-3 py-1.5 rounded-full border border-[var(--color-border-strong)] bg-black/40 backdrop-blur-sm mb-6">
-                <span className="h-1.5 w-1.5 rounded-full bg-[var(--color-success)] animate-pulse" />
-                <span className="text-xs font-semibold text-[var(--color-fg-muted)]">In linea · pit lane attiva</span>
-              </div>
-              <h1 className="hero-title text-5xl md:text-7xl lg:text-8xl font-extrabold leading-[0.95] tracking-tight" style={{ fontFamily: "var(--font-heading)" }}>
-                Ciao,<br />
-                <span className="text-accent-glow">{displayName}.</span>
-              </h1>
-              <p className="hero-sub mt-6 text-lg md:text-xl text-[var(--color-fg-muted)] max-w-xl">
-                {featuredEvent ? (
-                  <>Il prossimo evento ti aspetta. <span className="text-[var(--color-fg)] font-semibold">{featuredEvent.title}</span> · {formatDate(featuredEvent.start_at)}</>
-                ) : (
-                  <>Carica un assetto, organizza una gara o trova nuovi compagni di squadra.</>
-                )}
-              </p>
-              <div className="hero-cta mt-10 flex flex-wrap gap-3">
-                <Link href="/dashboard">
-                  <Button size="lg">
-                    <LayoutDashboard className="h-4 w-4" /> Dashboard
-                  </Button>
-                </Link>
-                <Link href="/eventi">
-                  <Button size="lg" variant="outline">
-                    Esplora eventi <ArrowRight className="h-4 w-4" />
-                  </Button>
-                </Link>
-              </div>
+          <div className="flex flex-col lg:flex-row lg:items-center lg:gap-16">
+            {/* LEFT: copy */}
+            <div className="flex-1 min-w-0">
+              {user ? (
+                <>
+                  <div className="hero-title inline-flex items-center gap-2 px-3 py-1.5 rounded-full border border-[var(--color-border-strong)] bg-black/40 backdrop-blur-sm mb-6">
+                    <span className="h-1.5 w-1.5 rounded-full bg-[var(--color-success)] animate-pulse" />
+                    <span className="text-xs font-semibold text-[var(--color-fg-muted)]">In linea · pit lane attiva</span>
+                  </div>
+                  <h1 className="hero-title text-5xl md:text-7xl lg:text-8xl font-extrabold leading-[0.95] tracking-tight" style={{ fontFamily: "var(--font-heading)" }}>
+                    Ciao,<br />
+                    <span className="text-accent-glow">{displayName}.</span>
+                  </h1>
+                  <p className="hero-sub mt-6 text-lg md:text-xl text-[var(--color-fg-muted)] max-w-xl">
+                    Carica un assetto, organizza una gara o trova nuovi compagni di squadra.
+                  </p>
+                  <div className="hero-cta mt-10 flex flex-wrap gap-3">
+                    <Link href="/dashboard">
+                      <Button size="lg">
+                        <LayoutDashboard className="h-4 w-4" /> Dashboard
+                      </Button>
+                    </Link>
+                    <Link href="/eventi">
+                      <Button size="lg" variant="outline">
+                        Esplora eventi <ArrowRight className="h-4 w-4" />
+                      </Button>
+                    </Link>
+                  </div>
+                </>
+              ) : (
+                <>
+                  <div className="hero-title inline-flex items-center gap-2 px-3 py-1.5 rounded-full border border-[var(--color-border-strong)] bg-black/40 backdrop-blur-sm mb-6">
+                    <span className="text-xs font-semibold tracking-wide text-[var(--color-accent)]">SIM RACING ITALIA</span>
+                  </div>
+                  <h1 className="hero-title text-5xl md:text-7xl lg:text-8xl font-extrabold leading-[0.95] tracking-tight" style={{ fontFamily: "var(--font-heading)" }}>
+                    Tutte le piste.<br />
+                    <span className="text-accent-glow">Una community.</span>
+                  </h1>
+                  <p className="hero-sub mt-6 text-lg md:text-xl text-[var(--color-fg-muted)] max-w-xl">
+                    Tornei, team, assetti e guide per ACC, iRacing, Le Mans Ultimate, Assetto Corsa, AC EVO e F1 25.
+                  </p>
+                  <div className="hero-cta mt-10 flex flex-wrap gap-3">
+                    <Link href="/auth/register">
+                      <Button size="lg">
+                        Inizia ora <ArrowRight className="h-4 w-4" />
+                      </Button>
+                    </Link>
+                    <Link href="/eventi">
+                      <Button size="lg" variant="outline">
+                        Eventi attivi
+                      </Button>
+                    </Link>
+                  </div>
+                  <div className="hero-badges mt-12 flex flex-wrap gap-2">
+                    {GAMES.map((g) => (
+                      <span key={g.slug} className="px-3 py-1.5 rounded-full text-xs font-semibold border border-[var(--color-border-strong)] bg-black/30 text-[var(--color-fg-muted)] backdrop-blur-sm">
+                        {g.short}
+                      </span>
+                    ))}
+                  </div>
+                </>
+              )}
             </div>
-          ) : (
-            <div className="max-w-4xl">
-              <div className="hero-title inline-flex items-center gap-2 px-3 py-1.5 rounded-full border border-[var(--color-border-strong)] bg-black/40 backdrop-blur-sm mb-6">
-                <span className="text-xs font-semibold tracking-wide text-[var(--color-accent)]">SIM RACING ITALIA</span>
-              </div>
-              <h1 className="hero-title text-5xl md:text-7xl lg:text-8xl font-extrabold leading-[0.95] tracking-tight" style={{ fontFamily: "var(--font-heading)" }}>
-                Tutte le piste.<br />
-                <span className="text-accent-glow">Una community.</span>
-              </h1>
-              <p className="hero-sub mt-6 text-lg md:text-xl text-[var(--color-fg-muted)] max-w-2xl">
-                Tornei, team, assetti e guide per ACC, iRacing, Le Mans Ultimate, Assetto Corsa, AC EVO e F1 25.
-              </p>
-              <div className="hero-cta mt-10 flex flex-wrap gap-3">
-                <Link href="/auth/register">
-                  <Button size="lg">
-                    Inizia ora <ArrowRight className="h-4 w-4" />
-                  </Button>
+
+            {/* RIGHT: featured event card */}
+            <div className="hero-badges hidden lg:block flex-shrink-0 w-80">
+              {featuredEvent ? (
+                <Link href={`/eventi/${featuredEvent.slug}`} className="group block rounded-2xl border border-[var(--color-border-strong)] bg-black/50 backdrop-blur-md overflow-hidden hover:border-[var(--color-primary)] transition-colors">
+                  <div className="relative h-44 bg-gradient-to-br from-[#1a1a2e] to-[#0d0d12] overflow-hidden">
+                    {featuredEvent.banner_url ? (
+                      // eslint-disable-next-line @next/next/no-img-element
+                      <img src={featuredEvent.banner_url} alt={featuredEvent.title} className="h-full w-full object-cover opacity-70 group-hover:opacity-90 transition-opacity" />
+                    ) : (
+                      <div className="h-full w-full flex items-center justify-center">
+                        <Trophy className="h-12 w-12 text-[var(--color-primary)]/40" />
+                      </div>
+                    )}
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/80 to-transparent" />
+                    <div className="absolute bottom-3 left-3">
+                      <span className="px-2 py-1 rounded-full text-[10px] font-bold uppercase tracking-widest bg-[var(--color-primary)] text-white">
+                        Prossimo evento
+                      </span>
+                    </div>
+                  </div>
+                  <div className="p-4">
+                    <h3 className="font-bold text-base leading-tight mb-2 group-hover:text-[var(--color-primary)] transition-colors" style={{ fontFamily: "var(--font-heading)" }}>
+                      {featuredEvent.title}
+                    </h3>
+                    <div className="flex items-center gap-2 text-xs text-[var(--color-fg-muted)]">
+                      <Calendar className="h-3.5 w-3.5" />
+                      <span>{formatDate(featuredEvent.start_at)}</span>
+                    </div>
+                    {featuredEvent.track && (
+                      <p className="mt-1 text-xs text-[var(--color-fg-muted)]">📍 {featuredEvent.track}</p>
+                    )}
+                  </div>
                 </Link>
-                <Link href="/eventi">
-                  <Button size="lg" variant="outline">
-                    Eventi attivi
-                  </Button>
-                </Link>
-              </div>
-              <div className="hero-badges mt-12 flex flex-wrap gap-2">
-                {GAMES.map((g) => (
-                  <span key={g.slug} className="px-3 py-1.5 rounded-full text-xs font-semibold border border-[var(--color-border-strong)] bg-black/30 text-[var(--color-fg-muted)] backdrop-blur-sm">
-                    {g.short}
-                  </span>
-                ))}
-              </div>
+              ) : (
+                <div className="rounded-2xl border border-[var(--color-border-strong)] bg-black/40 backdrop-blur-md p-6">
+                  <p className="text-xs font-semibold tracking-widest uppercase text-[var(--color-accent)] mb-5">La community</p>
+                  <div className="space-y-4">
+                    <StatRow value={totalEvents ?? 0} label="eventi in programma" icon="🏁" />
+                    <StatRow value={totalTeams ?? 0} label="team registrati" icon="👥" />
+                    <StatRow value={totalSetups ?? 0} label="assetti condivisi" icon="⚙️" />
+                  </div>
+                </div>
+              )}
             </div>
-          )}
+          </div>
         </div>
 
-        {/* stats overlay bottom right */}
+        {/* stats overlay bottom — hide if featured event shown on right */}
         <div className="hidden lg:block absolute bottom-12 right-8 z-10">
-          <div className="flex gap-6 text-right">
-            <StatPill value={totalEvents ?? 0} label="Eventi" />
-            <StatPill value={totalTeams ?? 0} label="Team" />
-            <StatPill value={totalSetups ?? 0} label="Assetti" />
-          </div>
+          {!featuredEvent && (
+            <div className="flex gap-6 text-right">
+              <StatPill value={totalEvents ?? 0} label="Eventi" />
+              <StatPill value={totalTeams ?? 0} label="Team" />
+              <StatPill value={totalSetups ?? 0} label="Assetti" />
+            </div>
+          )}
         </div>
       </section>
 
@@ -378,6 +426,18 @@ function FeatureBlock({ icon: Icon, title, desc }: { icon: React.ComponentType<{
       </div>
       <h3 className="font-bold text-lg mb-2" style={{ fontFamily: "var(--font-heading)" }}>{title}</h3>
       <p className="text-sm text-[var(--color-fg-muted)] leading-relaxed">{desc}</p>
+    </div>
+  );
+}
+
+function StatRow({ value, label, icon }: { value: number; label: string; icon: string }) {
+  return (
+    <div className="flex items-center gap-3">
+      <span className="text-xl">{icon}</span>
+      <div>
+        <div className="text-2xl font-extrabold text-[var(--color-fg)]" style={{ fontFamily: "var(--font-heading)" }}>{value}</div>
+        <div className="text-[10px] font-semibold text-[var(--color-fg-muted)]">{label}</div>
+      </div>
     </div>
   );
 }

@@ -97,9 +97,9 @@ export default function ModificaTeamPage() {
       const logoFile = fileRef.current.files[0];
       const ext = logoFile.name.split(".").pop();
       const path = `${team.owner_id}/${team.slug}.${ext}`;
-      const { error: upErr } = await supabase.storage.from("team-assets").upload(path, logoFile, { upsert: true });
+      const { error: upErr } = await supabase.storage.from("Team-assets").upload(path, logoFile, { upsert: true });
       if (upErr) { setError("Errore upload logo: " + upErr.message); setLoading(false); return; }
-      const { data: urlData } = supabase.storage.from("team-assets").getPublicUrl(path);
+      const { data: urlData } = supabase.storage.from("Team-assets").getPublicUrl(path);
       logo_url = urlData.publicUrl;
     }
 
