@@ -52,6 +52,39 @@ export async function createRecruitmentPost(formData: FormData): Promise<void> {
   redirect("/cerca");
 }
 
+export async function updateRecruitmentPost(postId: string, formData: FormData): Promise<void> {
+  const supabase = await createClient();
+  const { data: { user } } = await supabase.auth.getUser();
+  if (!user) throw new Error("Non autorizzato");
+
+  const { data: post } = await supabase.from("recruitment_posts").select("user_id").eq("id", postId).single();
+  if (!post || post.user_id !== user.id) throw new Error("Non autorizzato");
+
+  const title = String(formData.get("title") || "").trim();
+  const description = String(formData.get("description") || "").trim();
+  const contact = String(formData.get("contact") || "").trim();
+  const game_slug = String(formData.get("game") || "");
+
+  if (!title || !description) throw new Error("Campi obbligatori mancanti.");
+
+  let game_id: string | null = null;
+  if (game_slug) {
+    const { data: g } = await supabase.from("games").select("id").eq("slug", game_slug).single();
+    if (g) game_id = g.id;
+  }
+
+  const { error } = await supabase.from("recruitment_posts").update({
+    title,
+    description,
+    contact: contact || null,
+    game_id,
+  }).eq("id", postId);
+  if (error) throw new Error(error.message);
+
+  revalidatePath("/cerca");
+  redirect("/cerca");
+}
+
 export async function deleteRecruitmentPost(postId: string): Promise<{ error?: string }> {
   const supabase = await createClient();
   const { data: { user } } = await supabase.auth.getUser();
@@ -60,8 +93,8 @@ export async function deleteRecruitmentPost(postId: string): Promise<{ error?: s
   const { data: post } = await supabase.from("recruitment_posts").select("id, user_id, team_id, teams(owner_id)").eq("id", postId).single();
   if (!post) return { error: "Post non trovato" };
 
-  // @ts-expect-error join
-  const isOwner = post.user_id === user.id || post.teams?.owner_id === user.id;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const isOwner = post.user_id === user.id || (post as any).teams?.owner_id === user.id;
   if (!isOwner) return { error: "Non autorizzato" };
 
   const { error } = await supabase.from("recruitment_posts").delete().eq("id", postId);

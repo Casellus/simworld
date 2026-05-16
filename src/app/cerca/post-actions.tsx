@@ -2,9 +2,10 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import Link from "next/link";
 import { Button } from "@/components/ui/button";
-import { Trash2, EyeOff } from "lucide-react";
-import { deleteRecruitmentPost, closeRecruitmentPost } from "./actions";
+import { Trash2, Pencil } from "lucide-react";
+import { deleteRecruitmentPost } from "./actions";
 
 export function PostActions({ postId }: { postId: string }) {
   const router = useRouter();
@@ -16,13 +17,6 @@ export function PostActions({ postId }: { postId: string }) {
     const res = await deleteRecruitmentPost(postId);
     if (res.error) { alert(res.error); setLoading(false); return; }
     router.refresh();
-  }
-
-  async function handleClose() {
-    setLoading(true);
-    await closeRecruitmentPost(postId);
-    router.refresh();
-    setLoading(false);
   }
 
   if (confirmDelete) {
@@ -39,9 +33,11 @@ export function PostActions({ postId }: { postId: string }) {
 
   return (
     <div className="flex items-center gap-1">
-      <Button variant="ghost" size="sm" onClick={handleClose} disabled={loading} title="Chiudi annuncio">
-        <EyeOff className="h-3 w-3" />
-      </Button>
+      <Link href={`/cerca/${postId}/modifica`}>
+        <Button variant="ghost" size="sm" title="Modifica annuncio">
+          <Pencil className="h-3 w-3" />
+        </Button>
+      </Link>
       <Button variant="danger" size="sm" onClick={() => setConfirmDelete(true)} title="Elimina">
         <Trash2 className="h-3 w-3" />
       </Button>
