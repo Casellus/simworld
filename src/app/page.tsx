@@ -68,6 +68,15 @@ export default async function Home() {
     <>
       {/* ── CINEMATIC HERO ── */}
       <section className="hero-fullscreen">
+        <video
+          className="hero-video"
+          src="/video-homepage.mp4"
+          autoPlay
+          muted
+          loop
+          playsInline
+        />
+        <div className="hero-video-overlay" />
         <div className="relative z-10 mx-auto max-w-7xl px-4 sm:px-6 w-full">
             <div className="flex flex-col items-center text-center">
               {user ? (
