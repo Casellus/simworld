@@ -101,16 +101,28 @@ export default async function EventDetailPage({ params }: { params: Promise<{ sl
             <CardBody>
               {participants && participants.length > 0 ? (
                 <ul className="space-y-2">
-                  {participants.map((p) => (
-                    <li key={p.id} className="flex items-center gap-3 text-sm">
-                      <div className="h-7 w-7 rounded-full bg-[var(--color-bg-elev-2)] border border-[var(--color-border)]" />
-                      <span>
-                        {/* @ts-expect-error join */}
-                        {p.profiles?.display_name || p.profiles?.username}
-                      </span>
-                      <Badge>{p.status}</Badge>
-                    </li>
-                  ))}
+                  {participants.map((p) => {
+                    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                    const profile = p.profiles as any;
+                    const name = profile?.display_name || profile?.username || "?";
+                    const avatar = profile?.avatar_url as string | null;
+                    return (
+                      <li key={p.id} className="flex items-center gap-3 text-sm">
+                        <div className="h-7 w-7 rounded-full bg-[var(--color-bg-elev-2)] border border-[var(--color-border)] overflow-hidden flex items-center justify-center shrink-0">
+                          {avatar ? (
+                            // eslint-disable-next-line @next/next/no-img-element
+                            <img src={avatar} alt={name} className="h-full w-full object-cover" />
+                          ) : (
+                            <span className="text-[10px] font-bold text-[var(--color-fg-muted)] uppercase">
+                              {name[0]}
+                            </span>
+                          )}
+                        </div>
+                        <span>{name}</span>
+                        <Badge>{p.status}</Badge>
+                      </li>
+                    );
+                  })}
                 </ul>
               ) : (
                 <p className="text-sm text-[var(--color-fg-muted)]">Nessun iscritto. Sii il primo!</p>
