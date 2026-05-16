@@ -3,24 +3,23 @@
 import { useState, useEffect } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Calendar, Users, Settings2, Search, BookOpen, X, Menu } from "lucide-react";
+import { X, Menu } from "lucide-react";
 
 const nav = [
-  { href: "/eventi", label: "Eventi", icon: Calendar },
-  { href: "/team", label: "Team", icon: Users },
-  { href: "/assetti", label: "Assetti", icon: Settings2 },
-  { href: "/cerca", label: "Cerca", icon: Search },
-  { href: "/guide", label: "Guide", icon: BookOpen },
+  { href: "/", label: "Home" },
+  { href: "/eventi", label: "Eventi" },
+  { href: "/team", label: "Team" },
+  { href: "/assetti", label: "Assetti" },
+  { href: "/cerca", label: "Cerca" },
+  { href: "/guide", label: "Guide" },
 ];
 
 export function MobileHamburger() {
   const [open, setOpen] = useState(false);
   const pathname = usePathname();
 
-  // chiudi su cambio pagina
   useEffect(() => { setOpen(false); }, [pathname]);
 
-  // blocca scroll body quando aperto
   useEffect(() => {
     document.body.style.overflow = open ? "hidden" : "";
     return () => { document.body.style.overflow = ""; };
@@ -29,85 +28,120 @@ export function MobileHamburger() {
   return (
     <>
       <button
-        onClick={() => setOpen((o) => !o)}
+        onClick={() => setOpen(true)}
         className="flex items-center justify-center h-9 w-9 rounded hover:bg-[var(--color-bg-elev)] transition-colors"
         aria-label="Menu"
       >
         <Menu className="h-6 w-6" />
       </button>
 
-      {open && (
-        <div
-          style={{
-            position: "fixed",
-            top: 0,
-            left: 0,
-            width: "100vw",
-            height: "100vh",
-            zIndex: 99999,
-            background: "#050507",
-            display: "flex",
-            flexDirection: "column",
-            alignItems: "center",
-            justifyContent: "center",
-            animation: "fadeIn 0.18s ease",
-          }}
-        >
+      {/* Backdrop */}
+      <div
+        onClick={() => setOpen(false)}
+        style={{
+          position: "fixed",
+          inset: 0,
+          zIndex: 998,
+          background: "rgba(0,0,0,0.55)",
+          backdropFilter: "blur(3px)",
+          opacity: open ? 1 : 0,
+          pointerEvents: open ? "auto" : "none",
+          transition: "opacity 0.3s ease",
+        }}
+      />
+
+      {/* Drawer */}
+      <div
+        style={{
+          position: "fixed",
+          top: 0,
+          left: 0,
+          height: "100dvh",
+          width: "min(300px, 80vw)",
+          zIndex: 999,
+          background: "#0d0d12",
+          borderRight: "1px solid rgba(255,255,255,0.07)",
+          boxShadow: "12px 0 40px rgba(0,0,0,0.5)",
+          display: "flex",
+          flexDirection: "column",
+          padding: "1.25rem 1.5rem 2rem",
+          transform: open ? "translateX(0)" : "translateX(-100%)",
+          transition: "transform 0.32s cubic-bezier(0.4, 0, 0.2, 1)",
+        }}
+      >
+        {/* Close button */}
+        <div style={{ display: "flex", justifyContent: "flex-end", marginBottom: "2.5rem" }}>
           <button
             onClick={() => setOpen(false)}
+            aria-label="Chiudi menu"
             style={{
-              position: "absolute",
-              top: 24,
-              right: 20,
-              background: "none",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              width: 42,
+              height: 42,
+              borderRadius: "50%",
+              background: "var(--primary)",
               border: "none",
-              color: "#f5f7fa",
+              color: "#fff",
               cursor: "pointer",
-              padding: 8,
+              flexShrink: 0,
             }}
-            aria-label="Chiudi"
           >
-            <X size={28} />
+            <X size={20} />
           </button>
-
-          <nav style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 8, width: "100%" }}>
-            {nav.map((n, i) => {
-              const active = pathname === n.href || pathname.startsWith(n.href + "/");
-              return (
-                <Link
-                  key={n.href}
-                  href={n.href}
-                  onClick={() => setOpen(false)}
-                  style={{
-                    display: "flex",
-                    alignItems: "center",
-                    gap: 16,
-                    padding: "16px 40px",
-                    width: "100%",
-                    maxWidth: 320,
-                    borderRadius: 12,
-                    textDecoration: "none",
-                    fontSize: 20,
-                    fontWeight: 700,
-                    fontFamily: "var(--font-heading)",
-                    color: active ? "#2e7dff" : "#f5f7fa",
-                    background: active ? "rgba(46,125,255,0.12)" : "transparent",
-                    animation: `slideUp 0.2s ease ${i * 0.05}s both`,
-                  }}
-                >
-                  <n.icon size={24} />
-                  {n.label}
-                </Link>
-              );
-            })}
-          </nav>
-
-          <style>{`
-            @keyframes fadeIn { from { opacity:0 } to { opacity:1 } }
-            @keyframes slideUp { from { opacity:0; transform:translateY(16px) } to { opacity:1; transform:translateY(0) } }
-          `}</style>
         </div>
-      )}
+
+        {/* Nav links */}
+        <nav style={{ flex: 1, display: "flex", flexDirection: "column", gap: "0.25rem" }}>
+          {nav.map((n) => {
+            const active = n.href === "/"
+              ? pathname === "/"
+              : pathname === n.href || pathname.startsWith(n.href + "/");
+            return (
+              <Link
+                key={n.href}
+                href={n.href}
+                onClick={() => setOpen(false)}
+                style={{
+                  display: "block",
+                  padding: "13px 16px",
+                  borderRadius: 12,
+                  textDecoration: "none",
+                  fontSize: 19,
+                  fontWeight: 700,
+                  fontFamily: "var(--font-heading)",
+                  color: active ? "var(--primary)" : "#f5f7fa",
+                  background: active ? "rgba(46,125,255,0.10)" : "transparent",
+                  transition: "background 0.15s ease, color 0.15s ease",
+                }}
+              >
+                {n.label}
+              </Link>
+            );
+          })}
+        </nav>
+
+        {/* Bottom CTA */}
+        <Link
+          href="/auth/register"
+          onClick={() => setOpen(false)}
+          style={{
+            display: "block",
+            textAlign: "center",
+            padding: "13px 24px",
+            borderRadius: 9999,
+            textDecoration: "none",
+            fontSize: 15,
+            fontWeight: 700,
+            fontFamily: "var(--font-heading)",
+            background: "var(--primary)",
+            color: "#fff",
+          }}
+        >
+          Registrati
+        </Link>
+      </div>
     </>
   );
 }
