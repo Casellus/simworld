@@ -99,7 +99,7 @@ export default async function Home() {
                       </Button>
                     </Link>
                     <Link href="/eventi">
-                      <Button size="lg" variant="outline" className="px-8 py-4 text-base">
+                      <Button size="lg" variant="outline" className="px-8 py-4 text-base !bg-white/10 !border-white/30 backdrop-blur-sm hover:!bg-white/20">
                         Esplora eventi <ArrowRight className="h-5 w-5" />
                       </Button>
                     </Link>
@@ -124,7 +124,7 @@ export default async function Home() {
                       </Button>
                     </Link>
                     <Link href="/eventi">
-                      <Button size="lg" variant="outline" className="px-8 py-4 text-base">
+                      <Button size="lg" variant="outline" className="px-8 py-4 text-base !bg-white/10 !border-white/30 backdrop-blur-sm hover:!bg-white/20">
                         Eventi attivi
                       </Button>
                     </Link>
