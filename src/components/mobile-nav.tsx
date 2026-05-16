@@ -14,7 +14,7 @@ const nav = [
   { href: "/guide", label: "Guide" },
 ];
 
-export function MobileHamburger() {
+export function MobileHamburger({ isLoggedIn = false }: { isLoggedIn?: boolean }) {
   const [open, setOpen] = useState(false);
   const pathname = usePathname();
 
@@ -55,17 +55,17 @@ export function MobileHamburger() {
         style={{
           position: "fixed",
           top: 0,
-          left: 0,
+          right: 0,
           height: "100dvh",
           width: "min(300px, 80vw)",
           zIndex: 999,
           background: "#0d0d12",
-          borderRight: "1px solid rgba(255,255,255,0.07)",
-          boxShadow: "12px 0 40px rgba(0,0,0,0.5)",
+          borderLeft: "1px solid rgba(255,255,255,0.07)",
+          boxShadow: "-12px 0 40px rgba(0,0,0,0.5)",
           display: "flex",
           flexDirection: "column",
           padding: "1.25rem 1.5rem 2rem",
-          transform: open ? "translateX(0)" : "translateX(-100%)",
+          transform: open ? "translateX(0)" : "translateX(100%)",
           transition: "transform 0.32s cubic-bezier(0.4, 0, 0.2, 1)",
         }}
       >
@@ -124,7 +124,7 @@ export function MobileHamburger() {
 
         {/* Bottom CTA */}
         <Link
-          href="/auth/register"
+          href={isLoggedIn ? "/dashboard" : "/auth/register"}
           onClick={() => setOpen(false)}
           style={{
             display: "block",
@@ -139,7 +139,7 @@ export function MobileHamburger() {
             color: "#fff",
           }}
         >
-          Registrati
+          {isLoggedIn ? "Dashboard" : "Registrati"}
         </Link>
       </div>
     </>

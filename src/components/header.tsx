@@ -92,7 +92,7 @@ export async function Header() {
           </Link>
 
           <div className="flex justify-end w-20">
-            <MobileHamburger />
+            <MobileHamburger isLoggedIn={!!profile} />
           </div>
         </div>
 
