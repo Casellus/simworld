@@ -31,7 +31,7 @@ export function ResetPasswordForm() {
     const { error } = await supabase.auth.updateUser({ password });
     setLoading(false);
     if (error) { setError(error.message); return; }
-    router.push("/dashboard?reset=ok");
+    router.push("/");
   }
 
   return (

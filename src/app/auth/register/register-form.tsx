@@ -52,7 +52,7 @@ export function RegisterForm() {
     }
     setSuccess(true);
     setTimeout(() => {
-      router.push("/dashboard");
+      router.push("/");
       router.refresh();
     }, 1500);
   }
