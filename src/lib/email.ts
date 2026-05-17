@@ -50,12 +50,10 @@ export async function sendApplicationRejected({
   to,
   pilotName,
   teamName,
-  teamSlug,
 }: {
   to: string;
   pilotName: string;
   teamName: string;
-  teamSlug: string;
 }) {
   await resend.emails.send({
     from: FROM,

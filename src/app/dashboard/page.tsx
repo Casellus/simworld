@@ -3,7 +3,7 @@ import { requireProfile } from "@/lib/auth";
 import { createClient } from "@/lib/supabase/server";
 import { Card, CardBody, CardHeader, Badge } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Calendar, Users, Settings2, Plus, Settings, Bell } from "lucide-react";
+import { Calendar, Users, Settings2, Plus, Settings } from "lucide-react";
 import { NotificationsPanel } from "./notifications-panel";
 import { formatDate } from "@/lib/utils";
 

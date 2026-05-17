@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useRef } from "react";
+import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { createClient as createClientBrowser } from "@/lib/supabase/client";
 import { Button } from "@/components/ui/button";
@@ -104,7 +105,14 @@ export default function NuovoTeamPage() {
                   className="h-20 w-20 rounded-lg border-2 border-dashed border-[var(--color-border)] flex items-center justify-center cursor-pointer hover:border-[var(--color-primary)] transition-colors overflow-hidden shrink-0"
                 >
                   {preview ? (
-                    <img src={preview} alt="preview" className="h-full w-full object-cover" />
+                    <Image
+                      src={preview}
+                      alt="preview"
+                      width={80}
+                      height={80}
+                      unoptimized
+                      className="h-full w-full object-cover"
+                    />
                   ) : (
                     <Flag className="h-8 w-8 text-[var(--color-fg-muted)]" />
                   )}

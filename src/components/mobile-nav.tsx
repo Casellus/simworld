@@ -18,7 +18,12 @@ export function MobileHamburger({ isLoggedIn = false }: { isLoggedIn?: boolean }
   const [open, setOpen] = useState(false);
   const pathname = usePathname();
 
-  useEffect(() => { setOpen(false); }, [pathname]);
+  // Close the drawer on route change (incl. back/forward) without an effect.
+  const [prevPath, setPrevPath] = useState(pathname);
+  if (pathname !== prevPath) {
+    setPrevPath(pathname);
+    setOpen(false);
+  }
 
   useEffect(() => {
     document.body.style.overflow = open ? "hidden" : "";
@@ -56,11 +61,13 @@ export function MobileHamburger({ isLoggedIn = false }: { isLoggedIn?: boolean }
           position: "fixed",
           top: 0,
           right: 0,
-          height: "100dvh",
+          maxHeight: "100dvh",
+          overflowY: "auto",
           width: "min(300px, 80vw)",
           zIndex: 999,
           background: "#0d0d12",
           borderLeft: "1px solid rgba(255,255,255,0.07)",
+          borderBottomLeftRadius: 20,
           boxShadow: "-12px 0 40px rgba(0,0,0,0.5)",
           display: "flex",
           flexDirection: "column",
@@ -93,7 +100,7 @@ export function MobileHamburger({ isLoggedIn = false }: { isLoggedIn?: boolean }
         </div>
 
         {/* Nav links */}
-        <nav style={{ flex: 1, display: "flex", flexDirection: "column", gap: "0.25rem" }}>
+        <nav style={{ display: "flex", flexDirection: "column", gap: "0.25rem" }}>
           {nav.map((n) => {
             const active = n.href === "/"
               ? pathname === "/"
@@ -129,6 +136,9 @@ export function MobileHamburger({ isLoggedIn = false }: { isLoggedIn?: boolean }
           style={{
             display: "block",
             textAlign: "center",
+            marginTop: "1.75rem",
+            alignSelf: "center",
+            width: "100%",
             padding: "13px 24px",
             borderRadius: 9999,
             textDecoration: "none",

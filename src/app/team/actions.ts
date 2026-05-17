@@ -207,7 +207,6 @@ export async function updateApplication(applicationId: string, status: "accepted
         to: applicantEmail,
         pilotName,
         teamName: team.name,
-        teamSlug: team.slug,
       }).catch(() => {});
     }
   }

@@ -14,27 +14,33 @@ export const revalidate = 30;
 
 type SP = Promise<{ gioco?: string; tipo?: string }>;
 
-export default async function EventiPage({ searchParams }: { searchParams: SP }) {
-  const sp = await searchParams;
+async function fetchEvents(gioco?: string, tipo?: string) {
   const supabase = await createClient();
 
   // resolve game id without extra round-trip when no filter
   let gameId: string | null = null;
-  if (sp.gioco) {
-    const { data: g } = await supabase.from("games").select("id").eq("slug", sp.gioco).single();
+  if (gioco) {
+    const { data: g } = await supabase.from("games").select("id").eq("slug", gioco).single();
     gameId = g?.id ?? null;
   }
 
+  const sinceYesterday = new Date(Date.now() - 86_400_000).toISOString();
   let query = supabase
     .from("events")
     .select("id, slug, title, description, start_at, event_type, track, car_class, max_participants, banner_url, games(slug, name)")
-    .gte("start_at", new Date(Date.now() - 86_400_000).toISOString())
+    .gte("start_at", sinceYesterday)
     .order("start_at", { ascending: true });
 
   if (gameId) query = query.eq("game_id", gameId);
-  if (sp.tipo) query = query.eq("event_type", sp.tipo);
+  if (tipo) query = query.eq("event_type", tipo);
 
-  const { data: events } = await query;
+  const { data } = await query;
+  return data;
+}
+
+export default async function EventiPage({ searchParams }: { searchParams: SP }) {
+  const sp = await searchParams;
+  const events = await fetchEvents(sp.gioco, sp.tipo);
 
   return (
     <div className="mx-auto max-w-7xl px-4 sm:px-6 py-10">

@@ -1,5 +1,6 @@
 import Link from "next/link";
 import Image from "next/image";
+import { HeroVideo } from "@/components/hero-video";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/card";
 import { createClient } from "@/lib/supabase/server";
@@ -67,14 +68,7 @@ export default async function Home() {
     <>
       {/* ── CINEMATIC HERO ── */}
       <section className="hero-fullscreen">
-        <video
-          className="hero-video"
-          src="/video-homepage.mp4"
-          autoPlay
-          muted
-          loop
-          playsInline
-        />
+        <HeroVideo />
         <div className="hero-video-overlay" />
         <div className="relative z-10 mx-auto max-w-7xl px-4 sm:px-6 w-full">
             <div className="flex flex-col items-center text-center">
@@ -103,11 +97,11 @@ export default async function Home() {
               ) : (
                 <>
                   <h1 className="hero-title text-5xl md:text-7xl lg:text-8xl font-extrabold leading-[0.95] tracking-tight" style={{ fontFamily: "var(--font-heading)" }}>
-                    Tutte le piste.<br />
-                    <span className="text-accent-glow">Una community.</span>
+                    Benvenuto in<br />
+                    <span className="text-accent-glow">SimUniverse!</span>
                   </h1>
                   <p className="hero-sub mt-6 text-lg md:text-xl text-[var(--color-fg-muted)] max-w-xl">
-                    Tornei, team, assetti e guide per ACC, iRacing, Le Mans Ultimate, Assetto Corsa, AC EVO e F1 25.
+                    La community italiana del sim racing: organizza tornei, crea il tuo team, condividi assetti e guide per ACC, iRacing, Le Mans Ultimate, Assetto Corsa, AC EVO e F1 25. Trova compagni con cui correre e scendi in pista.
                   </p>
                   <div className="hero-cta mt-10 flex flex-wrap justify-center gap-4">
                     <Link href="/auth/register">

@@ -8,6 +8,7 @@ import { User, LogOut, LayoutDashboard, Settings } from "lucide-react";
 
 export function UserMenu({ profile }: { profile: { username: string; display_name: string | null; avatar_url: string | null } }) {
   const [open, setOpen] = useState(false);
+  const [avatarError, setAvatarError] = useState(false);
   const ref = useRef<HTMLDivElement>(null);
   const router = useRouter();
 
@@ -33,9 +34,15 @@ export function UserMenu({ profile }: { profile: { username: string; display_nam
         className="flex items-center gap-2 h-9 px-2 rounded hover:bg-[var(--color-bg-elev)] transition-colors"
       >
         <div className="h-7 w-7 rounded-full bg-[var(--color-primary)]/20 border border-[var(--color-primary)]/40 flex items-center justify-center overflow-hidden">
-          {profile.avatar_url ? (
+          {profile.avatar_url && !avatarError ? (
             // eslint-disable-next-line @next/next/no-img-element
-            <img src={profile.avatar_url} alt="" className="h-full w-full object-cover" />
+            <img
+              src={profile.avatar_url}
+              alt=""
+              className="h-full w-full object-cover"
+              referrerPolicy="no-referrer"
+              onError={() => setAvatarError(true)}
+            />
           ) : (
             <User className="h-4 w-4 text-[var(--color-primary)]" />
           )}
