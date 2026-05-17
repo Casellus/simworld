@@ -61,7 +61,7 @@ export default async function SetupDetailPage({ params }: { params: Promise<{ id
       {setup.photo_url && (
         <div className="mb-8 rounded-xl overflow-hidden max-h-80 w-full">
           {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img src={setup.photo_url} alt="" className="w-full object-cover" referrerPolicy="no-referrer" />
+          <img src={setup.photo_url} alt="" className="w-full object-cover" referrerPolicy="no-referrer" loading="eager" decoding="async" />
         </div>
       )}
 

@@ -77,7 +77,7 @@ export default async function AssettiPage({ searchParams }: { searchParams: SP }
                   {s.photo_url && (
                     <div className="w-full h-36 overflow-hidden">
                       {/* eslint-disable-next-line @next/next/no-img-element */}
-                      <img src={s.photo_url} alt="" className="w-full h-full object-cover" referrerPolicy="no-referrer" />
+                      <img src={s.photo_url} alt="" className="w-full h-full object-cover" referrerPolicy="no-referrer" loading="lazy" decoding="async" />
                     </div>
                   )}
                   <CardBody className="space-y-3">

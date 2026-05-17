@@ -319,7 +319,7 @@ function SetupCard({ setup }: { setup: SetupShape }) {
       <div className="media-image">
         {setup.photo_url ? (
           // eslint-disable-next-line @next/next/no-img-element
-          <img src={setup.photo_url} alt="" className="h-full w-full object-cover" referrerPolicy="no-referrer" />
+          <img src={setup.photo_url} alt="" className="h-full w-full object-cover" referrerPolicy="no-referrer" loading="lazy" decoding="async" />
         ) : (
           <div className="h-full w-full flex items-center justify-center">
             <Settings2 className="h-10 w-10 text-[var(--color-border-strong)]" />
