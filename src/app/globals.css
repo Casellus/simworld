@@ -239,10 +239,9 @@ main {
   overflow: hidden;
   background: var(--bg-elev);
   border: 1px solid var(--border);
-  transition: transform 0.25s ease, border-color 0.25s ease;
+  transition: border-color 0.25s ease;
 }
 .media-card:hover {
-  transform: translateY(-4px);
   border-color: var(--primary);
 }
 .media-card .media-image {
