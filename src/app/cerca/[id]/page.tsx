@@ -47,7 +47,11 @@ export default async function AnnuncioDetailPage({ params }: { params: Promise<{
               </Badge>
               {game?.name && <Badge>{game.name}</Badge>}
             </div>
-            {isOwner && <PostActions postId={post.id} />}
+            {isOwner && (
+              <div className="relative z-[2]">
+                <PostActions postId={post.id} />
+              </div>
+            )}
           </div>
 
           {/* Title */}

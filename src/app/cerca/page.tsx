@@ -72,8 +72,8 @@ export default async function CercaPage({ searchParams }: { searchParams: SP }) 
             const contactIsUrl = p.contact ? /^https?:\/\//i.test(p.contact.trim()) : false;
             return (
               <Card key={p.id} className="relative">
-                <Link href={`/cerca/${p.id}`} className="absolute inset-0 z-0" aria-label={p.title} />
-                <CardBody className="relative z-10 space-y-3">
+                <Link href={`/cerca/${p.id}`} className="absolute inset-0 z-[1]" aria-label={p.title} />
+                <CardBody className="space-y-3">
                   <div className="flex items-center justify-between gap-2 flex-wrap">
                     <div className="flex items-center gap-2 flex-wrap">
                       <Badge variant={p.post_type === "cerca_pilota" ? "accent" : "primary"}>
@@ -81,7 +81,11 @@ export default async function CercaPage({ searchParams }: { searchParams: SP }) 
                       </Badge>
                       {game?.name && <Badge>{game.name}</Badge>}
                     </div>
-                    {isOwner && <PostActions postId={p.id} />}
+                    {isOwner && (
+                      <div className="relative z-[2]">
+                        <PostActions postId={p.id} />
+                      </div>
+                    )}
                   </div>
                   <h3 className="font-bold text-lg">{p.title}</h3>
                   <p className="text-sm text-[var(--color-fg-muted)] line-clamp-3">{p.description}</p>
