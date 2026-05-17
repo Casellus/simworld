@@ -1,4 +1,5 @@
 import Link from "next/link";
+import Image from "next/image";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/card";
 import { createClient } from "@/lib/supabase/server";
@@ -6,8 +7,6 @@ import { GAMES } from "@/lib/constants";
 import { formatDate } from "@/lib/utils";
 import { one } from "@/lib/types";
 import { Calendar, Users, Settings2, Search, ArrowRight, Plus, LayoutDashboard, Trophy, ChevronRight } from "lucide-react";
-
-export const dynamic = "force-dynamic";
 
 export default async function Home() {
   const supabase = await createClient();
@@ -280,8 +279,13 @@ function EventCard({ event }: { event: EventShape }) {
     <Link href={`/eventi/${event.slug}`} className="media-card block group">
       <div className="media-image">
         {event.banner_url ? (
-          // eslint-disable-next-line @next/next/no-img-element
-          <img src={event.banner_url} alt={event.title} className="h-full w-full object-cover" />
+          <Image
+            src={event.banner_url}
+            alt={event.title}
+            fill
+            sizes="(max-width: 768px) 80vw, 360px"
+            className="object-cover"
+          />
         ) : (
           <div className="h-full w-full flex items-center justify-center">
             <Calendar className="h-10 w-10 text-[var(--color-border-strong)]" />

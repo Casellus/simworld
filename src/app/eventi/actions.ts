@@ -129,6 +129,7 @@ export async function joinEvent(eventId: string) {
   });
   if (error) return { error: error.message };
   revalidatePath("/eventi");
+  revalidatePath("/eventi/[slug]", "page");
   return { ok: true };
 }
 
@@ -146,5 +147,6 @@ export async function leaveEvent(eventId: string) {
     .eq("user_id", user.id);
   if (error) return { error: error.message };
   revalidatePath("/eventi");
+  revalidatePath("/eventi/[slug]", "page");
   return { ok: true };
 }

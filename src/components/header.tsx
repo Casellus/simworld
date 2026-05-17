@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { createClient } from "@/lib/supabase/server";
+import { getProfile } from "@/lib/auth";
 import { Button } from "@/components/ui/button";
 import { UserMenu } from "@/components/user-menu";
 import { NotificationBell } from "@/components/notification-bell";
@@ -7,18 +7,7 @@ import { MobileHamburger } from "@/components/mobile-nav";
 import { Calendar, Users, Settings2, Search, BookOpen } from "lucide-react";
 
 export async function Header() {
-  const supabase = await createClient();
-  const { data: { user } } = await supabase.auth.getUser();
-
-  let profile = null;
-  if (user) {
-    const { data } = await supabase
-      .from("profiles")
-      .select("username, display_name, avatar_url")
-      .eq("id", user.id)
-      .single();
-    profile = data;
-  }
+  const profile = await getProfile();
 
   const nav = [
     { href: "/eventi", label: "Eventi", icon: Calendar },

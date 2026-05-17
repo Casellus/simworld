@@ -1,4 +1,5 @@
 import Link from "next/link";
+import Image from "next/image";
 import { createClient } from "@/lib/supabase/server";
 import { Card, CardBody, Badge } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -69,8 +70,15 @@ export default async function EventiPage({ searchParams }: { searchParams: SP })
             <Link key={e.id} href={`/eventi/${e.slug}`}>
               <Card className="h-full hover:border-[var(--color-primary)] transition-colors overflow-hidden">
                 {e.banner_url && (
-                  // eslint-disable-next-line @next/next/no-img-element
-                  <img src={e.banner_url} alt="" className="w-full h-36 object-cover" />
+                  <div className="relative w-full h-36">
+                    <Image
+                      src={e.banner_url}
+                      alt=""
+                      fill
+                      sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw"
+                      className="object-cover"
+                    />
+                  </div>
                 )}
                 <CardBody className="space-y-3">
                   <div className="flex items-center gap-2 flex-wrap">

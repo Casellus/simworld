@@ -2,13 +2,11 @@
 
 import { useTransition } from "react";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
 import { joinEvent, leaveEvent } from "../actions";
 import { Button } from "@/components/ui/button";
 
 export function JoinButton({ eventId, isJoined, isLogged }: { eventId: string; isJoined: boolean; isLogged: boolean }) {
   const [pending, start] = useTransition();
-  const router = useRouter();
 
   if (!isLogged) {
     return (
@@ -22,7 +20,6 @@ export function JoinButton({ eventId, isJoined, isLogged }: { eventId: string; i
     start(async () => {
       if (isJoined) await leaveEvent(eventId);
       else await joinEvent(eventId);
-      router.refresh();
     });
   }
 
