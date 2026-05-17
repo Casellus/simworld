@@ -1,12 +1,74 @@
 <svg width="64" height="64" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
   <defs>
-    <linearGradient id="g" x1="8" y1="10" x2="56" y2="54" gradientUnits="userSpaceOnUse">
-      <stop stop-color="#2e7dff"/>
-      <stop offset="1" stop-color="#00e0ff"/>
+    <linearGradient id="bg-grad" x1="0" y1="0" x2="64" y2="64" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#0a0a14"/>
+      <stop offset="1" stop-color="#0d0d20"/>
     </linearGradient>
+    <radialGradient id="planet-grad" cx="50%" cy="38%" r="50%" gradientUnits="objectBoundingBox">
+      <stop stop-color="#1a6fff"/>
+      <stop offset="0.55" stop-color="#0d3fa8"/>
+      <stop offset="1" stop-color="#071d5c"/>
+    </radialGradient>
+    <radialGradient id="planet-shine" cx="35%" cy="30%" r="40%" gradientUnits="objectBoundingBox">
+      <stop stop-color="#5aaeff" stop-opacity="0.5"/>
+      <stop offset="1" stop-color="#5aaeff" stop-opacity="0"/>
+    </radialGradient>
+    <linearGradient id="ring-grad" x1="10" y1="36" x2="54" y2="32" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#ff9a00"/>
+      <stop offset="0.5" stop-color="#ffd166"/>
+      <stop offset="1" stop-color="#ff6b00"/>
+    </linearGradient>
+    <filter id="glow-ring" x="-30%" y="-30%" width="160%" height="160%">
+      <feGaussianBlur stdDeviation="1.2" result="blur"/>
+      <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+    <filter id="glow-car" x="-40%" y="-40%" width="180%" height="180%">
+      <feGaussianBlur stdDeviation="0.8" result="blur"/>
+      <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+    <clipPath id="ring-back">
+      <ellipse cx="32" cy="34" rx="21" ry="7" transform="rotate(-14 32 34)"/>
+    </clipPath>
   </defs>
-  <rect width="64" height="64" rx="16" fill="#0d0d12"/>
-  <ellipse cx="32" cy="32" rx="22" ry="11" transform="rotate(-32 32 32)" stroke="url(#g)" stroke-width="4.2"/>
-  <path d="M15 44 L34 18" stroke="url(#g)" stroke-width="5.6" stroke-linecap="round"/>
-  <circle cx="41" cy="23" r="5.4" fill="url(#g)"/>
+
+  <!-- Background tile -->
+  <rect width="64" height="64" rx="14" fill="url(#bg-grad)"/>
+
+  <!-- Ring back half (behind planet) -->
+  <ellipse cx="32" cy="34" rx="21" ry="7" transform="rotate(-14 32 34)"
+    stroke="url(#ring-grad)" stroke-width="2.6" fill="none" opacity="0.55"
+    stroke-dasharray="33 100" stroke-dashoffset="-33"
+    filter="url(#glow-ring)"/>
+
+  <!-- Planet sphere -->
+  <circle cx="32" cy="28" r="13.5" fill="url(#planet-grad)"/>
+  <!-- Shine overlay -->
+  <circle cx="32" cy="28" r="13.5" fill="url(#planet-shine)"/>
+  <!-- Surface detail line 1 -->
+  <ellipse cx="32" cy="28" rx="13.5" ry="5.5" transform="rotate(-25 32 28)"
+    stroke="#3a7fff" stroke-width="0.7" fill="none" opacity="0.35"/>
+  <!-- Surface detail line 2 -->
+  <ellipse cx="32" cy="28" rx="13.5" ry="8" transform="rotate(10 32 28)"
+    stroke="#3a7fff" stroke-width="0.5" fill="none" opacity="0.25"/>
+
+  <!-- Ring front half (in front of planet) -->
+  <ellipse cx="32" cy="34" rx="21" ry="7" transform="rotate(-14 32 34)"
+    stroke="url(#ring-grad)" stroke-width="2.6" fill="none"
+    stroke-dasharray="33 100" stroke-dashoffset="0"
+    filter="url(#glow-ring)"/>
+
+  <!-- Racing car silhouette (bottom-right, small, white/cyan) -->
+  <g filter="url(#glow-car)" transform="translate(38,44) rotate(-14)">
+    <!-- Car body -->
+    <rect x="0" y="2" width="14" height="4" rx="2" fill="#00e0ff"/>
+    <!-- Cockpit bubble -->
+    <ellipse cx="5.5" cy="2" rx="3.5" ry="1.8" fill="#00e0ff" opacity="0.85"/>
+    <!-- Front wing -->
+    <rect x="11" y="3.5" width="4" height="1.5" rx="0.5" fill="#00e0ff"/>
+    <!-- Rear wing -->
+    <rect x="-1" y="1.5" width="3" height="1.2" rx="0.4" fill="#00e0ff"/>
+    <!-- Wheels -->
+    <circle cx="2.2" cy="6.2" r="1.6" fill="#0a0a14" stroke="#00e0ff" stroke-width="0.7"/>
+    <circle cx="11.8" cy="6.2" r="1.6" fill="#0a0a14" stroke="#00e0ff" stroke-width="0.7"/>
+  </g>
 </svg>
