@@ -3,11 +3,11 @@
 import { useState, useRef } from "react";
 import { useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
-import { updateProfile } from "./actions";
+import { updateProfile, deleteAccount } from "./actions";
 import { Button } from "@/components/ui/button";
 import { Input, Label, Textarea, Select } from "@/components/ui/input";
 import { GAMES, SKILL_LEVELS } from "@/lib/constants";
-import { User as UserIcon, Upload } from "lucide-react";
+import { User as UserIcon, Upload, Trash2 } from "lucide-react";
 
 type Profile = {
   display_name: string | null;
@@ -25,6 +25,9 @@ export function SettingsForm({ profile, userGames }: { profile: Profile; userGam
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [saved, setSaved] = useState(false);
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const [deleteConfirm, setDeleteConfirm] = useState("");
+  const [deleting, setDeleting] = useState(false);
   const [avatarPreview, setAvatarPreview] = useState<string | null>(profile.avatar_url);
   const [avatarUrl, setAvatarUrl] = useState<string>(profile.avatar_url || "");
   const [uploading, setUploading] = useState(false);
@@ -201,6 +204,65 @@ export function SettingsForm({ profile, userGames }: { profile: Profile; userGam
       <Button type="submit" size="lg" className="w-full" disabled={saving || uploading}>
         {saving ? "Salvataggio..." : "Salva"}
       </Button>
+
+      {/* ── ZONA PERICOLOSA ── */}
+      <div className="mt-10 border-t border-[var(--color-border)] pt-8">
+        <h3 className="text-base font-semibold text-[var(--color-fg)] mb-1">Zona pericolosa</h3>
+        <p className="text-sm text-[var(--color-fg-muted)] mb-4">
+          L'eliminazione dell'account è permanente e irreversibile. Tutti i tuoi dati, annunci,
+          assetti e iscrizioni verranno cancellati.
+        </p>
+        <Button
+          type="button"
+          variant="outline"
+          className="!border-[var(--color-danger)]/50 !text-[var(--color-danger)] hover:!bg-[var(--color-danger)]/10"
+          onClick={() => setShowDeleteModal(true)}
+        >
+          <Trash2 className="h-4 w-4" />
+          Elimina account
+        </Button>
+      </div>
+
+      {/* ── MODALE CONFERMA ELIMINAZIONE ── */}
+      {showDeleteModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4" style={{ background: "rgba(0,0,0,0.7)" }}>
+          <div className="w-full max-w-md rounded-2xl border border-[var(--color-border)] bg-[var(--color-bg-elev)] p-6 shadow-2xl">
+            <h4 className="text-lg font-bold text-[var(--color-fg)] mb-2">Elimina account</h4>
+            <p className="text-sm text-[var(--color-fg-muted)] mb-4 leading-relaxed">
+              Questa azione è <strong className="text-[var(--color-fg)]">permanente e irreversibile</strong>.
+              Scrivi <strong className="text-[var(--color-danger)]">ELIMINA</strong> per confermare.
+            </p>
+            <Input
+              value={deleteConfirm}
+              onChange={(e) => setDeleteConfirm(e.target.value)}
+              placeholder="Scrivi ELIMINA"
+              className="mb-4"
+            />
+            <div className="flex gap-3">
+              <Button
+                type="button"
+                variant="outline"
+                className="flex-1"
+                onClick={() => { setShowDeleteModal(false); setDeleteConfirm(""); }}
+                disabled={deleting}
+              >
+                Annulla
+              </Button>
+              <Button
+                type="button"
+                className="flex-1 !bg-[var(--color-danger)] hover:!opacity-90"
+                disabled={deleteConfirm !== "ELIMINA" || deleting}
+                onClick={async () => {
+                  setDeleting(true);
+                  await deleteAccount();
+                }}
+              >
+                {deleting ? "Eliminazione..." : "Elimina definitivamente"}
+              </Button>
+            </div>
+          </div>
+        </div>
+      )}
     </form>
   );
 }

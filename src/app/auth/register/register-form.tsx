@@ -13,6 +13,8 @@ export function RegisterForm() {
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
+  const [acceptedTerms, setAcceptedTerms] = useState(false);
+  const [acceptedAge, setAcceptedAge] = useState(false);
 
   async function register(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
@@ -25,6 +27,11 @@ export function RegisterForm() {
 
     if (username.length < 3) {
       setError("Username deve avere almeno 3 caratteri (a-z, 0-9, _).");
+      setLoading(false);
+      return;
+    }
+    if (!acceptedAge || !acceptedTerms) {
+      setError("Devi confermare età e accettare i Termini per continuare.");
       setLoading(false);
       return;
     }
@@ -130,8 +137,39 @@ export function RegisterForm() {
             </button>
           </div>
         </div>
+        <div className="space-y-3 pt-1">
+          <label className="flex items-start gap-3 cursor-pointer">
+            <input
+              type="checkbox"
+              checked={acceptedAge}
+              onChange={(e) => setAcceptedAge(e.target.checked)}
+              className="mt-0.5 shrink-0 accent-[var(--color-primary)]"
+            />
+            <span className="text-sm" style={{ color: "rgba(255,255,255,0.8)" }}>
+              Confermo di avere almeno <strong className="text-white">16 anni</strong>.
+            </span>
+          </label>
+          <label className="flex items-start gap-3 cursor-pointer">
+            <input
+              type="checkbox"
+              checked={acceptedTerms}
+              onChange={(e) => setAcceptedTerms(e.target.checked)}
+              className="mt-0.5 shrink-0 accent-[var(--color-primary)]"
+            />
+            <span className="text-sm" style={{ color: "rgba(255,255,255,0.8)" }}>
+              Ho letto e accetto i{" "}
+              <a href="/info/termini" target="_blank" className="text-[var(--color-primary)] underline underline-offset-2">
+                Termini di Servizio
+              </a>{" "}
+              e la{" "}
+              <a href="/info/privacy" target="_blank" className="text-[var(--color-primary)] underline underline-offset-2">
+                Privacy Policy
+              </a>.
+            </span>
+          </label>
+        </div>
         {error && <p className="text-sm text-[var(--color-danger)]">{error}</p>}
-        <Button type="submit" className="w-full" disabled={loading}>
+        <Button type="submit" className="w-full" disabled={loading || !acceptedTerms || !acceptedAge}>
           {loading ? "Caricamento..." : "Crea account"}
         </Button>
       </form>

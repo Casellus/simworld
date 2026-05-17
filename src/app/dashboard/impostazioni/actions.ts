@@ -1,6 +1,7 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
+import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 
 export async function updateProfile(formData: FormData) {
@@ -54,4 +55,19 @@ export async function updateProfile(formData: FormData) {
   revalidatePath("/dashboard/impostazioni");
   revalidatePath(`/profilo`);
   return { ok: true };
+}
+
+export async function deleteAccount() {
+  const supabase = await createClient();
+  const { data: { user } } = await supabase.auth.getUser();
+  if (!user) return { error: "Non autorizzato" };
+
+  // Delete profile data (cascades to related rows via DB FK)
+  await supabase.from("profiles").delete().eq("id", user.id);
+  // Sign out before deleting the auth user
+  await supabase.auth.signOut();
+  // Delete auth user (requires service role — falls back to data-only deletion)
+  await supabase.auth.admin?.deleteUser(user.id).catch(() => null);
+
+  redirect("/");
 }

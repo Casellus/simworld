@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import Link from "next/link";
 import { createClient } from "@/lib/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Input, Label } from "@/components/ui/input";
@@ -93,6 +94,11 @@ export function LoginForm() {
             >
               {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
             </button>
+          </div>
+          <div className="flex justify-end mt-1">
+            <Link href="/auth/forgot-password" className="text-xs text-[var(--color-primary)] hover:underline">
+              Password dimenticata?
+            </Link>
           </div>
         </div>
         {error && <p className="text-sm text-[var(--color-danger)]">{error}</p>}
