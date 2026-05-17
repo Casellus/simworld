@@ -25,7 +25,7 @@ export default async function AssettiPage({ searchParams }: { searchParams: SP }
 
   let q = supabase
     .from("setups")
-    .select("id, title, car, track, conditions, downloads, rating_sum, rating_count, games(slug, name)")
+    .select("id, title, car, track, conditions, downloads, rating_sum, rating_count, photo_url, games(slug, name)")
     .order("created_at", { ascending: false })
     .limit(50);
 
@@ -73,7 +73,13 @@ export default async function AssettiPage({ searchParams }: { searchParams: SP }
             const game = one<{ name: string }>(s.games);
             return (
               <Link key={s.id} href={`/assetti/${s.id}`}>
-                <Card className="h-full hover:border-[var(--color-primary)] transition-colors">
+                <Card className="h-full hover:border-[var(--color-primary)] transition-colors overflow-hidden">
+                  {s.photo_url && (
+                    <div className="w-full h-36 overflow-hidden">
+                      {/* eslint-disable-next-line @next/next/no-img-element */}
+                      <img src={s.photo_url} alt="" className="w-full h-full object-cover" referrerPolicy="no-referrer" />
+                    </div>
+                  )}
                   <CardBody className="space-y-3">
                     <Badge>{game?.name}</Badge>
                     <h3 className="font-bold">{s.title}</h3>

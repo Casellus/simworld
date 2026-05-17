@@ -18,6 +18,7 @@ export async function createSetupRecord(formData: FormData): Promise<{ error?: s
     const conditions = (formData.get("conditions") as string || "").trim() || null;
     const notes = (formData.get("notes") as string || "").trim() || null;
     const file_url = (formData.get("file_url") as string || "") || null;
+    const photo_url = (formData.get("photo_url") as string || "") || null;
 
     if (!title || !game_slug || !car || !track) return { error: "Campi obbligatori mancanti." };
 
@@ -26,7 +27,7 @@ export async function createSetupRecord(formData: FormData): Promise<{ error?: s
 
     const { data: created, error: dbErr } = await supabase
       .from("setups")
-      .insert({ user_id: user.id, game_id: game.id, title, car, track, conditions, notes, file_url })
+      .insert({ user_id: user.id, game_id: game.id, title, car, track, conditions, notes, file_url, photo_url })
       .select("id")
       .single();
 
@@ -163,12 +164,13 @@ export async function updateSetup(setupId: string, formData: FormData): Promise<
   const track = String(formData.get("track") || "").trim();
   const conditions = String(formData.get("conditions") || "").trim();
   const notes = String(formData.get("notes") || "").trim();
+  const photo_url = String(formData.get("photo_url") || "").trim() || null;
 
   if (!title || !car || !track) return { error: "Campi obbligatori mancanti." };
 
   const { error } = await supabase
     .from("setups")
-    .update({ title, car, track, conditions: conditions || null, notes: notes || null })
+    .update({ title, car, track, conditions: conditions || null, notes: notes || null, photo_url })
     .eq("id", setupId);
 
   if (error) return { error: error.message };
