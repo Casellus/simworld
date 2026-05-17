@@ -29,7 +29,7 @@ export default async function Home() {
       .limit(6),
     supabase
       .from("setups")
-      .select("id, title, car, track, downloads, rating_sum, games(name, slug)")
+      .select("id, title, car, track, downloads, rating_sum, photo_url, games(name, slug)")
       .order("downloads", { ascending: false })
       .limit(6),
     supabase
@@ -308,6 +308,7 @@ type SetupShape = {
   track: string;
   downloads: number;
   rating_sum: number;
+  photo_url: string | null;
   games: { name: string; slug: string } | { name: string; slug: string }[];
 };
 
@@ -316,9 +317,14 @@ function SetupCard({ setup }: { setup: SetupShape }) {
   return (
     <Link href={`/assetti/${setup.id}`} className="media-card block group">
       <div className="media-image">
-        <div className="h-full w-full flex items-center justify-center">
-          <Settings2 className="h-10 w-10 text-[var(--color-border-strong)]" />
-        </div>
+        {setup.photo_url ? (
+          // eslint-disable-next-line @next/next/no-img-element
+          <img src={setup.photo_url} alt="" className="h-full w-full object-cover" referrerPolicy="no-referrer" />
+        ) : (
+          <div className="h-full w-full flex items-center justify-center">
+            <Settings2 className="h-10 w-10 text-[var(--color-border-strong)]" />
+          </div>
+        )}
         <div className="absolute top-3 left-3 z-10">
           {game?.name && <Badge variant="primary">{game.name}</Badge>}
         </div>
