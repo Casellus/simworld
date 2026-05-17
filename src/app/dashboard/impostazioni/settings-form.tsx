@@ -67,7 +67,7 @@ export function SettingsForm({ profile, userGames }: { profile: Profile; userGam
     if (upErr) { setError("Errore upload: " + upErr.message); setUploading(false); return; }
 
     const { data: urlData } = supabase.storage.from("avatars").getPublicUrl(path);
-    setAvatarUrl(urlData.publicUrl);
+    setAvatarUrl(`${urlData.publicUrl}?v=${Date.now()}`);
     setUploading(false);
   }
 

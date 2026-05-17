@@ -2,9 +2,10 @@ import { notFound } from "next/navigation";
 import Link from "next/link";
 import { createClient } from "@/lib/supabase/server";
 import { Card, CardBody, CardHeader, Badge } from "@/components/ui/card";
-import { User as UserIcon, MapPin, Cpu, Calendar, Settings2 } from "lucide-react";
+import { MapPin, Cpu, Calendar, Settings2 } from "lucide-react";
 import { formatDate } from "@/lib/utils";
 import { one } from "@/lib/types";
+import { ProfileAvatar } from "@/components/profile-avatar";
 
 export default async function ProfiloPage({ params }: { params: Promise<{ username: string }> }) {
   const { username } = await params;
@@ -40,12 +41,7 @@ export default async function ProfiloPage({ params }: { params: Promise<{ userna
     <div className="mx-auto max-w-5xl px-4 sm:px-6 py-10">
       <div className="flex flex-wrap items-start gap-6 mb-8">
         <div className="h-24 w-24 rounded-full bg-[var(--color-bg-elev-2)] border border-[var(--color-border)] flex items-center justify-center overflow-hidden">
-          {profile.avatar_url ? (
-            // eslint-disable-next-line @next/next/no-img-element
-            <img src={profile.avatar_url} alt="" className="h-full w-full object-cover" />
-          ) : (
-            <UserIcon className="h-10 w-10 text-[var(--color-primary)]" />
-          )}
+          <ProfileAvatar src={profile.avatar_url} />
         </div>
         <div className="flex-1">
           <h1 className="text-3xl md:text-4xl font-extrabold tracking-tight">
