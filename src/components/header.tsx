@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { Logo } from "@/components/logo";
 import { getProfile } from "@/lib/auth";
 import { Button } from "@/components/ui/button";
 import { UserMenu } from "@/components/user-menu";
@@ -23,11 +24,7 @@ export async function Header() {
 
         {/* DESKTOP */}
         <div className="hidden md:flex h-16 items-center justify-between gap-4">
-          <Link href="/" className="flex items-center gap-2 group">
-            <span className="text-lg font-extrabold tracking-tight" style={{ fontFamily: "var(--font-heading)" }}>
-              Sim<span className="text-[var(--color-primary)]">Universe</span>
-            </span>
-          </Link>
+          <Logo />
 
           <nav className="flex items-center gap-1">
             {nav.map((n) => (
@@ -74,10 +71,8 @@ export async function Header() {
             )}
           </div>
 
-          <Link href="/" className="flex items-center gap-1.5 group absolute left-1/2 -translate-x-1/2">
-            <span className="text-base font-extrabold tracking-tight" style={{ fontFamily: "var(--font-heading)" }}>
-              Sim<span className="text-[var(--color-primary)]">Universe</span>
-            </span>
+          <Link href="/" className="flex items-center group absolute left-1/2 -translate-x-1/2">
+            <Logo size="sm" href={null} />
           </Link>
 
           <div className="flex justify-end w-20">

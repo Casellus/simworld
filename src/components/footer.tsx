@@ -1,14 +1,13 @@
 import Link from "next/link";
+import { Logo } from "@/components/logo";
 
 export function Footer() {
   return (
     <footer className="border-t border-[var(--color-border)] bg-[var(--color-bg-elev)] mt-16">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 py-10 grid gap-8 md:grid-cols-4">
         <div>
-          <div className="flex items-center gap-2 mb-3">
-            <span className="text-lg font-extrabold tracking-tight" style={{ fontFamily: "var(--font-heading)" }}>
-              Sim<span className="text-[var(--color-primary)]">Universe</span>
-            </span>
+          <div className="mb-3">
+            <Logo href="/" />
           </div>
           <p className="text-sm text-[var(--color-fg-muted)]">
             Hub italiano del sim racing. Tornei, team, assetti, guide.
