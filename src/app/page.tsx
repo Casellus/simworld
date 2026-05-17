@@ -81,10 +81,6 @@ export default async function Home() {
             <div className="flex flex-col items-center text-center">
               {user ? (
                 <>
-                  <div className="hero-title inline-flex items-center gap-2 px-3 py-1.5 rounded-full border border-[var(--color-border-strong)] bg-black/40 backdrop-blur-sm mb-6">
-                    <span className="h-1.5 w-1.5 rounded-full bg-[var(--color-success)] animate-pulse" />
-                    <span className="text-xs font-semibold text-[var(--color-fg-muted)]">In linea · pit lane attiva</span>
-                  </div>
                   <h1 className="hero-title text-5xl md:text-7xl lg:text-8xl font-extrabold leading-[0.95] tracking-tight" style={{ fontFamily: "var(--font-heading)" }}>
                     Ciao,<br />
                     <span className="text-accent-glow">{displayName}.</span>
@@ -107,9 +103,6 @@ export default async function Home() {
                 </>
               ) : (
                 <>
-                  <div className="hero-title inline-flex items-center gap-2 px-3 py-1.5 rounded-full border border-[var(--color-border-strong)] bg-black/40 backdrop-blur-sm mb-6">
-                    <span className="text-xs font-semibold tracking-wide text-[var(--color-accent)]">SIM RACING ITALIA</span>
-                  </div>
                   <h1 className="hero-title text-5xl md:text-7xl lg:text-8xl font-extrabold leading-[0.95] tracking-tight" style={{ fontFamily: "var(--font-heading)" }}>
                     Tutte le piste.<br />
                     <span className="text-accent-glow">Una community.</span>
@@ -295,8 +288,8 @@ function EventCard({ event }: { event: EventShape }) {
           </div>
         )}
         <div className="absolute top-3 left-3 flex gap-2 z-10">
-          <Badge variant="primary">{event.event_type}</Badge>
-          {game?.name && <Badge>{game.name}</Badge>}
+          <Badge variant="primary" className="!bg-black/60 backdrop-blur-sm !border-white/20 !text-white">{event.event_type}</Badge>
+          {game?.name && <Badge className="!bg-black/60 backdrop-blur-sm !border-white/20 !text-white/80">{game.name}</Badge>}
         </div>
       </div>
       <div className="media-body">
