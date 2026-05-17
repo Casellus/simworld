@@ -77,8 +77,16 @@ export default async function ModificaAnnuncioPage({ params }: { params: Promise
             </div>
 
             <div>
-              <Label htmlFor="contact">Contatto (Discord, email)</Label>
-              <Input id="contact" name="contact" defaultValue={post.contact ?? ""} />
+              <Label htmlFor="contact">Contatto</Label>
+              <Input
+                id="contact"
+                name="contact"
+                defaultValue={post.contact ?? ""}
+                placeholder="es. https://discord.gg/invito, @username, email@esempio.com"
+              />
+              <p className="mt-1.5 text-xs text-[var(--color-fg-muted)]">
+                Inserisci un link (Discord, sito) o testo (username, email). I link saranno cliccabili.
+              </p>
             </div>
 
             <div className="flex gap-3">

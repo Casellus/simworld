@@ -3,7 +3,7 @@ import { createClient } from "@/lib/supabase/server";
 import { Card, CardBody, Badge } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { FilterChip } from "@/components/ui/filter-chip";
-import { Search, Plus, Mail } from "lucide-react";
+import { Search, Plus, Mail, ExternalLink } from "lucide-react";
 import { formatDate } from "@/lib/utils";
 import { GAMES } from "@/lib/constants";
 import { Suspense } from "react";
@@ -69,9 +69,11 @@ export default async function CercaPage({ searchParams }: { searchParams: SP }) 
             const gameArr = Array.isArray(p.games) ? p.games : p.games ? [p.games] : [];
             const game = gameArr[0] as { name: string; slug: string } | undefined;
             const isOwner = user && p.user_id === user.id;
+            const contactIsUrl = p.contact ? /^https?:\/\//i.test(p.contact.trim()) : false;
             return (
-              <Card key={p.id}>
-                <CardBody className="space-y-3">
+              <Card key={p.id} className="relative">
+                <Link href={`/cerca/${p.id}`} className="absolute inset-0 z-0" aria-label={p.title} />
+                <CardBody className="relative z-10 space-y-3">
                   <div className="flex items-center justify-between gap-2 flex-wrap">
                     <div className="flex items-center gap-2 flex-wrap">
                       <Badge variant={p.post_type === "cerca_pilota" ? "accent" : "primary"}>
@@ -82,15 +84,18 @@ export default async function CercaPage({ searchParams }: { searchParams: SP }) 
                     {isOwner && <PostActions postId={p.id} />}
                   </div>
                   <h3 className="font-bold text-lg">{p.title}</h3>
-                  <p className="text-sm text-[var(--color-fg-muted)] whitespace-pre-wrap">{p.description}</p>
+                  <p className="text-sm text-[var(--color-fg-muted)] line-clamp-3">{p.description}</p>
                   <div className="flex items-center justify-between pt-3 border-t border-[var(--color-border)] text-xs text-[var(--color-fg-muted)]">
                     <span>{formatDate(p.created_at)}</span>
+                    {p.contact && (
+                      <span className="flex items-center gap-1">
+                        {contactIsUrl
+                          ? <ExternalLink className="h-3 w-3 text-[var(--color-primary)]" />
+                          : <Mail className="h-3 w-3 text-[var(--color-primary)]" />}
+                        {contactIsUrl ? "Link disponibile" : p.contact}
+                      </span>
+                    )}
                   </div>
-                  {p.contact && (
-                    <div className="text-xs flex items-center gap-1.5 text-[var(--color-fg-muted)]">
-                      <Mail className="h-3 w-3 text-[var(--color-primary)]" /> {p.contact}
-                    </div>
-                  )}
                 </CardBody>
               </Card>
             );
