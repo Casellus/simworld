@@ -300,6 +300,84 @@ main {
   width: 100%;
 }
 
+/* ── INFO / PROSE PAGES ── */
+.prose-info h1 {
+  font-family: var(--font-heading);
+  font-size: 2.25rem;
+  font-weight: 800;
+  color: var(--color-fg);
+  margin-bottom: 0.5rem;
+  line-height: 1.15;
+}
+.prose-info .meta {
+  font-size: 0.85rem;
+  color: var(--color-fg-muted);
+  margin-bottom: 2.5rem;
+  padding-bottom: 1.5rem;
+  border-bottom: 1px solid var(--color-border);
+}
+.prose-info h2 {
+  font-family: var(--font-heading);
+  font-size: 1.2rem;
+  font-weight: 700;
+  color: var(--color-fg);
+  margin-top: 2.5rem;
+  margin-bottom: 0.75rem;
+}
+.prose-info p {
+  font-size: 0.95rem;
+  color: var(--color-fg-muted);
+  line-height: 1.75;
+  margin-bottom: 1rem;
+}
+.prose-info ul, .prose-info ol {
+  padding-left: 1.4rem;
+  margin-bottom: 1rem;
+}
+.prose-info li {
+  font-size: 0.95rem;
+  color: var(--color-fg-muted);
+  line-height: 1.75;
+  margin-bottom: 0.3rem;
+}
+.prose-info ul li { list-style: disc; }
+.prose-info ol li { list-style: decimal; }
+.prose-info a {
+  color: var(--color-primary);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+.prose-info strong { color: var(--color-fg); font-weight: 600; }
+.prose-info .highlight-box {
+  background: var(--color-bg-elev);
+  border: 1px solid var(--color-border);
+  border-left: 3px solid var(--color-primary);
+  border-radius: 8px;
+  padding: 1rem 1.25rem;
+  margin: 1.5rem 0;
+}
+.prose-info .highlight-box p { margin-bottom: 0; }
+.prose-info table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-bottom: 1.5rem;
+  font-size: 0.9rem;
+}
+.prose-info th {
+  text-align: left;
+  padding: 0.6rem 0.75rem;
+  background: var(--color-bg-elev);
+  color: var(--color-fg);
+  font-weight: 600;
+  border-bottom: 1px solid var(--color-border);
+}
+.prose-info td {
+  padding: 0.6rem 0.75rem;
+  color: var(--color-fg-muted);
+  border-bottom: 1px solid var(--color-border);
+  vertical-align: top;
+}
+
 /* ── FILTER CHIP TRANSITION ── */
 button, a {
   transition-property: color, background-color, border-color, box-shadow, transform, opacity;
