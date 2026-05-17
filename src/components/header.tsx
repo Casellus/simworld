@@ -18,7 +18,7 @@ export async function Header() {
   ];
 
   return (
-    <header className="sticky top-0 z-50 border-b border-[var(--color-border)] bg-[var(--color-bg)]/85 backdrop-blur-md">
+    <header className="sticky top-0 z-50 nav-glass">
       <div className="mx-auto max-w-7xl px-4 sm:px-6">
 
         {/* DESKTOP */}

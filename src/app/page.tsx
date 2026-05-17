@@ -101,7 +101,7 @@ export default async function Home() {
                     <span className="text-accent-glow">SimUniverse!</span>
                   </h1>
                   <p className="hero-sub mt-6 text-lg md:text-xl text-[var(--color-fg-muted)] max-w-xl">
-                    La community italiana del sim racing: organizza tornei, crea il tuo team, condividi assetti e guide per ACC, iRacing, Le Mans Ultimate, Assetto Corsa, AC EVO e F1 25. Trova compagni con cui correre e scendi in pista.
+                    La community italiana del sim racing: organizza tornei, crea il tuo team, condividi assetti e guide, trova compagni con cui correre e scendi in pista.
                   </p>
                   <div className="hero-cta mt-10 flex flex-wrap justify-center gap-4">
                     <Link href="/auth/register">
