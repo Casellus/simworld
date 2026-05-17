@@ -24,11 +24,11 @@ async function fetchEvents(gioco?: string, tipo?: string) {
     gameId = g?.id ?? null;
   }
 
-  const sinceYesterday = new Date(Date.now() - 86_400_000).toISOString();
+  const now = new Date().toISOString();
   let query = supabase
     .from("events")
-    .select("id, slug, title, description, start_at, event_type, track, car_class, max_participants, banner_url, games(slug, name)")
-    .gte("start_at", sinceYesterday)
+    .select("id, slug, title, description, start_at, end_at, event_type, track, car_class, max_participants, banner_url, games(slug, name)")
+    .or(`start_at.gte.${now},end_at.gte.${now}`)
     .order("start_at", { ascending: true });
 
   if (gameId) query = query.eq("game_id", gameId);
