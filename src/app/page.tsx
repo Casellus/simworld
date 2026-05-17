@@ -7,7 +7,7 @@ import { createClient } from "@/lib/supabase/server";
 import { GAMES } from "@/lib/constants";
 import { formatDate } from "@/lib/utils";
 import { one } from "@/lib/types";
-import { Calendar, Users, Settings2, Search, ArrowRight, Plus, LayoutDashboard, Trophy, ChevronRight } from "lucide-react";
+import { Calendar, Users, Settings2, ArrowRight, LayoutDashboard, Trophy, ChevronRight } from "lucide-react";
 
 export default async function Home() {
   const supabase = await createClient();
@@ -156,20 +156,6 @@ export default async function Home() {
         )}
       </Section>
 
-      {/* ── LOGGED IN QUICK ACTIONS ── */}
-      {user && (
-        <section className="border-t border-[var(--color-border)] bg-[var(--color-bg-elev)]/40">
-          <div className="mx-auto max-w-7xl px-4 sm:px-6 py-12">
-            <h2 className="text-xs font-semibold tracking-widest text-[var(--color-fg-muted)] uppercase mb-5">Azioni rapide</h2>
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
-              <QuickAction href="/eventi/nuovo" icon={Plus} label="Nuovo evento" />
-              <QuickAction href="/assetti/carica" icon={Settings2} label="Carica assetto" />
-              <QuickAction href={myTeam ? `/team/${myTeam.slug}` : "/team/nuovo"} icon={Users} label={myTeam ? "Il tuo team" : "Crea team"} />
-              <QuickAction href="/cerca/nuovo" icon={Search} label="Pubblica annuncio" />
-            </div>
-          </div>
-        </section>
-      )}
 
       {/* ── ASSETTI TOP ── */}
       <Section
@@ -364,16 +350,6 @@ function PostCard({ post }: { post: PostShape }) {
   );
 }
 
-function QuickAction({ href, icon: Icon, label }: { href: string; icon: React.ComponentType<{ className?: string }>; label: string }) {
-  return (
-    <Link href={href} className="group flex items-center gap-3 px-4 py-4 rounded-xl border border-[var(--color-border)] bg-[var(--color-bg-elev)] hover:border-[var(--color-primary)] hover:bg-[var(--color-bg-elev-2)] transition-all">
-      <div className="h-9 w-9 rounded-lg bg-[var(--color-primary)]/10 border border-[var(--color-primary)]/20 flex items-center justify-center group-hover:bg-[var(--color-primary)]/20 transition-colors">
-        <Icon className="h-4 w-4 text-[var(--color-primary)]" />
-      </div>
-      <span className="text-sm font-semibold">{label}</span>
-    </Link>
-  );
-}
 
 function FeatureBlock({ icon: Icon, title, desc }: { icon: React.ComponentType<{ className?: string }>; title: string; desc: string }) {
   return (
