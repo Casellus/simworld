@@ -325,7 +325,7 @@ function SetupCard({ setup }: { setup: SetupShape }) {
           </div>
         )}
         <div className="absolute top-3 left-3 z-10">
-          {game?.name && <Badge variant="primary">{game.name}</Badge>}
+          {game?.name && <Badge className="bg-black/60 backdrop-blur-sm border-white/20 text-white">{game.name}</Badge>}
         </div>
       </div>
       <div className="media-body">
