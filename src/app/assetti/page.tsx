@@ -1,4 +1,5 @@
 import Link from "next/link";
+import Image from "next/image";
 import { createClient } from "@/lib/supabase/server";
 import { Card, CardBody, Badge } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -75,9 +76,8 @@ export default async function AssettiPage({ searchParams }: { searchParams: SP }
               <Link key={s.id} href={`/assetti/${s.id}`}>
                 <Card className="h-full hover:border-[var(--color-primary)] transition-colors overflow-hidden">
                   {s.photo_url && (
-                    <div className="w-full h-36 overflow-hidden">
-                      {/* eslint-disable-next-line @next/next/no-img-element */}
-                      <img src={s.photo_url} alt="" className="w-full h-full object-cover" referrerPolicy="no-referrer" loading="lazy" decoding="async" />
+                    <div className="w-full h-36 overflow-hidden relative">
+                      <Image src={s.photo_url} alt="" fill sizes="(max-width: 768px) 100vw, 33vw" className="object-cover" />
                     </div>
                   )}
                   <CardBody className="space-y-3">

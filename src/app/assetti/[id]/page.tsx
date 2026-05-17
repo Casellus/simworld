@@ -1,5 +1,6 @@
 import { notFound } from "next/navigation";
 import Link from "next/link";
+import Image from "next/image";
 import { createClient } from "@/lib/supabase/server";
 import { Card, CardBody, CardHeader, Badge } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -59,9 +60,8 @@ export default async function SetupDetailPage({ params }: { params: Promise<{ id
       </Link>
 
       {setup.photo_url && (
-        <div className="mb-8 rounded-xl overflow-hidden max-h-80 w-full">
-          {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img src={setup.photo_url} alt="" className="w-full object-cover" referrerPolicy="no-referrer" loading="eager" decoding="async" />
+        <div className="mb-8 rounded-xl overflow-hidden w-full relative h-80">
+          <Image src={setup.photo_url} alt="" fill sizes="(max-width: 896px) 100vw, 896px" className="object-cover" priority />
         </div>
       )}
 

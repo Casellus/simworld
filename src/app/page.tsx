@@ -318,8 +318,7 @@ function SetupCard({ setup }: { setup: SetupShape }) {
     <Link href={`/assetti/${setup.id}`} className="media-card block group">
       <div className="media-image">
         {setup.photo_url ? (
-          // eslint-disable-next-line @next/next/no-img-element
-          <img src={setup.photo_url} alt="" className="h-full w-full object-cover" referrerPolicy="no-referrer" loading="lazy" decoding="async" />
+          <Image src={setup.photo_url} alt="" fill sizes="(max-width: 768px) 50vw, 25vw" className="object-cover" />
         ) : (
           <div className="h-full w-full flex items-center justify-center">
             <Settings2 className="h-10 w-10 text-[var(--color-border-strong)]" />
