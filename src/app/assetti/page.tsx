@@ -79,12 +79,7 @@ export default async function AssettiPage({ searchParams }: { searchParams: SP }
       </Suspense>
 
       {setups && setups.length > 0 ? (
-        <div className="stagger grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-          {setups.map((s) => {
-            const game = one<{ name: string }>(s.games);
-            return <SetupCard key={s.id} s={s} game={game} />;
-          })}
-        </div>
+        <GameGroups setups={setups} tipo={tipo} />
       ) : (
         <Card>
           <CardBody className="text-center py-16">
@@ -107,10 +102,50 @@ type S = {
   id: string; title: string; car: string | null; track: string | null;
   conditions: string | null; category: string | null; setup_type: string;
   downloads: number; rating_sum: number; photo_url: string | null;
-  games: { name: string } | { name: string }[];
+  games: { name: string; slug: string } | { name: string; slug: string }[];
 };
 
-function SetupCard({ s, game }: { s: S; game: { name: string } | null | undefined }) {
+function GameGroups({ setups, tipo }: { setups: S[]; tipo: string }) {
+  // Raggruppa per gioco preservando l'ordine di GAMES
+  const gameOrder = GAMES.map((g) => g.slug);
+  const groups = new Map<string, { name: string; slug: string; items: S[] }>();
+
+  for (const s of setups) {
+    const g = one<{ name: string; slug: string }>(s.games);
+    const slug = g?.slug ?? "altro";
+    const name = g?.name ?? "Altro";
+    if (!groups.has(slug)) groups.set(slug, { name, slug, items: [] });
+    groups.get(slug)!.items.push(s);
+  }
+
+  const sorted = [...groups.values()].sort((a, b) => {
+    const ia = gameOrder.indexOf(a.slug);
+    const ib = gameOrder.indexOf(b.slug);
+    return (ia === -1 ? 999 : ia) - (ib === -1 ? 999 : ib);
+  });
+
+  return (
+    <div className="space-y-10">
+      {sorted.map(({ name, slug, items }) => (
+        <section key={slug}>
+          <div className="flex items-center gap-3 mb-4">
+            {tipo === "simulatore"
+              ? <Cpu className="h-4 w-4 text-[var(--color-accent)]" />
+              : <Car className="h-4 w-4 text-[var(--color-primary)]" />}
+            <h2 className="text-lg font-bold tracking-tight">{name}</h2>
+            <span className="text-xs text-[var(--color-fg-muted)]">({items.length})</span>
+            <div className="flex-1 h-px bg-[var(--color-border)]" />
+          </div>
+          <div className="stagger grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+            {items.map((s) => <SetupCard key={s.id} s={s} game={one<{ name: string; slug: string }>(s.games)} />)}
+          </div>
+        </section>
+      ))}
+    </div>
+  );
+}
+
+function SetupCard({ s, game }: { s: S; game: { name: string; slug: string } | null | undefined }) {
   const catLabel = SIM_CATEGORIES.find((c) => c.value === s.category)?.label ?? s.category;
   return (
     <Link href={`/assetti/${s.id}`}>
