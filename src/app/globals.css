@@ -116,11 +116,7 @@ a { color: inherit; text-decoration: none; }
 
 /* ── PAGE TRANSITION ── */
 main {
-  animation: page-slide 0.2s ease both;
-}
-@keyframes page-slide {
-  from { transform: translateY(8px); }
-  to   { transform: translateY(0); }
+  animation: fade-in 0.2s ease both;
 }
 
 /* ── RACING STRIPE (animated) ── */
