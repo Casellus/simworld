@@ -158,11 +158,11 @@ export function RegisterForm() {
             />
             <span className="text-sm" style={{ color: "rgba(255,255,255,0.8)" }}>
               Ho letto e accetto i{" "}
-              <a href="/info/termini" target="_blank" className="text-[var(--color-primary)] underline underline-offset-2">
+              <a href="/info/termini" target="_blank" className="font-semibold underline underline-offset-2" style={{ color: "#60a5fa" }}>
                 Termini di Servizio
               </a>{" "}
               e la{" "}
-              <a href="/info/privacy" target="_blank" className="text-[var(--color-primary)] underline underline-offset-2">
+              <a href="/info/privacy" target="_blank" className="font-semibold underline underline-offset-2" style={{ color: "#60a5fa" }}>
                 Privacy Policy
               </a>.
             </span>
