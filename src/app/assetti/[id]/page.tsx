@@ -48,12 +48,6 @@ export default async function SetupDetailPage({ params }: { params: Promise<{ id
     myVote = data?.value || 0;
   }
 
-  const { data: comments } = await supabase
-    .from("setup_comments")
-    .select("id, body, created_at, user_id")
-    .eq("setup_id", id)
-    .order("created_at", { ascending: false });
-
   return (
     <div className="mx-auto max-w-4xl px-4 sm:px-6 py-10">
       <Link href="/assetti" className="text-sm text-[var(--color-fg-muted)] hover:text-[var(--color-fg)] mb-4 inline-block">
@@ -123,36 +117,26 @@ export default async function SetupDetailPage({ params }: { params: Promise<{ id
               <CardHeader>
                 <h2 className="text-sm font-bold">Note</h2>
               </CardHeader>
-              <CardBody>
-                <p className="whitespace-pre-wrap text-sm">{setup.notes}</p>
+              <CardBody className="relative">
+                {user ? (
+                  <p className="whitespace-pre-wrap text-sm">{setup.notes}</p>
+                ) : (
+                  <>
+                    <p className="whitespace-pre-wrap text-sm select-none blur-sm pointer-events-none" aria-hidden>
+                      {setup.notes}
+                    </p>
+                    <div className="absolute inset-0 flex flex-col items-center justify-center bg-[var(--color-bg-elev)]/70 backdrop-blur-[2px] rounded-b-xl gap-3">
+                      <p className="text-sm font-semibold text-[var(--color-fg)]">Accedi per leggere le note</p>
+                      <div className="flex gap-2">
+                        <Link href="/auth/login"><Button size="sm">Accedi</Button></Link>
+                        <Link href="/auth/register"><Button size="sm" variant="outline">Registrati</Button></Link>
+                      </div>
+                    </div>
+                  </>
+                )}
               </CardBody>
             </Card>
           )}
-
-          <Card>
-            <CardHeader>
-              <h2 className="text-sm font-bold">Commenti ({comments?.length || 0})</h2>
-            </CardHeader>
-            <CardBody>
-              {comments && comments.length > 0 ? (
-                <ul className="space-y-3">
-                  {comments.map((c) => (
-                    <li
-                      key={c.id}
-                      className="text-sm border-b border-[var(--color-border)] pb-3 last:border-0 last:pb-0"
-                    >
-                      <div className="text-xs text-[var(--color-fg-muted)] mb-1">
-                        {formatDate(c.created_at)}
-                      </div>
-                      <p className="whitespace-pre-wrap">{c.body}</p>
-                    </li>
-                  ))}
-                </ul>
-              ) : (
-                <p className="text-sm text-[var(--color-fg-muted)]">Nessun commento ancora.</p>
-              )}
-            </CardBody>
-          </Card>
         </div>
 
         <div className="space-y-4">
