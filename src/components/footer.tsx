@@ -31,9 +31,6 @@ const NAV = [
 export function Footer() {
   return (
     <footer className="mt-16">
-      {/* accent top line */}
-      <div className="h-px bg-gradient-to-r from-transparent via-[var(--color-primary)] to-transparent opacity-50" />
-
       <div className="bg-[var(--color-bg-elev)] border-t border-[var(--color-border)]">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 py-14">
           <div className="grid gap-10 sm:grid-cols-2 md:grid-cols-4">
