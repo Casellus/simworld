@@ -4,7 +4,8 @@ import Image from "next/image";
 import { createClient } from "@/lib/supabase/server";
 import { Card, CardBody, CardHeader, Badge } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Download, ThumbsUp, ThumbsDown, Car, MapPin, User as UserIcon, Pencil } from "lucide-react";
+import { Download, ThumbsUp, ThumbsDown, Car, MapPin, User as UserIcon, Pencil, Cpu } from "lucide-react";
+import { SIM_CATEGORIES } from "@/lib/constants";
 import { VoteButtons } from "./vote-buttons";
 import { DownloadButton } from "./download-button";
 import { SetupDeleteButton } from "./delete-button";
@@ -17,7 +18,7 @@ export default async function SetupDetailPage({ params }: { params: Promise<{ id
 
   const { data: setup } = await supabase
     .from("setups")
-    .select("*, games(name)")
+    .select("*, games(name), setup_type, category")
     .eq("id", id)
     .single();
 
@@ -99,9 +100,21 @@ export default async function SetupDetailPage({ params }: { params: Promise<{ id
         <div className="md:col-span-2 space-y-6">
           <Card>
             <CardBody className="grid grid-cols-2 gap-4">
-              <InfoRow icon={Car} label="Auto" value={setup.car} />
-              <InfoRow icon={MapPin} label="Tracciato" value={setup.track} />
-              {setup.conditions && <InfoRow icon={UserIcon} label="Condizioni" value={setup.conditions} />}
+              {setup.setup_type === "simulatore" ? (
+                setup.category && (
+                  <InfoRow
+                    icon={Cpu}
+                    label="Categoria"
+                    value={SIM_CATEGORIES.find((c) => c.value === setup.category)?.label ?? setup.category}
+                  />
+                )
+              ) : (
+                <>
+                  <InfoRow icon={Car} label="Auto" value={setup.car} />
+                  <InfoRow icon={MapPin} label="Tracciato" value={setup.track} />
+                  {setup.conditions && <InfoRow icon={UserIcon} label="Condizioni" value={setup.conditions} />}
+                </>
+              )}
             </CardBody>
           </Card>
 

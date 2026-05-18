@@ -15,6 +15,14 @@ export const EVENT_TYPES = [
   { value: "sprint", label: "Sprint" },
 ] as const;
 
+export const SIM_CATEGORIES = [
+  { value: "ffb",       label: "Force Feedback" },
+  { value: "grafica",   label: "Grafica" },
+  { value: "controlli", label: "Controlli" },
+  { value: "audio",     label: "Audio" },
+  { value: "generale",  label: "Generale" },
+] as const;
+
 export const SKILL_LEVELS = [
   { value: "principiante", label: "Principiante" },
   { value: "intermedio", label: "Intermedio" },

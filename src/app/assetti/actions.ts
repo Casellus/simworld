@@ -11,23 +11,26 @@ export async function createSetupRecord(formData: FormData): Promise<{ error?: s
     const { data: { user } } = await supabase.auth.getUser();
     if (!user) return { error: "Non autorizzato" };
 
-    const title = (formData.get("title") as string || "").trim();
-    const game_slug = formData.get("game") as string;
-    const car = (formData.get("car") as string || "").trim();
-    const track = (formData.get("track") as string || "").trim();
+    const setup_type = (formData.get("setup_type") as string || "auto").trim() as "auto" | "simulatore";
+    const title      = (formData.get("title") as string || "").trim();
+    const game_slug  = formData.get("game") as string;
+    const car        = (formData.get("car") as string || "").trim() || null;
+    const track      = (formData.get("track") as string || "").trim() || null;
     const conditions = (formData.get("conditions") as string || "").trim() || null;
-    const notes = (formData.get("notes") as string || "").trim() || null;
-    const file_url = (formData.get("file_url") as string || "") || null;
-    const photo_url = (formData.get("photo_url") as string || "") || null;
+    const category   = (formData.get("category") as string || "").trim() || null;
+    const notes      = (formData.get("notes") as string || "").trim() || null;
+    const file_url   = (formData.get("file_url") as string || "") || null;
+    const photo_url  = (formData.get("photo_url") as string || "") || null;
 
-    if (!title || !game_slug || !car || !track) return { error: "Campi obbligatori mancanti." };
+    if (!title || !game_slug) return { error: "Campi obbligatori mancanti." };
+    if (setup_type === "auto" && (!car || !track)) return { error: "Auto e tracciato sono obbligatori." };
 
     const { data: game } = await supabase.from("games").select("id").eq("slug", game_slug).single();
     if (!game) return { error: "Gioco non valido." };
 
     const { data: created, error: dbErr } = await supabase
       .from("setups")
-      .insert({ user_id: user.id, game_id: game.id, title, car, track, conditions, notes, file_url, photo_url })
+      .insert({ user_id: user.id, game_id: game.id, setup_type, title, car, track, conditions, category, notes, file_url, photo_url })
       .select("id")
       .single();
 
@@ -159,18 +162,23 @@ export async function updateSetup(setupId: string, formData: FormData): Promise<
   const { data: setup } = await supabase.from("setups").select("id, user_id").eq("id", setupId).single();
   if (!setup || setup.user_id !== user.id) return { error: "Non autorizzato" };
 
-  const title = String(formData.get("title") || "").trim();
-  const car = String(formData.get("car") || "").trim();
-  const track = String(formData.get("track") || "").trim();
-  const conditions = String(formData.get("conditions") || "").trim();
-  const notes = String(formData.get("notes") || "").trim();
-  const photo_url = String(formData.get("photo_url") || "").trim() || null;
+  const { data: existing } = await supabase.from("setups").select("setup_type").eq("id", setupId).single();
+  const setup_type = existing?.setup_type ?? "auto";
 
-  if (!title || !car || !track) return { error: "Campi obbligatori mancanti." };
+  const title      = String(formData.get("title") || "").trim();
+  const car        = String(formData.get("car") || "").trim() || null;
+  const track      = String(formData.get("track") || "").trim() || null;
+  const conditions = String(formData.get("conditions") || "").trim() || null;
+  const category   = String(formData.get("category") || "").trim() || null;
+  const notes      = String(formData.get("notes") || "").trim() || null;
+  const photo_url  = String(formData.get("photo_url") || "").trim() || null;
+
+  if (!title) return { error: "Il titolo è obbligatorio." };
+  if (setup_type === "auto" && (!car || !track)) return { error: "Auto e tracciato sono obbligatori." };
 
   const { error } = await supabase
     .from("setups")
-    .update({ title, car, track, conditions: conditions || null, notes: notes || null, photo_url })
+    .update({ title, car, track, conditions, category, notes: notes || null, photo_url })
     .eq("id", setupId);
 
   if (error) return { error: error.message };

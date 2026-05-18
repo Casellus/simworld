@@ -6,9 +6,9 @@ import { createClient } from "@/lib/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Input, Label, Select, Textarea } from "@/components/ui/input";
 import { Card, CardBody } from "@/components/ui/card";
-import { GAMES } from "@/lib/constants";
+import { GAMES, SIM_CATEGORIES } from "@/lib/constants";
 import { updateSetup } from "../../actions";
-import { ImageIcon, Upload } from "lucide-react";
+import { ImageIcon, Upload, Car, Cpu } from "lucide-react";
 
 type Setup = {
   id: string;
@@ -20,6 +20,8 @@ type Setup = {
   notes: string | null;
   photo_url: string | null;
   game_slug: string;
+  setup_type: "auto" | "simulatore";
+  category: string | null;
 };
 
 export default function ModificaAssettoPage() {
@@ -42,7 +44,7 @@ export default function ModificaAssettoPage() {
 
       const { data } = await supabase
         .from("setups")
-        .select("id, user_id, title, car, track, conditions, notes, photo_url, games(slug)")
+        .select("id, user_id, title, car, track, conditions, notes, photo_url, setup_type, category, games(slug)")
         .eq("id", params.id)
         .single();
 
@@ -52,7 +54,7 @@ export default function ModificaAssettoPage() {
         ? (data.games[0] as { slug: string })?.slug ?? ""
         : (data.games as { slug: string } | null)?.slug ?? "";
 
-      setSetup({ ...data, game_slug: gameSlug });
+      setSetup({ ...data, game_slug: gameSlug, setup_type: (data.setup_type as "auto" | "simulatore") ?? "auto", category: data.category ?? null });
       setPhotoPreview(data.photo_url);
       setPhotoUrl(data.photo_url);
       setFetching(false);
@@ -118,21 +120,41 @@ export default function ModificaAssettoPage() {
               <p className="text-xs text-[var(--color-fg-muted)] mt-1">Il gioco non può essere modificato.</p>
             </div>
 
-            <div className="grid grid-cols-2 gap-4">
-              <div>
-                <Label htmlFor="car">Auto *</Label>
-                <Input id="car" name="car" required defaultValue={setup.car} />
-              </div>
-              <div>
-                <Label htmlFor="track">Tracciato *</Label>
-                <Input id="track" name="track" required defaultValue={setup.track} />
-              </div>
+            {/* tipo badge */}
+            <div className="flex items-center gap-2 text-sm text-[var(--color-fg-muted)] py-2 px-3 rounded-lg bg-[var(--color-bg-elev-2)] border border-[var(--color-border)]">
+              {setup.setup_type === "simulatore"
+                ? <><Cpu className="h-4 w-4 text-[var(--color-accent)]" /> Configurazione simulatore</>
+                : <><Car className="h-4 w-4 text-[var(--color-primary)]" /> Assetto auto</>}
             </div>
 
-            <div>
-              <Label htmlFor="conditions">Condizioni</Label>
-              <Input id="conditions" name="conditions" defaultValue={setup.conditions ?? ""} />
-            </div>
+            {setup.setup_type === "simulatore" ? (
+              <div>
+                <Label htmlFor="category">Categoria</Label>
+                <Select id="category" name="category" defaultValue={setup.category ?? ""}>
+                  <option value="">—</option>
+                  {SIM_CATEGORIES.map((c) => (
+                    <option key={c.value} value={c.value}>{c.label}</option>
+                  ))}
+                </Select>
+              </div>
+            ) : (
+              <>
+                <div className="grid grid-cols-2 gap-4">
+                  <div>
+                    <Label htmlFor="car">Auto *</Label>
+                    <Input id="car" name="car" required defaultValue={setup.car} />
+                  </div>
+                  <div>
+                    <Label htmlFor="track">Tracciato *</Label>
+                    <Input id="track" name="track" required defaultValue={setup.track} />
+                  </div>
+                </div>
+                <div>
+                  <Label htmlFor="conditions">Condizioni</Label>
+                  <Input id="conditions" name="conditions" defaultValue={setup.conditions ?? ""} />
+                </div>
+              </>
+            )}
 
             <div>
               <Label htmlFor="notes">Note / configurazione</Label>

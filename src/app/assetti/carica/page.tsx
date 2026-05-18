@@ -1,19 +1,24 @@
 "use client";
 
-import { useState, useRef } from "react";
-import { useRouter } from "next/navigation";
+import { useState, useRef, useEffect } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
 import { createSetupRecord } from "../actions";
 import { createClient } from "@/lib/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Input, Label, Select, Textarea } from "@/components/ui/input";
 import { Card, CardBody } from "@/components/ui/card";
-import { GAMES } from "@/lib/constants";
-import { ImageIcon, Upload } from "lucide-react";
+import { GAMES, SIM_CATEGORIES } from "@/lib/constants";
+import { ImageIcon, Upload, Car, Cpu } from "lucide-react";
+import { Suspense } from "react";
 
 const ALLOWED_EXT = ["json", "sto", "svm", "ini", "rcd", "txt", "xml", "zip"];
 
-export default function CaricaAssettoPage() {
+function CaricaForm() {
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const initialTipo = searchParams.get("tipo") === "simulatore" ? "simulatore" : "auto";
+
+  const [setupType, setSetupType] = useState<"auto" | "simulatore">(initialTipo);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [photoPreview, setPhotoPreview] = useState<string | null>(null);
@@ -49,23 +54,20 @@ export default function CaricaAssettoPage() {
     setLoading(true);
 
     const form = e.currentTarget;
-    const title = (form.querySelector('[name="title"]') as HTMLInputElement).value.trim();
-    const game = (form.querySelector('[name="game"]') as HTMLSelectElement).value;
-    const car = (form.querySelector('[name="car"]') as HTMLInputElement).value.trim();
-    const track = (form.querySelector('[name="track"]') as HTMLInputElement).value.trim();
-    const conditions = (form.querySelector('[name="conditions"]') as HTMLInputElement).value.trim();
-    const notes = (form.querySelector('[name="notes"]') as HTMLTextAreaElement).value.trim();
+    const getValue = (name: string) => (form.querySelector(`[name="${name}"]`) as HTMLInputElement | null)?.value.trim() ?? "";
+
+    const title = getValue("title");
+    const game  = getValue("game");
+    const car   = getValue("car");
+    const track = getValue("track");
+
+    if (!title || !game) { setError("Compila tutti i campi obbligatori."); setLoading(false); return; }
+    if (setupType === "auto" && (!car || !track)) { setError("Auto e tracciato sono obbligatori."); setLoading(false); return; }
+
     const fileInput = form.querySelector('[name="file"]') as HTMLInputElement;
     const setupFile = fileInput?.files?.[0] ?? null;
 
-    if (!title || !game || !car || !track) {
-      setError("Compila tutti i campi obbligatori.");
-      setLoading(false);
-      return;
-    }
-
     let file_url: string | null = null;
-
     if (setupFile && setupFile.size > 0) {
       if (setupFile.size > 5 * 1024 * 1024) { setError("File assetto max 5MB."); setLoading(false); return; }
       const ext = setupFile.name.split(".").pop()?.toLowerCase() || "";
@@ -82,12 +84,14 @@ export default function CaricaAssettoPage() {
     }
 
     const fd = new FormData();
+    fd.set("setup_type", setupType);
     fd.set("title", title);
     fd.set("game", game);
-    fd.set("car", car);
-    fd.set("track", track);
-    fd.set("conditions", conditions);
-    fd.set("notes", notes);
+    fd.set("car",   setupType === "auto" ? car : "");
+    fd.set("track", setupType === "auto" ? track : "");
+    fd.set("conditions", setupType === "auto" ? getValue("conditions") : "");
+    fd.set("category", setupType === "simulatore" ? getValue("category") : "");
+    fd.set("notes", getValue("notes"));
     if (file_url) fd.set("file_url", file_url);
     if (photoUrl) fd.set("photo_url", photoUrl);
 
@@ -100,8 +104,7 @@ export default function CaricaAssettoPage() {
       return;
     }
 
-    if (res.error || !res.id) { setError(res.error || "Errore sconosciuto. Riprova."); setLoading(false); return; }
-
+    if (res.error || !res.id) { setError(res.error || "Errore sconosciuto."); setLoading(false); return; }
     router.push(`/assetti/${res.id}`);
     router.refresh();
   }
@@ -109,12 +112,50 @@ export default function CaricaAssettoPage() {
   return (
     <div className="mx-auto max-w-2xl px-4 sm:px-6 py-10">
       <h1 className="text-3xl font-extrabold tracking-tight mb-8">Carica assetto</h1>
+
+      {/* Tipo selector */}
+      <div className="grid grid-cols-2 gap-3 mb-8">
+        <button
+          type="button"
+          onClick={() => setSetupType("auto")}
+          className={`flex items-center gap-3 px-4 py-4 rounded-xl border-2 transition-all text-left ${
+            setupType === "auto"
+              ? "border-[var(--color-primary)] bg-[var(--color-primary)]/10"
+              : "border-[var(--color-border)] bg-[var(--color-bg-elev)] hover:border-[var(--color-border-strong)]"
+          }`}
+        >
+          <Car className={`h-6 w-6 shrink-0 ${setupType === "auto" ? "text-[var(--color-primary)]" : "text-[var(--color-fg-muted)]"}`} />
+          <div>
+            <div className="font-bold text-sm">Assetto auto</div>
+            <div className="text-xs text-[var(--color-fg-muted)]">Setup sospensioni, gomme, aero</div>
+          </div>
+        </button>
+        <button
+          type="button"
+          onClick={() => setSetupType("simulatore")}
+          className={`flex items-center gap-3 px-4 py-4 rounded-xl border-2 transition-all text-left ${
+            setupType === "simulatore"
+              ? "border-[var(--color-accent)] bg-[var(--color-accent)]/10"
+              : "border-[var(--color-border)] bg-[var(--color-bg-elev)] hover:border-[var(--color-border-strong)]"
+          }`}
+        >
+          <Cpu className={`h-6 w-6 shrink-0 ${setupType === "simulatore" ? "text-[var(--color-accent)]" : "text-[var(--color-fg-muted)]"}`} />
+          <div>
+            <div className="font-bold text-sm">Configurazione simulatore</div>
+            <div className="text-xs text-[var(--color-fg-muted)]">FFB, grafica, controlli, audio</div>
+          </div>
+        </button>
+      </div>
+
       <Card>
         <CardBody>
           <form onSubmit={handleSubmit} className="space-y-5">
             <div>
               <Label htmlFor="title">Titolo *</Label>
-              <Input id="title" name="title" required placeholder="es. Monza GT3 asciutto - quali" />
+              <Input
+                id="title" name="title" required
+                placeholder={setupType === "auto" ? "es. Monza GT3 asciutto – quali" : "es. FFB Thrustmaster T300 – ACC ottimizzato"}
+              />
             </div>
 
             <div>
@@ -127,36 +168,56 @@ export default function CaricaAssettoPage() {
               </Select>
             </div>
 
-            <div className="grid grid-cols-2 gap-4">
+            {/* Campi esclusivi assetto auto */}
+            {setupType === "auto" && (
+              <>
+                <div className="grid grid-cols-2 gap-4">
+                  <div>
+                    <Label htmlFor="car">Auto *</Label>
+                    <Input id="car" name="car" placeholder="es. Ferrari 296 GT3" />
+                  </div>
+                  <div>
+                    <Label htmlFor="track">Tracciato *</Label>
+                    <Input id="track" name="track" placeholder="es. Monza" />
+                  </div>
+                </div>
+                <div>
+                  <Label htmlFor="conditions">Condizioni</Label>
+                  <Input id="conditions" name="conditions" placeholder="es. Asciutto 25°C – qualifying" />
+                </div>
+              </>
+            )}
+
+            {/* Campi esclusivi configurazione simulatore */}
+            {setupType === "simulatore" && (
               <div>
-                <Label htmlFor="car">Auto *</Label>
-                <Input id="car" name="car" required placeholder="es. Ferrari 296 GT3" />
+                <Label htmlFor="category">Categoria *</Label>
+                <Select id="category" name="category" required defaultValue="">
+                  <option value="" disabled>Seleziona...</option>
+                  {SIM_CATEGORIES.map((c) => (
+                    <option key={c.value} value={c.value}>{c.label}</option>
+                  ))}
+                </Select>
               </div>
-              <div>
-                <Label htmlFor="track">Tracciato *</Label>
-                <Input id="track" name="track" required placeholder="es. Monza" />
-              </div>
-            </div>
+            )}
 
             <div>
-              <Label htmlFor="conditions">Condizioni</Label>
-              <Input id="conditions" name="conditions" placeholder="es. Asciutto 25°C - qualifying" />
-            </div>
-
-            <div>
-              <Label htmlFor="file">File assetto (opzionale)</Label>
+              <Label htmlFor="file">File (opzionale)</Label>
               <Input id="file" name="file" type="file" accept=".json,.sto,.svm,.ini,.rcd,.txt,.xml,.zip" />
-              <p className="text-xs text-[var(--color-fg-muted)] mt-1">.json (ACC), .sto (rF2/LMU), .svm, .ini, .rcd, .xml, .zip · max 5MB</p>
+              <p className="text-xs text-[var(--color-fg-muted)] mt-1">.json, .ini, .xml, .sto, .svm, .zip · max 5MB</p>
             </div>
 
             <div>
               <Label htmlFor="notes">Note / configurazione</Label>
-              <Textarea id="notes" name="notes" rows={6} placeholder="Stile guida, settaggi consigliati, FFB, TC/ABS..." />
+              <Textarea
+                id="notes" name="notes" rows={6}
+                placeholder={setupType === "auto" ? "Stile guida, settaggi consigliati, FFB, TC/ABS..." : "Hardware usato, valori consigliati, note di configurazione..."}
+              />
             </div>
 
-            {/* FOTO */}
+            {/* Foto */}
             <div>
-              <Label>Foto assetto (opzionale)</Label>
+              <Label>Foto (opzionale)</Label>
               <div className="mt-2 flex items-center gap-4">
                 <div
                   onClick={() => photoRef.current?.click()}
@@ -186,11 +247,19 @@ export default function CaricaAssettoPage() {
             {error && <p className="text-sm text-[var(--color-danger)]">{error}</p>}
 
             <Button type="submit" size="lg" className="w-full" disabled={loading || uploadingPhoto}>
-              {loading ? "Pubblicazione..." : "Pubblica assetto"}
+              {loading ? "Pubblicazione..." : "Pubblica"}
             </Button>
           </form>
         </CardBody>
       </Card>
     </div>
+  );
+}
+
+export default function CaricaAssettoPage() {
+  return (
+    <Suspense>
+      <CaricaForm />
+    </Suspense>
   );
 }
