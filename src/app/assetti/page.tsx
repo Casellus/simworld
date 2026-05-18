@@ -107,7 +107,7 @@ type S = {
 
 function GameGroups({ setups, tipo }: { setups: S[]; tipo: string }) {
   // Raggruppa per gioco preservando l'ordine di GAMES
-  const gameOrder = GAMES.map((g) => g.slug);
+  const gameOrder: string[] = GAMES.map((g) => g.slug);
   const groups = new Map<string, { name: string; slug: string; items: S[] }>();
 
   for (const s of setups) {
