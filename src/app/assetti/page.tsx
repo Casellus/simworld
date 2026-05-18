@@ -106,7 +106,7 @@ type S = {
   games: { name: string } | { name: string }[];
 };
 
-function SetupCard({ s, game }: { s: S; game: { name: string } | undefined }) {
+function SetupCard({ s, game }: { s: S; game: { name: string } | null | undefined }) {
   const catLabel = SIM_CATEGORIES.find((c) => c.value === s.category)?.label ?? s.category;
   return (
     <Link href={`/assetti/${s.id}`}>
