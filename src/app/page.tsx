@@ -7,7 +7,7 @@ import { createClient } from "@/lib/supabase/server";
 import { GAMES } from "@/lib/constants";
 import { formatDate } from "@/lib/utils";
 import { one } from "@/lib/types";
-import { Calendar, Users, Settings2, ArrowRight, LayoutDashboard, Trophy, ChevronRight, Zap, Target, Flame, Sparkles, Gauge } from "lucide-react";
+import { Calendar, Settings2, ArrowRight, LayoutDashboard, ChevronRight } from "lucide-react";
 
 export default async function Home() {
   const supabase = await createClient();
@@ -211,12 +211,12 @@ export default async function Home() {
               </div>
 
               <div className="grid gap-5 md:grid-cols-3">
-                <FeatureBlock icon={Trophy} title="Organizza eventi" desc="Tornei, campionati, gare endurance. Crea, gestisci iscrizioni e raduna piloti in pochi clic." />
-                <FeatureBlock icon={Users} title="Costruisci il tuo team" desc="Logo, lineup, descrizione. Recluta nuovi piloti tramite la bacheca pubblica." />
-                <FeatureBlock icon={Settings2} title="Condividi assetti" desc="Setup per ogni auto e tracciato. Vota, scarica, contribuisci alla libreria della community." />
-                <FeatureBlock icon={Gauge} title="Tutti i sim principali" desc="ACC, iRacing, LMU, Assetto Corsa, AC EVO, F1 25. Un solo profilo, tutti i tuoi sim." />
-                <FeatureBlock icon={Target} title="Trova compagni" desc="Cerca piloti del tuo livello o team aperti al reclutamento. Niente più gare in solitaria." />
-                <FeatureBlock icon={Flame} title="100% italiano" desc="Una community costruita da piloti italiani, per piloti italiani. Lingua, fuso orario, mentalità." />
+                <FeatureBlock emoji="🏆" title="Organizza eventi" desc="Tornei, campionati, gare endurance. Crea, gestisci iscrizioni e raduna piloti in pochi clic." />
+                <FeatureBlock emoji="🏎️" title="Costruisci il tuo team" desc="Logo, lineup, descrizione. Recluta nuovi piloti tramite la bacheca pubblica." />
+                <FeatureBlock emoji="⚙️" title="Condividi assetti" desc="Setup per ogni auto e tracciato. Vota, scarica, contribuisci alla libreria della community." />
+                <FeatureBlock emoji="🎮" title="Tutti i sim principali" desc="ACC, iRacing, LMU, Assetto Corsa, AC EVO, F1 25. Un solo profilo, tutti i tuoi sim." />
+                <FeatureBlock emoji="🤝" title="Trova compagni" desc="Cerca piloti del tuo livello o team aperti al reclutamento. Niente più gare in solitaria." />
+                <FeatureBlock emoji="🇮🇹" title="100% italiano" desc="Una community costruita da piloti italiani, per piloti italiani. Lingua, fuso orario, mentalità." />
               </div>
             </div>
           </section>
@@ -262,10 +262,10 @@ export default async function Home() {
                   </div>
                 </div>
                 <div className="grid gap-4 sm:grid-cols-2">
-                  <AudienceBlock icon={Sparkles} title="Rookie" desc="Trova team paziente, primi tornei, guide per iniziare." />
-                  <AudienceBlock icon={Zap} title="Amatori" desc="Gare settimanali, assetti condivisi, community attiva." />
-                  <AudienceBlock icon={Trophy} title="Competitivi" desc="Campionati seri, lineup di team, sfide ad alto livello." />
-                  <AudienceBlock icon={Flame} title="Pro" desc="Esports, endurance, eventi premium e visibilità." />
+                  <AudienceBlock emoji="🌱" title="Rookie" desc="Trova team paziente, primi tornei, guide per iniziare." />
+                  <AudienceBlock emoji="⚡" title="Amatori" desc="Gare settimanali, assetti condivisi, community attiva." />
+                  <AudienceBlock emoji="🏆" title="Competitivi" desc="Campionati seri, lineup di team, sfide ad alto livello." />
+                  <AudienceBlock emoji="🔥" title="Pro" desc="Esports, endurance, eventi premium e visibilità." />
                 </div>
               </div>
             </div>
@@ -437,12 +437,10 @@ function PostCard({ post }: { post: PostShape }) {
 }
 
 
-function FeatureBlock({ icon: Icon, title, desc }: { icon: React.ComponentType<{ className?: string }>; title: string; desc: string }) {
+function FeatureBlock({ emoji, title, desc }: { emoji: string; title: string; desc: string }) {
   return (
     <div className="p-6 rounded-2xl border border-[var(--color-border)] bg-[var(--color-bg-elev)] hover:border-[var(--color-primary)]/40 transition-colors">
-      <div className="h-11 w-11 rounded-xl bg-[var(--color-primary)]/10 border border-[var(--color-primary)]/20 flex items-center justify-center mb-4">
-        <Icon className="h-5 w-5 text-[var(--color-primary)]" />
-      </div>
+      <div className="text-3xl mb-4">{emoji}</div>
       <h3 className="font-bold text-lg mb-2" style={{ fontFamily: "var(--font-heading)" }}>{title}</h3>
       <p className="text-sm text-[var(--color-fg-muted)] leading-relaxed">{desc}</p>
     </div>
@@ -461,13 +459,11 @@ function StepBlock({ num, title, desc }: { num: string; title: string; desc: str
   );
 }
 
-function AudienceBlock({ icon: Icon, title, desc }: { icon: React.ComponentType<{ className?: string }>; title: string; desc: string }) {
+function AudienceBlock({ emoji, title, desc }: { emoji: string; title: string; desc: string }) {
   return (
     <div className="p-5 rounded-xl border border-[var(--color-border)] bg-[var(--color-bg-elev)] hover:border-[var(--color-accent)]/40 transition-colors">
       <div className="flex items-center gap-3 mb-2">
-        <div className="h-9 w-9 rounded-lg bg-[var(--color-accent)]/10 border border-[var(--color-accent)]/20 flex items-center justify-center shrink-0">
-          <Icon className="h-4 w-4 text-[var(--color-accent)]" />
-        </div>
+        <span className="text-2xl">{emoji}</span>
         <h3 className="font-bold text-base" style={{ fontFamily: "var(--font-heading)" }}>{title}</h3>
       </div>
       <p className="text-sm text-[var(--color-fg-muted)] leading-relaxed">{desc}</p>
