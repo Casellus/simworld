@@ -74,7 +74,7 @@ export default async function Home() {
             <div className="flex flex-col items-center text-center">
               {user ? (
                 <>
-                  <h1 className="hero-title text-5xl md:text-7xl lg:text-8xl font-extrabold leading-[0.95] tracking-tight" style={{ fontFamily: "var(--font-heading)" }}>
+                  <h1 className="hero-title text-3xl sm:text-5xl md:text-7xl lg:text-8xl font-extrabold leading-[0.95] tracking-tight" style={{ fontFamily: "var(--font-heading)" }}>
                     Ciao,<br />
                     <span className="text-accent-glow">{displayName}.</span>
                   </h1>
@@ -96,7 +96,7 @@ export default async function Home() {
                 </>
               ) : (
                 <>
-                  <h1 className="hero-title text-5xl md:text-7xl lg:text-8xl font-extrabold leading-[0.95] tracking-tight" style={{ fontFamily: "var(--font-heading)" }}>
+                  <h1 className="hero-title text-3xl sm:text-5xl md:text-7xl lg:text-8xl font-extrabold leading-[0.95] tracking-tight" style={{ fontFamily: "var(--font-heading)" }}>
                     Benvenuto in<br />
                     <span className="text-accent-glow">SimUniverse!</span>
                   </h1>

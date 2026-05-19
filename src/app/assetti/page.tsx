@@ -132,9 +132,9 @@ function GameGroups({ setups, tipo }: { setups: S[]; tipo: string }) {
             {tipo === "simulatore"
               ? <Cpu className="h-4 w-4 text-[var(--color-accent)]" />
               : <Car className="h-4 w-4 text-[var(--color-primary)]" />}
-            <h2 className="text-lg font-bold tracking-tight">{name}</h2>
-            <span className="text-xs text-[var(--color-fg-muted)]">({items.length})</span>
-            <div className="flex-1 h-px bg-[var(--color-border)]" />
+            <h2 className="text-lg font-extrabold tracking-tight text-white">{name}</h2>
+            <span className="text-xs font-semibold text-[var(--color-primary)] bg-[var(--color-primary)]/10 border border-[var(--color-primary)]/20 px-2 py-0.5 rounded-full">{items.length}</span>
+            <div className="flex-1 h-px bg-[var(--color-border-strong)]" />
           </div>
           <div className="stagger grid gap-4 md:grid-cols-2 lg:grid-cols-3">
             {items.map((s) => <SetupCard key={s.id} s={s} game={one<{ name: string; slug: string }>(s.games)} />)}

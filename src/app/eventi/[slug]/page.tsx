@@ -52,7 +52,7 @@ export default async function EventDetailPage({ params }: { params: Promise<{ sl
         </div>
       )}
 
-      <div className="grid gap-6 lg:grid-cols-3">
+      <div className="grid gap-6 grid-cols-1 lg:grid-cols-3">
         <div className="lg:col-span-2 space-y-6">
           <div>
             <div className="flex items-center gap-2 flex-wrap mb-3">

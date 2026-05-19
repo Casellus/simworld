@@ -137,7 +137,7 @@ export default function NuovoTeamPage() {
 
             <div>
               <Label>Giochi praticati</Label>
-              <div className="grid grid-cols-2 sm:grid-cols-3 gap-2 mt-1">
+              <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-2 mt-1">
                 {GAMES.map((g) => (
                   <label
                     key={g.slug}

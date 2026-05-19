@@ -137,7 +137,7 @@ export default function NuovoEventoPage() {
               <Input id="title" name="title" required placeholder="es. Coppa Italia ACC — Tappa 1" />
             </div>
 
-            <div className="grid grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div>
                 <Label htmlFor="game">Gioco *</Label>
                 <Select id="game" name="game" required defaultValue="">
@@ -163,7 +163,7 @@ export default function NuovoEventoPage() {
               <Input id="start_at" name="start_at" type="datetime-local" required />
             </div>
 
-            <div className="grid grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div>
                 <Label htmlFor="track">Tracciato</Label>
                 <Input id="track" name="track" placeholder="es. Monza" />
@@ -174,7 +174,7 @@ export default function NuovoEventoPage() {
               </div>
             </div>
 
-            <div className="grid grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div>
                 <Label htmlFor="format">Formato</Label>
                 <Input id="format" name="format" placeholder="es. Q15 + R45 min" />

@@ -114,7 +114,7 @@ function CaricaForm() {
       <h1 className="text-3xl font-extrabold tracking-tight mb-8">Carica assetto</h1>
 
       {/* Tipo selector */}
-      <div className="grid grid-cols-2 gap-3 mb-8">
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-8">
         <button
           type="button"
           onClick={() => setSetupType("auto")}
@@ -171,7 +171,7 @@ function CaricaForm() {
             {/* Campi esclusivi assetto auto */}
             {setupType === "auto" && (
               <>
-                <div className="grid grid-cols-2 gap-4">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   <div>
                     <Label htmlFor="car">Auto *</Label>
                     <Input id="car" name="car" placeholder="es. Ferrari 296 GT3" />

@@ -33,7 +33,7 @@ export function Footer() {
     <footer className="mt-16">
       <div className="bg-[var(--color-bg-elev)] border-t border-[var(--color-border)]">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 py-14">
-          <div className="grid gap-10 sm:grid-cols-2 md:grid-cols-4">
+          <div className="grid gap-6 sm:gap-10 grid-cols-1 sm:grid-cols-2 md:grid-cols-4">
 
             {/* Brand */}
             <div className="sm:col-span-2 md:col-span-1 space-y-4">
