@@ -56,7 +56,7 @@ export async function Header() {
         </div>
 
         {/* MOBILE */}
-        <div className="md:hidden flex w-full h-12 items-center justify-between">
+        <div className="md:hidden flex w-full h-12 items-center justify-between bg-[#0d0d12] border border-[var(--color-border-strong)] rounded-2xl px-4 my-3 shadow-[0_4px_32px_rgba(0,0,0,0.5)]">
           <div className="flex items-center gap-1">
             {profile ? (
               <>
