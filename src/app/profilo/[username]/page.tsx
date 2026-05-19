@@ -59,13 +59,13 @@ export default async function ProfiloPage({ params }: { params: Promise<{ userna
 
         {/* AVATAR + NOME — sovrapposti alla cover */}
         <div className="px-4 sm:px-6">
-          <div className="flex flex-col sm:flex-row sm:items-end gap-4 -mt-12 sm:-mt-14 pb-4">
+          <div className="flex flex-col sm:flex-row sm:items-end gap-4 -mt-12 sm:-mt-14 pb-4 pt-1">
             <div className="h-24 w-24 sm:h-28 sm:w-28 rounded-full bg-[var(--color-bg-elev-2)] border-4 border-[var(--color-bg-elev)] flex items-center justify-center overflow-hidden shrink-0 relative z-10">
               <ProfileAvatar src={profile.avatar_url} />
             </div>
-            <div className="flex-1 sm:pb-2 flex flex-col sm:flex-row sm:items-end sm:justify-between gap-3">
-              <div>
-                <h1 className="text-2xl sm:text-3xl font-extrabold tracking-tight" style={{ fontFamily: "var(--font-heading)" }}>
+            <div className="flex-1 pb-1 sm:pb-2 flex flex-col sm:flex-row sm:items-end sm:justify-between gap-3 min-w-0">
+              <div className="min-w-0">
+                <h1 className="text-2xl sm:text-3xl font-extrabold tracking-tight truncate" style={{ fontFamily: "var(--font-heading)" }}>
                   {displayName}
                 </h1>
                 <p className="text-sm text-[var(--color-fg-muted)]">@{profile.username}</p>
@@ -82,21 +82,21 @@ export default async function ProfiloPage({ params }: { params: Promise<{ userna
 
           {/* TABS */}
           <div className="flex items-center gap-6 border-t border-[var(--color-border)] -mx-4 sm:-mx-6 px-4 sm:px-6 overflow-x-auto">
-            <span className="py-3 text-sm font-semibold text-[var(--color-fg)] border-b-2 border-[var(--color-primary)] whitespace-nowrap">
+            <a href="#info" className="py-3 text-sm font-semibold text-[var(--color-fg)] border-b-2 border-[var(--color-primary)] whitespace-nowrap">
               Profilo
-            </span>
-            <span className="py-3 text-sm font-medium text-[var(--color-fg-muted)] whitespace-nowrap">
+            </a>
+            <a href="#assetti" className="py-3 text-sm font-medium text-[var(--color-fg-muted)] hover:text-[var(--color-fg)] transition-colors whitespace-nowrap cursor-pointer">
               Assetti <span className="text-[var(--color-fg-muted)]/60">{setups?.length ?? 0}</span>
-            </span>
-            <span className="py-3 text-sm font-medium text-[var(--color-fg-muted)] whitespace-nowrap">
+            </a>
+            <a href="#eventi" className="py-3 text-sm font-medium text-[var(--color-fg-muted)] hover:text-[var(--color-fg)] transition-colors whitespace-nowrap cursor-pointer">
               Eventi <span className="text-[var(--color-fg-muted)]/60">{events?.length ?? 0}</span>
-            </span>
+            </a>
           </div>
         </div>
       </div>
 
       {/* ── INFO ("About") ── */}
-      <div className="mt-5 rounded-2xl border border-[var(--color-border)] bg-[var(--color-bg-elev)] p-5 sm:p-6">
+      <div id="info" className="mt-5 rounded-2xl border border-[var(--color-border)] bg-[var(--color-bg-elev)] p-5 sm:p-6">
         <h2 className="text-lg font-bold mb-5" style={{ fontFamily: "var(--font-heading)" }}>Informazioni</h2>
         <div className="grid gap-x-10 gap-y-5 sm:grid-cols-2">
           <InfoRow icon={Calendar} title={`Membro dal ${formatDate(profile.created_at)}`} sub="Pilota SimUniverse" />
@@ -140,7 +140,7 @@ export default async function ProfiloPage({ params }: { params: Promise<{ userna
 
       {/* ── ASSETTI ── */}
       {setups && setups.length > 0 && (
-        <div className="mt-5 rounded-2xl border border-[var(--color-border)] bg-[var(--color-bg-elev)] p-5 sm:p-6">
+        <div id="assetti" className="mt-5 rounded-2xl border border-[var(--color-border)] bg-[var(--color-bg-elev)] p-5 sm:p-6">
           <h2 className="text-lg font-bold mb-4 flex items-center gap-2" style={{ fontFamily: "var(--font-heading)" }}>
             <Settings2 className="h-5 w-5 text-[var(--color-primary)]" /> Assetti pubblicati
           </h2>
@@ -166,7 +166,7 @@ export default async function ProfiloPage({ params }: { params: Promise<{ userna
 
       {/* ── EVENTI ── */}
       {events && events.length > 0 && (
-        <div className="mt-5 rounded-2xl border border-[var(--color-border)] bg-[var(--color-bg-elev)] p-5 sm:p-6">
+        <div id="eventi" className="mt-5 rounded-2xl border border-[var(--color-border)] bg-[var(--color-bg-elev)] p-5 sm:p-6">
           <h2 className="text-lg font-bold mb-4 flex items-center gap-2" style={{ fontFamily: "var(--font-heading)" }}>
             <Trophy className="h-5 w-5 text-[var(--color-accent)]" /> Eventi
           </h2>
