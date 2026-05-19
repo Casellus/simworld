@@ -7,7 +7,7 @@ import { createClient } from "@/lib/supabase/server";
 import { GAMES } from "@/lib/constants";
 import { formatDate } from "@/lib/utils";
 import { one } from "@/lib/types";
-import { Calendar, Users, Settings2, ArrowRight, LayoutDashboard, Trophy, ChevronRight } from "lucide-react";
+import { Calendar, Users, Settings2, ArrowRight, LayoutDashboard, Trophy, ChevronRight, Zap, Target, Flame, Sparkles, Gauge } from "lucide-react";
 
 export default async function Home() {
   const supabase = await createClient();
@@ -139,82 +139,169 @@ export default async function Home() {
         </div>
       </section>
 
-      {/* ── FEATURED CAROUSEL: EVENTI ── */}
-      <Section
-        eyebrow="In programma"
-        title="Eventi in evidenza"
-        link={{ href: "/eventi", label: "Tutti gli eventi" }}
-      >
-        {upcomingEvents && upcomingEvents.length > 0 ? (
-          <div className="carousel">
-            {upcomingEvents.map((e) => (
-              <EventCard key={e.id} event={e} />
-            ))}
-          </div>
-        ) : (
-          <EmptyState msg="Nessun evento in programma." cta="Crea evento" href="/eventi/nuovo" />
-        )}
-      </Section>
+      {user ? (
+        <>
+          {/* ── FEATURED CAROUSEL: EVENTI ── */}
+          <Section
+            eyebrow="In programma"
+            title="Eventi in evidenza"
+            link={{ href: "/eventi", label: "Tutti gli eventi" }}
+          >
+            {upcomingEvents && upcomingEvents.length > 0 ? (
+              <div className="carousel">
+                {upcomingEvents.map((e) => (
+                  <EventCard key={e.id} event={e} />
+                ))}
+              </div>
+            ) : (
+              <EmptyState msg="Nessun evento in programma." cta="Crea evento" href="/eventi/nuovo" />
+            )}
+          </Section>
 
+          {/* ── ASSETTI TOP ── */}
+          <Section
+            eyebrow="Più scaricati"
+            title="Assetti top"
+            link={{ href: "/assetti", label: "Tutti gli assetti" }}
+          >
+            {topSetups && topSetups.length > 0 ? (
+              <div className="carousel">
+                {topSetups.map((s) => (
+                  <SetupCard key={s.id} setup={s} />
+                ))}
+              </div>
+            ) : (
+              <EmptyState msg="Nessun assetto caricato." cta="Carica assetto" href="/assetti/carica" />
+            )}
+          </Section>
 
-      {/* ── ASSETTI TOP ── */}
-      <Section
-        eyebrow="Più scaricati"
-        title="Assetti top"
-        link={{ href: "/assetti", label: "Tutti gli assetti" }}
-      >
-        {topSetups && topSetups.length > 0 ? (
-          <div className="carousel">
-            {topSetups.map((s) => (
-              <SetupCard key={s.id} setup={s} />
-            ))}
-          </div>
-        ) : (
-          <EmptyState msg="Nessun assetto caricato." cta="Carica assetto" href="/assetti/carica" />
-        )}
-      </Section>
+          {/* ── CERCA ── */}
+          <Section
+            eyebrow="Bacheca"
+            title="Cerca pilota o team"
+            link={{ href: "/cerca", label: "Tutti gli annunci" }}
+          >
+            {recentPosts && recentPosts.length > 0 ? (
+              <div className="grid gap-3 md:grid-cols-2 lg:grid-cols-3">
+                {recentPosts.map((p) => (
+                  <PostCard key={p.id} post={p} />
+                ))}
+              </div>
+            ) : (
+              <EmptyState msg="Nessun annuncio attivo." cta="Pubblica annuncio" href="/cerca/nuovo" />
+            )}
+          </Section>
+        </>
+      ) : (
+        <>
+          {/* ── CHI SIAMO ── */}
+          <section className="border-t border-[var(--color-border)]">
+            <div className="mx-auto max-w-7xl px-4 sm:px-6 py-20 sm:py-28">
+              <div className="text-center max-w-3xl mx-auto mb-16">
+                <p className="text-xs font-semibold tracking-widest uppercase text-[var(--color-accent)] mb-4">Chi siamo</p>
+                <h2 className="text-3xl sm:text-4xl md:text-5xl font-extrabold tracking-tight mb-6" style={{ fontFamily: "var(--font-heading)" }}>
+                  L&apos;hub italiano del<br />
+                  <span className="text-accent-glow">sim racing.</span>
+                </h2>
+                <p className="text-base sm:text-lg text-[var(--color-fg-muted)] leading-relaxed">
+                  SimUniverse nasce per riunire la community italiana del sim racing in un unico spazio.
+                  Niente forum dispersivi, niente gruppi WhatsApp scollegati — solo strumenti pensati
+                  per chi vive di curve, settaggi e gomme che si scaldano.
+                </p>
+              </div>
 
-      {/* ── CERCA ── */}
-      <Section
-        eyebrow="Bacheca"
-        title="Cerca pilota o team"
-        link={{ href: "/cerca", label: "Tutti gli annunci" }}
-      >
-        {recentPosts && recentPosts.length > 0 ? (
-          <div className="grid gap-3 md:grid-cols-2 lg:grid-cols-3">
-            {recentPosts.map((p) => (
-              <PostCard key={p.id} post={p} />
-            ))}
-          </div>
-        ) : (
-          <EmptyState msg="Nessun annuncio attivo." cta="Pubblica annuncio" href="/cerca/nuovo" />
-        )}
-      </Section>
+              <div className="grid gap-5 md:grid-cols-3">
+                <FeatureBlock icon={Trophy} title="Organizza eventi" desc="Tornei, campionati, gare endurance. Crea, gestisci iscrizioni e raduna piloti in pochi clic." />
+                <FeatureBlock icon={Users} title="Costruisci il tuo team" desc="Logo, lineup, descrizione. Recluta nuovi piloti tramite la bacheca pubblica." />
+                <FeatureBlock icon={Settings2} title="Condividi assetti" desc="Setup per ogni auto e tracciato. Vota, scarica, contribuisci alla libreria della community." />
+                <FeatureBlock icon={Gauge} title="Tutti i sim principali" desc="ACC, iRacing, LMU, Assetto Corsa, AC EVO, F1 25. Un solo profilo, tutti i tuoi sim." />
+                <FeatureBlock icon={Target} title="Trova compagni" desc="Cerca piloti del tuo livello o team aperti al reclutamento. Niente più gare in solitaria." />
+                <FeatureBlock icon={Flame} title="100% italiano" desc="Una community costruita da piloti italiani, per piloti italiani. Lingua, fuso orario, mentalità." />
+              </div>
+            </div>
+          </section>
 
-      {/* ── ABOUT (anon only) ── */}
-      {!user && (
-        <section className="border-t border-[var(--color-border)]">
-          <div className="mx-auto max-w-7xl px-4 sm:px-6 py-24">
-            <div className="max-w-2xl mb-12">
-              <p className="text-xs font-semibold tracking-widest uppercase text-[var(--color-accent)] mb-3">La community</p>
-              <h2 className="text-4xl md:text-5xl font-extrabold tracking-tight" style={{ fontFamily: "var(--font-heading)" }}>
-                Fatto da piloti,<br />
-                <span className="text-accent-glow">per piloti.</span>
+          {/* ── COME FUNZIONA ── */}
+          <section className="border-t border-[var(--color-border)]" style={{ background: "linear-gradient(180deg, transparent, rgba(46,125,255,0.04))" }}>
+            <div className="mx-auto max-w-7xl px-4 sm:px-6 py-20 sm:py-28">
+              <div className="text-center max-w-2xl mx-auto mb-14">
+                <p className="text-xs font-semibold tracking-widest uppercase text-[var(--color-accent)] mb-4">Come funziona</p>
+                <h2 className="text-3xl sm:text-4xl md:text-5xl font-extrabold tracking-tight" style={{ fontFamily: "var(--font-heading)" }}>
+                  Tre passi.<br />
+                  <span className="text-accent-glow">Sei in pista.</span>
+                </h2>
+              </div>
+              <div className="grid gap-6 md:grid-cols-3">
+                <StepBlock num="01" title="Crea il profilo" desc="Registrati gratis, scegli i sim che usi e indica il tuo livello." />
+                <StepBlock num="02" title="Esplora la community" desc="Trova eventi, team aperti al reclutamento e assetti pronti all'uso." />
+                <StepBlock num="03" title="Scendi in pista" desc="Iscriviti agli eventi, entra in un team, condividi i tuoi setup. Corri." />
+              </div>
+            </div>
+          </section>
+
+          {/* ── PER CHI ── */}
+          <section className="border-t border-[var(--color-border)]">
+            <div className="mx-auto max-w-7xl px-4 sm:px-6 py-20 sm:py-28">
+              <div className="grid gap-12 lg:grid-cols-2 items-center">
+                <div>
+                  <p className="text-xs font-semibold tracking-widest uppercase text-[var(--color-accent)] mb-4">Per chi è</p>
+                  <h2 className="text-3xl sm:text-4xl md:text-5xl font-extrabold tracking-tight mb-6" style={{ fontFamily: "var(--font-heading)" }}>
+                    Dal rookie<br />
+                    <span className="text-accent-glow">al veterano.</span>
+                  </h2>
+                  <p className="text-base sm:text-lg text-[var(--color-fg-muted)] leading-relaxed mb-8">
+                    Non serve essere un alien. SimUniverse è aperto a chiunque ami il sim racing:
+                    da chi ha appena acceso il volante per la prima volta a chi macina ore di endurance ogni weekend.
+                  </p>
+                  <div className="flex flex-wrap gap-2">
+                    {GAMES.map((g) => (
+                      <span key={g.slug} className="px-3 py-1.5 rounded-full text-xs font-semibold border border-[var(--color-border-strong)] bg-[var(--color-bg-elev)] text-[var(--color-fg-muted)]">
+                        {g.short}
+                      </span>
+                    ))}
+                  </div>
+                </div>
+                <div className="grid gap-4 sm:grid-cols-2">
+                  <AudienceBlock icon={Sparkles} title="Rookie" desc="Trova team paziente, primi tornei, guide per iniziare." />
+                  <AudienceBlock icon={Zap} title="Amatori" desc="Gare settimanali, assetti condivisi, community attiva." />
+                  <AudienceBlock icon={Trophy} title="Competitivi" desc="Campionati seri, lineup di team, sfide ad alto livello." />
+                  <AudienceBlock icon={Flame} title="Pro" desc="Esports, endurance, eventi premium e visibilità." />
+                </div>
+              </div>
+            </div>
+          </section>
+
+          {/* ── CTA FINALE ── */}
+          <section className="border-t border-[var(--color-border)] relative overflow-hidden">
+            <div className="absolute inset-0 -z-10" style={{ background: "radial-gradient(ellipse at center, rgba(46,125,255,0.15), transparent 70%)" }} />
+            <div className="mx-auto max-w-4xl px-4 sm:px-6 py-24 sm:py-32 text-center">
+              <p className="text-xs font-semibold tracking-widest uppercase text-[var(--color-accent)] mb-5">È il momento</p>
+              <h2 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-extrabold tracking-tight leading-[1] mb-6" style={{ fontFamily: "var(--font-heading)" }}>
+                Sei pronto a<br />
+                <span className="text-accent-glow">scendere in pista?</span>
               </h2>
-              <p className="mt-5 text-lg text-[var(--color-fg-muted)]">
-                Una piattaforma dedicata al sim racing italiano. Niente forum dispersivi — solo strumenti che servono per correre.
+              <p className="text-base sm:text-lg text-[var(--color-fg-muted)] max-w-xl mx-auto mb-10 leading-relaxed">
+                Unisciti gratis a SimUniverse. Crea il tuo profilo, trova compagni di gara
+                e inizia a correre con la community italiana del sim racing.
+              </p>
+              <div className="flex flex-col sm:flex-row gap-3 justify-center items-center">
+                <Link href="/auth/register">
+                  <Button size="lg" className="px-8 py-4 text-base w-full sm:w-auto">
+                    Registrati gratis <ArrowRight className="h-5 w-5" />
+                  </Button>
+                </Link>
+                <Link href="/auth/login">
+                  <Button size="lg" variant="outline" className="px-8 py-4 text-base w-full sm:w-auto">
+                    Accedi
+                  </Button>
+                </Link>
+              </div>
+              <p className="text-xs text-[var(--color-fg-muted)] mt-8">
+                Nessuna carta di credito. Profilo pronto in 30 secondi.
               </p>
             </div>
-            <div className="grid gap-4 md:grid-cols-3">
-              <FeatureBlock icon={Trophy} title="Organizza eventi" desc="Tornei, campionati, endurance. Tutto in pochi clic." />
-              <FeatureBlock icon={Users} title="Costruisci team" desc="Logo, descrizione, recluta piloti tramite bacheca." />
-              <FeatureBlock icon={Settings2} title="Condividi assetti" desc="Setup per ogni auto e tracciato. Vota, scarica, contribuisci." />
-            </div>
-            <div className="mt-12 flex flex-wrap gap-3">
-              <Link href="/auth/register"><Button size="lg">Crea account <ArrowRight className="h-4 w-4" /></Button></Link>
-            </div>
-          </div>
-        </section>
+          </section>
+        </>
       )}
     </>
   );
@@ -352,11 +439,37 @@ function PostCard({ post }: { post: PostShape }) {
 
 function FeatureBlock({ icon: Icon, title, desc }: { icon: React.ComponentType<{ className?: string }>; title: string; desc: string }) {
   return (
-    <div className="p-6 rounded-2xl border border-[var(--color-border)] bg-[var(--color-bg-elev)]">
-      <div className="h-10 w-10 rounded-xl bg-[var(--color-primary)]/10 border border-[var(--color-primary)]/20 flex items-center justify-center mb-4">
+    <div className="p-6 rounded-2xl border border-[var(--color-border)] bg-[var(--color-bg-elev)] hover:border-[var(--color-primary)]/40 transition-colors">
+      <div className="h-11 w-11 rounded-xl bg-[var(--color-primary)]/10 border border-[var(--color-primary)]/20 flex items-center justify-center mb-4">
         <Icon className="h-5 w-5 text-[var(--color-primary)]" />
       </div>
       <h3 className="font-bold text-lg mb-2" style={{ fontFamily: "var(--font-heading)" }}>{title}</h3>
+      <p className="text-sm text-[var(--color-fg-muted)] leading-relaxed">{desc}</p>
+    </div>
+  );
+}
+
+function StepBlock({ num, title, desc }: { num: string; title: string; desc: string }) {
+  return (
+    <div className="relative p-6 sm:p-8 rounded-2xl border border-[var(--color-border)] bg-[var(--color-bg-elev)]">
+      <div className="text-5xl sm:text-6xl font-extrabold text-[var(--color-primary)]/30 leading-none mb-3" style={{ fontFamily: "var(--font-heading)" }}>
+        {num}
+      </div>
+      <h3 className="font-bold text-xl mb-2" style={{ fontFamily: "var(--font-heading)" }}>{title}</h3>
+      <p className="text-sm text-[var(--color-fg-muted)] leading-relaxed">{desc}</p>
+    </div>
+  );
+}
+
+function AudienceBlock({ icon: Icon, title, desc }: { icon: React.ComponentType<{ className?: string }>; title: string; desc: string }) {
+  return (
+    <div className="p-5 rounded-xl border border-[var(--color-border)] bg-[var(--color-bg-elev)] hover:border-[var(--color-accent)]/40 transition-colors">
+      <div className="flex items-center gap-3 mb-2">
+        <div className="h-9 w-9 rounded-lg bg-[var(--color-accent)]/10 border border-[var(--color-accent)]/20 flex items-center justify-center shrink-0">
+          <Icon className="h-4 w-4 text-[var(--color-accent)]" />
+        </div>
+        <h3 className="font-bold text-base" style={{ fontFamily: "var(--font-heading)" }}>{title}</h3>
+      </div>
       <p className="text-sm text-[var(--color-fg-muted)] leading-relaxed">{desc}</p>
     </div>
   );
