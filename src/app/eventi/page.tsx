@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/button";
 import { FilterChip } from "@/components/ui/filter-chip";
 import { formatDate } from "@/lib/utils";
 import { GAMES, EVENT_TYPES } from "@/lib/constants";
-import { Calendar, Plus, MapPin, Users } from "lucide-react";
+import { Calendar, Plus, MapPin } from "lucide-react";
 import { Suspense } from "react";
 
 export const metadata = { title: "Eventi · SimUniverse" };
@@ -74,45 +74,45 @@ export default async function EventiPage({ searchParams }: { searchParams: SP })
         <div className="stagger grid gap-4 md:grid-cols-2 lg:grid-cols-3">
           {events.map((e) => (
             <Link key={e.id} href={`/eventi/${e.slug}`}>
-              <Card className="h-full hover:border-[var(--color-primary)] transition-colors overflow-hidden">
-                {e.banner_url && (
-                  <div className="relative w-full h-36">
-                    <Image
-                      src={e.banner_url}
-                      alt=""
-                      fill
-                      sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw"
-                      className="object-cover"
-                    />
-                  </div>
-                )}
-                <CardBody className="space-y-3">
-                  <div className="flex items-center gap-2 flex-wrap">
-                    <Badge variant="primary">{e.event_type}</Badge>
-                    {/* @ts-expect-error join */}
-                    {e.games?.name && <Badge>{e.games.name}</Badge>}
-                  </div>
-                  <h3 className="font-bold text-lg">{e.title}</h3>
-                  {e.description && (
-                    <p className="text-sm text-[var(--color-fg-muted)] line-clamp-2">{e.description}</p>
+              <div className="rounded-2xl border border-[var(--color-border)] bg-[var(--color-bg-elev)] overflow-hidden hover:border-[var(--color-primary)] transition-colors h-full flex flex-col">
+                {/* TOP */}
+                <div className="relative h-32 shrink-0 overflow-hidden">
+                  {e.banner_url ? (
+                    <Image src={e.banner_url} alt="" fill sizes="(max-width: 768px) 100vw, 33vw" className="object-cover" />
+                  ) : (
+                    <div className="h-full w-full bg-gradient-to-br from-[#0d1b3e] via-[#1a1a2e] to-[#050507]" />
                   )}
-                  <div className="text-xs space-y-1.5 pt-2 border-t border-[var(--color-border)]">
-                    <div className="flex items-center gap-2 text-[var(--color-fg-muted)]">
-                      <Calendar className="h-3 w-3 text-[var(--color-primary)]" /> {formatDate(e.start_at)}
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
+                  <div className="absolute top-3 right-3 flex gap-1.5">
+                    <Badge variant="primary" className="text-[10px]">{e.event_type}</Badge>
+                    {/* @ts-expect-error join */}
+                    {e.games?.name && <Badge className="text-[10px]">{e.games.name}</Badge>}
+                  </div>
+                  {e.track && (
+                    <div className="absolute bottom-3 left-3 text-xs text-white/70 font-medium flex items-center gap-1">
+                      <MapPin className="h-3 w-3" /> {e.track}
                     </div>
-                    {e.track && (
-                      <div className="flex items-center gap-2 text-[var(--color-fg-muted)]">
-                        <MapPin className="h-3 w-3 text-[var(--color-accent)]" /> {e.track}
-                      </div>
-                    )}
+                  )}
+                </div>
+                {/* BOTTOM */}
+                <div className="flex flex-col flex-1 p-4 bg-[#111118]">
+                  <h3 className="font-bold text-base leading-tight mb-1">{e.title}</h3>
+                  {e.description && (
+                    <p className="text-xs text-[var(--color-fg-muted)] line-clamp-2 mb-auto">{e.description}</p>
+                  )}
+                  <div className="flex items-center justify-between pt-3 mt-3 border-t border-white/[0.06] text-sm font-bold">
+                    <span className="flex items-center gap-1.5 text-[var(--color-fg-muted)]">
+                      <Calendar className="h-3.5 w-3.5 text-[var(--color-primary)]" />
+                      <span className="text-xs font-semibold">{formatDate(e.start_at)}</span>
+                    </span>
                     {e.max_participants && (
-                      <div className="flex items-center gap-2 text-[var(--color-fg-muted)]">
-                        <Users className="h-3 w-3 text-[var(--color-success)]" /> max {e.max_participants}
-                      </div>
+                      <span className="flex items-center gap-1.5 text-[var(--color-fg-muted)]">
+                        <span className="text-xl font-extrabold text-[var(--color-fg)]">{e.max_participants}</span> piloti
+                      </span>
                     )}
                   </div>
-                </CardBody>
-              </Card>
+                </div>
+              </div>
             </Link>
           ))}
         </div>

@@ -2,7 +2,7 @@ import Link from "next/link";
 import { createClient } from "@/lib/supabase/server";
 import { Card, CardBody, Badge } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Users, Plus, Flag } from "lucide-react";
+import { Plus, Flag, Users } from "lucide-react";
 
 export const revalidate = 30;
 export const metadata = { title: "Team · SimUniverse" };
@@ -57,30 +57,42 @@ export default async function TeamPage({ searchParams }: { searchParams: SP }) {
         <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
           {teams.map((t) => (
             <Link key={t.id} href={`/team/${t.slug}`}>
-              <Card className="h-full hover:border-[var(--color-primary)] transition-colors">
-                <CardBody className="space-y-3">
-                  <div className="flex items-center gap-3">
-                    <div className="h-12 w-12 rounded bg-[var(--color-bg-elev-2)] border border-[var(--color-border)] flex items-center justify-center overflow-hidden shrink-0">
+              <div className="rounded-2xl border border-[var(--color-border)] bg-[var(--color-bg-elev)] overflow-hidden hover:border-[var(--color-primary)] transition-colors h-full flex flex-col">
+                {/* TOP */}
+                <div className="relative h-32 shrink-0 overflow-hidden bg-gradient-to-br from-[#0d1b3e] via-[#1a1a2e] to-[#050507]">
+                  {t.logo_url && (
+                    // eslint-disable-next-line @next/next/no-img-element
+                    <img src={t.logo_url} alt={t.name} className="h-full w-full object-cover opacity-40" />
+                  )}
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
+                  <div className="absolute top-3 right-3">
+                    {t.recruiting && <Badge variant="success" className="text-[10px]">Recluta</Badge>}
+                  </div>
+                  <div className="absolute bottom-3 left-3">
+                    <div className="h-10 w-10 rounded-lg border border-white/20 bg-black/40 backdrop-blur-sm flex items-center justify-center overflow-hidden">
                       {t.logo_url ? (
                         // eslint-disable-next-line @next/next/no-img-element
                         <img src={t.logo_url} alt={t.name} className="h-full w-full object-cover" />
                       ) : (
-                        <Flag className="h-6 w-6 text-[var(--color-primary)]" />
+                        <Flag className="h-5 w-5 text-[var(--color-primary)]" />
                       )}
                     </div>
-                    <div className="flex-1">
-                      <h3 className="font-bold">{t.name}</h3>
-                      <div className="text-xs text-[var(--color-fg-muted)] flex items-center gap-1">
-                        <Users className="h-3 w-3" /> {t.team_members?.[0]?.count ?? 0} piloti
-                      </div>
-                    </div>
-                    {t.recruiting && <Badge variant="success">Recluta</Badge>}
                   </div>
+                </div>
+                {/* BOTTOM */}
+                <div className="flex flex-col flex-1 p-4 bg-[#111118]">
+                  <h3 className="font-bold text-base leading-tight mb-1">{t.name}</h3>
                   {t.description && (
-                    <p className="text-sm text-[var(--color-fg-muted)] line-clamp-2">{t.description}</p>
+                    <p className="text-xs text-[var(--color-fg-muted)] line-clamp-2 mb-auto">{t.description}</p>
                   )}
-                </CardBody>
-              </Card>
+                  <div className="flex items-center justify-between pt-3 mt-3 border-t border-white/[0.06]">
+                    <span className="flex items-center gap-1.5 text-[var(--color-fg-muted)]">
+                      <span className="text-xl font-extrabold text-[var(--color-fg)]">{t.team_members?.[0]?.count ?? 0}</span>
+                      <span className="text-sm font-semibold">Piloti</span>
+                    </span>
+                  </div>
+                </div>
+              </div>
             </Link>
           ))}
         </div>

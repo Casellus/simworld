@@ -72,9 +72,6 @@ export function Footer() {
             <p className="text-xs text-[var(--color-fg-muted)]">
               © {new Date().getFullYear()} SimUniverse — Tutti i diritti riservati.
             </p>
-            <p className="text-xs text-[var(--color-fg-muted)] italic">
-              Tutte le piste, una community.
-            </p>
           </div>
         </div>
       </div>
