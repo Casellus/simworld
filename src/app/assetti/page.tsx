@@ -5,7 +5,7 @@ import { Card, CardBody, Badge } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { FilterChip } from "@/components/ui/filter-chip";
 import { GAMES, SIM_CATEGORIES } from "@/lib/constants";
-import { Settings2, Plus, MapPin, Car, Cpu } from "lucide-react";
+import { Settings2, Plus, Car, Cpu } from "lucide-react";
 import { one } from "@/lib/types";
 import { Suspense } from "react";
 
@@ -149,41 +149,30 @@ function SetupCard({ s, game }: { s: S; game: { name: string; slug: string } | n
   const catLabel = SIM_CATEGORIES.find((c) => c.value === s.category)?.label ?? s.category;
   return (
     <Link href={`/assetti/${s.id}`}>
-      <div className="rounded-2xl border border-[var(--color-border)] bg-[var(--color-bg-elev)] overflow-hidden hover:border-[var(--color-primary)] transition-colors h-full flex flex-col">
-        {/* TOP: immagine o gradient */}
-        <div className="relative h-32 shrink-0 overflow-hidden">
+      <div className="rounded-3xl border border-[var(--color-border)] overflow-hidden hover:border-[var(--color-primary)] transition-colors h-full flex flex-col" style={{ background: "#111118" }}>
+        {/* TOP: immagine */}
+        <div className="relative h-40 shrink-0">
           {s.photo_url ? (
             <Image src={s.photo_url} alt="" fill sizes="(max-width: 768px) 100vw, 33vw" className="object-cover" />
           ) : (
-            <div className="h-full w-full bg-gradient-to-br from-[#1a1a2e] via-[#0d1b3e] to-[#050507]" />
+            <div className="h-full w-full bg-gradient-to-br from-[#1a2a4a] via-[#0d1b3e] to-[#050507]" />
           )}
-          <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
           <div className="absolute top-3 right-3">
             <Badge variant="primary" className="text-[10px]">{game?.name}</Badge>
           </div>
-          <div className="absolute bottom-3 left-3 text-xs text-white/70 font-medium">
-            {s.setup_type === "simulatore" ? catLabel : s.conditions}
-          </div>
         </div>
-        {/* BOTTOM: info scura */}
-        <div className="flex flex-col flex-1 p-4 bg-[#111118]">
-          <h3 className="font-bold text-base leading-tight mb-1">{s.title}</h3>
-          <div className="text-xs text-[var(--color-fg-muted)] space-y-0.5 mb-auto">
-            {s.setup_type === "simulatore" ? (
-              catLabel && <div className="flex items-center gap-1.5"><Cpu className="h-3 w-3 text-[var(--color-accent)]" /> {catLabel}</div>
-            ) : (
-              <>
-                {s.car   && <div className="flex items-center gap-1.5"><Car    className="h-3 w-3 text-[var(--color-primary)]" /> {s.car}</div>}
-                {s.track && <div className="flex items-center gap-1.5"><MapPin className="h-3 w-3 text-[var(--color-accent)]"  /> {s.track}</div>}
-              </>
-            )}
-          </div>
-          <div className="flex items-center justify-between pt-3 mt-3 border-t border-white/[0.06] text-sm font-bold">
-            <span className="flex items-center gap-1.5 text-[var(--color-fg-muted)]">
-              <span className="text-xl font-extrabold text-[var(--color-fg)]">{s.downloads}</span> Download
+        {/* BOTTOM: pannello scuro con clip angolare in alto-sinistra */}
+        <div className="flex flex-col flex-1 px-4 pb-4 pt-3 -mt-5 relative" style={{ clipPath: "polygon(32px 0%, 100% 0%, 100% 100%, 0% 100%, 0% 32px)", background: "#111118" }}>
+          <h3 className="font-bold text-base leading-tight mb-0.5">{s.title}</h3>
+          <p className="text-sm text-[var(--color-fg-muted)] mb-auto">
+            {s.setup_type === "simulatore" ? catLabel : [s.car, s.track].filter(Boolean).join(" · ")}
+          </p>
+          <div className="flex items-end justify-between mt-6">
+            <span className="text-[var(--color-fg-muted)] text-sm leading-none">
+              <span className="text-3xl font-extrabold text-[var(--color-fg)] mr-1">{s.downloads}</span>Download
             </span>
-            <span className="flex items-center gap-1.5 text-[var(--color-fg-muted)]">
-              <span className="text-xl font-extrabold text-[var(--color-fg)]">{s.rating_sum}</span> Voti
+            <span className="text-[var(--color-fg-muted)] text-sm leading-none">
+              <span className="text-3xl font-extrabold text-[var(--color-fg)] mr-1">{s.rating_sum > 0 ? s.rating_sum : 0}</span>Voti
             </span>
           </div>
         </div>

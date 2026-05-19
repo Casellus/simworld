@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/button";
 import { FilterChip } from "@/components/ui/filter-chip";
 import { formatDate } from "@/lib/utils";
 import { GAMES, EVENT_TYPES } from "@/lib/constants";
-import { Calendar, Plus, MapPin } from "lucide-react";
+import { Calendar, Plus } from "lucide-react";
 import { Suspense } from "react";
 
 export const metadata = { title: "Eventi · SimUniverse" };
@@ -74,40 +74,33 @@ export default async function EventiPage({ searchParams }: { searchParams: SP })
         <div className="stagger grid gap-4 md:grid-cols-2 lg:grid-cols-3">
           {events.map((e) => (
             <Link key={e.id} href={`/eventi/${e.slug}`}>
-              <div className="rounded-2xl border border-[var(--color-border)] bg-[var(--color-bg-elev)] overflow-hidden hover:border-[var(--color-primary)] transition-colors h-full flex flex-col">
+              <div className="rounded-3xl border border-[var(--color-border)] overflow-hidden hover:border-[var(--color-primary)] transition-colors h-full flex flex-col" style={{ background: "#111118" }}>
                 {/* TOP */}
-                <div className="relative h-32 shrink-0 overflow-hidden">
+                <div className="relative h-40 shrink-0">
                   {e.banner_url ? (
                     <Image src={e.banner_url} alt="" fill sizes="(max-width: 768px) 100vw, 33vw" className="object-cover" />
                   ) : (
                     <div className="h-full w-full bg-gradient-to-br from-[#0d1b3e] via-[#1a1a2e] to-[#050507]" />
                   )}
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
                   <div className="absolute top-3 right-3 flex gap-1.5">
                     <Badge variant="primary" className="text-[10px]">{e.event_type}</Badge>
                     {/* @ts-expect-error join */}
                     {e.games?.name && <Badge className="text-[10px]">{e.games.name}</Badge>}
                   </div>
-                  {e.track && (
-                    <div className="absolute bottom-3 left-3 text-xs text-white/70 font-medium flex items-center gap-1">
-                      <MapPin className="h-3 w-3" /> {e.track}
-                    </div>
-                  )}
                 </div>
-                {/* BOTTOM */}
-                <div className="flex flex-col flex-1 p-4 bg-[#111118]">
-                  <h3 className="font-bold text-base leading-tight mb-1">{e.title}</h3>
-                  {e.description && (
-                    <p className="text-xs text-[var(--color-fg-muted)] line-clamp-2 mb-auto">{e.description}</p>
-                  )}
-                  <div className="flex items-center justify-between pt-3 mt-3 border-t border-white/[0.06] text-sm font-bold">
-                    <span className="flex items-center gap-1.5 text-[var(--color-fg-muted)]">
-                      <Calendar className="h-3.5 w-3.5 text-[var(--color-primary)]" />
-                      <span className="text-xs font-semibold">{formatDate(e.start_at)}</span>
+                {/* BOTTOM con clip angolare */}
+                <div className="flex flex-col flex-1 px-4 pb-4 pt-3 -mt-5 relative" style={{ clipPath: "polygon(32px 0%, 100% 0%, 100% 100%, 0% 100%, 0% 32px)", background: "#111118" }}>
+                  <h3 className="font-bold text-base leading-tight mb-0.5">{e.title}</h3>
+                  <p className="text-sm text-[var(--color-fg-muted)] mb-auto">
+                    {[e.track, e.event_type].filter(Boolean).join(" · ")}
+                  </p>
+                  <div className="flex items-end justify-between mt-6">
+                    <span className="text-[var(--color-fg-muted)] text-sm leading-none">
+                      <span className="text-lg font-extrabold text-[var(--color-fg)] mr-1">{formatDate(e.start_at)}</span>
                     </span>
                     {e.max_participants && (
-                      <span className="flex items-center gap-1.5 text-[var(--color-fg-muted)]">
-                        <span className="text-xl font-extrabold text-[var(--color-fg)]">{e.max_participants}</span> piloti
+                      <span className="text-[var(--color-fg-muted)] text-sm leading-none">
+                        <span className="text-3xl font-extrabold text-[var(--color-fg)] mr-1">{e.max_participants}</span>Piloti
                       </span>
                     )}
                   </div>
