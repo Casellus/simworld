@@ -20,23 +20,24 @@ export async function Header() {
   ];
 
   return (
-    <header className="sticky top-0 z-50 pt-4 pb-3 px-4">
-      <div className="mx-auto max-w-7xl flex items-center justify-between gap-4">
+    <header className="sticky top-0 z-50">
+      <div className="mx-auto max-w-7xl px-4 sm:px-6">
+        <div className="hidden md:flex h-14 items-center gap-6 bg-[#0d0d12] border border-[var(--color-border-strong)] rounded-2xl px-5 my-3 shadow-[0_4px_32px_rgba(0,0,0,0.5)]">
 
         {/* LOGO */}
-        <div className="hidden md:block shrink-0">
+        <div className="shrink-0 mr-2">
           <Logo />
         </div>
 
-        {/* DESKTOP PILL NAV */}
-        <nav className="hidden md:flex items-center gap-0 bg-[#111118] rounded-full px-2 py-1.5 shadow-[0_4px_24px_rgba(0,0,0,0.6)] border border-white/[0.06]">
+        {/* DESKTOP NAV */}
+        <nav className="flex items-center gap-1 flex-1">
           {nav.map((n) => (
             <NavLink key={n.href} href={n.href} label={n.label} />
           ))}
         </nav>
 
         {/* RIGHT ACTIONS */}
-        <div className="hidden md:flex items-center gap-2 shrink-0">
+        <div className="flex items-center gap-2 shrink-0">
           {profile && <NotificationBell />}
           {profile ? (
             <UserMenu profile={profile} />
@@ -50,6 +51,8 @@ export async function Header() {
               </Link>
             </>
           )}
+        </div>
+
         </div>
 
         {/* MOBILE */}

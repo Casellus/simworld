@@ -1,0 +1,15 @@
+{
+  "hooks": {
+    "Stop": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "cd \"/Users/casellus/Desktop/Sim Racing hub/simworld\" && git add -A && git diff --cached --quiet || git commit -m \"auto: post-task push\" && git push SimWorld main 2>/dev/null || true",
+            "timeout": 30
+          }
+        ]
+      }
+    ]
+  }
+}

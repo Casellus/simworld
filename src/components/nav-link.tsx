@@ -10,14 +10,14 @@ export function NavLink({ href, label }: { href: string; label: string }) {
   return (
     <Link
       href={href}
-      className="relative px-5 py-2 text-xs font-bold uppercase tracking-widest transition-colors"
-      style={{ color: active ? "#fff" : "rgba(255,255,255,0.45)" }}
+      className="relative px-4 py-2 text-sm font-medium transition-colors"
+      style={{ color: active ? "#fff" : "rgba(255,255,255,0.5)" }}
     >
       {label}
       {active && (
         <span
-          className="absolute bottom-0 left-1/2 -translate-x-1/2 h-[2px] w-6 rounded-full"
-          style={{ background: "var(--accent)" }}
+          className="absolute bottom-0 left-1/2 -translate-x-1/2 h-[2px] w-8 rounded-full"
+          style={{ background: "var(--primary)" }}
         />
       )}
     </Link>
