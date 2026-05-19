@@ -18,6 +18,7 @@ export async function updateProfile(formData: FormData) {
   const discord_id = String(formData.get("discord_id") || "").trim();
   const steam_id = String(formData.get("steam_id") || "").trim();
   const avatar_url = String(formData.get("avatar_url") || "").trim();
+  const cover_url = String(formData.get("cover_url") || "").trim();
 
   const { error } = await supabase
     .from("profiles")
@@ -29,6 +30,7 @@ export async function updateProfile(formData: FormData) {
       discord_id: discord_id || null,
       steam_id: steam_id || null,
       avatar_url: avatar_url || null,
+      cover_url: cover_url || null,
       updated_at: new Date().toISOString(),
     })
     .eq("id", user.id);
