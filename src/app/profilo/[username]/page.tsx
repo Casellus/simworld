@@ -2,7 +2,8 @@ import { notFound } from "next/navigation";
 import Link from "next/link";
 import { createClient } from "@/lib/supabase/server";
 import { Badge } from "@/components/ui/card";
-import { MapPin, Cpu, Calendar, Settings2, Gamepad2, MessageCircle, Trophy } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { MapPin, Cpu, Calendar, Settings2, Gamepad2, MessageCircle, Trophy, Pencil } from "lucide-react";
 import { formatDate } from "@/lib/utils";
 import { one } from "@/lib/types";
 import { ProfileAvatar } from "@/components/profile-avatar";
@@ -38,13 +39,15 @@ export default async function ProfiloPage({ params }: { params: Promise<{ userna
   ]);
 
   const displayName = profile.display_name || profile.username;
+  const { data: { user } } = await supabase.auth.getUser();
+  const isOwner = user?.id === profile.id;
 
   return (
     <div className="mx-auto max-w-5xl px-4 sm:px-6 py-6">
       {/* ── CARD HEADER (cover + avatar + tabs) ── */}
-      <div className="rounded-2xl border border-[var(--color-border)] bg-[var(--color-bg-elev)] overflow-hidden">
+      <div className="rounded-2xl border border-[var(--color-border)] bg-[var(--color-bg-elev)]">
         {/* COVER */}
-        <div className="relative h-44 sm:h-60 md:h-72 w-full">
+        <div className="relative h-44 sm:h-60 md:h-72 w-full rounded-t-2xl overflow-hidden">
           {profile.cover_url ? (
             // eslint-disable-next-line @next/next/no-img-element
             <img src={profile.cover_url} alt="" className="h-full w-full object-cover" />
@@ -57,14 +60,23 @@ export default async function ProfiloPage({ params }: { params: Promise<{ userna
         {/* AVATAR + NOME — sovrapposti alla cover */}
         <div className="px-4 sm:px-6">
           <div className="flex flex-col sm:flex-row sm:items-end gap-4 -mt-12 sm:-mt-14 pb-4">
-            <div className="h-24 w-24 sm:h-28 sm:w-28 rounded-full bg-[var(--color-bg-elev-2)] border-4 border-[var(--color-bg-elev)] flex items-center justify-center overflow-hidden shrink-0">
+            <div className="h-24 w-24 sm:h-28 sm:w-28 rounded-full bg-[var(--color-bg-elev-2)] border-4 border-[var(--color-bg-elev)] flex items-center justify-center overflow-hidden shrink-0 relative z-10">
               <ProfileAvatar src={profile.avatar_url} />
             </div>
-            <div className="flex-1 sm:pb-2">
-              <h1 className="text-2xl sm:text-3xl font-extrabold tracking-tight" style={{ fontFamily: "var(--font-heading)" }}>
-                {displayName}
-              </h1>
-              <p className="text-sm text-[var(--color-fg-muted)]">@{profile.username}</p>
+            <div className="flex-1 sm:pb-2 flex flex-col sm:flex-row sm:items-end sm:justify-between gap-3">
+              <div>
+                <h1 className="text-2xl sm:text-3xl font-extrabold tracking-tight" style={{ fontFamily: "var(--font-heading)" }}>
+                  {displayName}
+                </h1>
+                <p className="text-sm text-[var(--color-fg-muted)]">@{profile.username}</p>
+              </div>
+              {isOwner && (
+                <Link href="/dashboard/impostazioni">
+                  <Button variant="outline" size="sm" className="shrink-0">
+                    <Pencil className="h-4 w-4" /> Modifica profilo
+                  </Button>
+                </Link>
+              )}
             </div>
           </div>
 
