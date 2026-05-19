@@ -71,37 +71,44 @@ export default async function CercaPage({ searchParams }: { searchParams: SP }) 
             const isOwner = user && p.user_id === user.id;
             const contactIsUrl = p.contact ? /^https?:\/\//i.test(p.contact.trim()) : false;
             return (
-              <Card key={p.id} className="relative">
+              <div key={p.id} className="rounded-3xl border border-[var(--color-border)] overflow-hidden hover:border-[var(--color-primary)] transition-colors h-full flex flex-col relative" style={{ background: "#111118" }}>
                 <Link href={`/cerca/${p.id}`} className="absolute inset-0 z-[1]" aria-label={p.title} />
-                <CardBody className="space-y-3">
-                  <div className="flex items-center justify-between gap-2 flex-wrap">
-                    <div className="flex items-center gap-2 flex-wrap">
-                      <Badge variant={p.post_type === "cerca_pilota" ? "accent" : "primary"}>
-                        {p.post_type === "cerca_pilota" ? "Team cerca pilota" : "Pilota cerca team"}
-                      </Badge>
-                      {game?.name && <Badge>{game.name}</Badge>}
-                    </div>
-                    {isOwner && (
-                      <div className="relative z-[2]">
-                        <PostActions postId={p.id} />
-                      </div>
-                    )}
+                {/* TOP: gradient con tipo e gioco */}
+                <div className="relative h-40 shrink-0 flex flex-col items-end justify-start p-3"
+                  style={{ background: p.post_type === "cerca_pilota"
+                    ? "linear-gradient(135deg, #0d2a1a, #0a1a2e, #050507)"
+                    : "linear-gradient(135deg, #0d1b3e, #1a1a2e, #050507)" }}>
+                  <div className="flex gap-1.5 flex-wrap justify-end">
+                    <Badge variant={p.post_type === "cerca_pilota" ? "accent" : "primary"} className="text-[10px]">
+                      {p.post_type === "cerca_pilota" ? "Team cerca pilota" : "Pilota cerca team"}
+                    </Badge>
+                    {game?.name && <Badge className="text-[10px]">{game.name}</Badge>}
                   </div>
-                  <h3 className="font-bold text-lg">{p.title}</h3>
-                  <p className="text-sm text-[var(--color-fg-muted)] line-clamp-3">{p.description}</p>
-                  <div className="flex items-center justify-between pt-3 border-t border-[var(--color-border)] text-xs text-[var(--color-fg-muted)]">
-                    <span>{formatDate(p.created_at)}</span>
+                  {isOwner && (
+                    <div className="absolute top-3 left-3 z-[2]">
+                      <PostActions postId={p.id} />
+                    </div>
+                  )}
+                </div>
+                {/* BOTTOM con clip angolare */}
+                <div className="flex flex-col flex-1 px-4 pb-4 pt-3 -mt-5 relative" style={{ clipPath: "polygon(32px 0%, 100% 0%, 100% 100%, 0% 100%, 0% 32px)", background: "#111118" }}>
+                  <h3 className="font-bold text-base leading-tight mb-0.5">{p.title}</h3>
+                  <p className="text-sm text-[var(--color-fg-muted)] line-clamp-2 mb-auto">{p.description}</p>
+                  <div className="flex items-end justify-between mt-6">
+                    <span className="text-[var(--color-fg-muted)] text-sm leading-none">
+                      <span className="text-lg font-extrabold text-[var(--color-fg)] mr-1">{formatDate(p.created_at)}</span>
+                    </span>
                     {p.contact && (
-                      <span className="flex items-center gap-1">
+                      <span className="flex items-center gap-1 text-[var(--color-fg-muted)] text-xs z-[2] relative">
                         {contactIsUrl
                           ? <ExternalLink className="h-3 w-3 text-[var(--color-primary)]" />
                           : <Mail className="h-3 w-3 text-[var(--color-primary)]" />}
-                        {contactIsUrl ? "Link disponibile" : p.contact}
+                        {contactIsUrl ? "Link" : p.contact}
                       </span>
                     )}
                   </div>
-                </CardBody>
-              </Card>
+                </div>
+              </div>
             );
           })}
         </div>
