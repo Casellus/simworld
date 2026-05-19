@@ -74,28 +74,28 @@ export default async function ProfiloPage({ params }: { params: Promise<{ userna
         </div>
 
         {/* AVATAR + NOME */}
-        <div className="px-4 sm:px-6">
-          <div className="flex flex-col sm:flex-row sm:items-end gap-4 -mt-12 sm:-mt-14 pb-4 pt-1">
-            <div className="h-24 w-24 sm:h-28 sm:w-28 rounded-full bg-[var(--color-bg-elev-2)] border-4 border-[var(--color-bg-elev)] flex items-center justify-center overflow-hidden shrink-0 relative z-10">
+        <div className="px-4 sm:px-6 pb-4">
+          <div className="flex items-end gap-3 -mt-10 sm:-mt-12">
+            <div className="h-20 w-20 sm:h-24 sm:w-24 md:h-28 md:w-28 rounded-full bg-[var(--color-bg-elev-2)] border-4 border-[var(--color-bg-elev)] flex items-center justify-center overflow-hidden shrink-0 relative z-10">
               <ProfileAvatar src={profile.avatar_url} />
             </div>
-            <div className="flex-1 pb-1 sm:pb-2 flex flex-col sm:flex-row sm:items-end sm:justify-between gap-3 min-w-0">
-              <div className="min-w-0">
-                <h1 className="text-2xl sm:text-3xl font-extrabold tracking-tight truncate" style={{ fontFamily: "var(--font-heading)" }}>
-                  {displayName}
-                </h1>
-                <p className="text-sm text-[var(--color-fg-muted)]">@{profile.username}</p>
-              </div>
-              {isOwner && (
-                <Link href="/dashboard/impostazioni">
-                  <Button variant="outline" size="sm" className="shrink-0">
-                    <Pencil className="h-4 w-4" /> Modifica profilo
-                  </Button>
-                </Link>
-              )}
-            </div>
           </div>
-
+          <div className="flex items-start justify-between gap-3 mt-3 min-w-0">
+            <div className="min-w-0">
+              <h1 className="text-xl sm:text-2xl md:text-3xl font-extrabold tracking-tight break-words" style={{ fontFamily: "var(--font-heading)" }}>
+                {displayName}
+              </h1>
+              <p className="text-sm text-[var(--color-fg-muted)]">@{profile.username}</p>
+            </div>
+            {isOwner && (
+              <Link href="/dashboard/impostazioni" className="shrink-0 mt-1">
+                <Button variant="outline" size="sm">
+                  <Pencil className="h-4 w-4" />
+                  <span className="hidden sm:inline">Modifica profilo</span>
+                </Button>
+              </Link>
+            )}
+          </div>
         </div>
       </div>
 

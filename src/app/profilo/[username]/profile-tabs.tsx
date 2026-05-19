@@ -36,12 +36,12 @@ export function ProfileTabs({ profile, setups, events, userGames }: Props) {
   return (
     <>
       {/* TABS BAR */}
-      <div className="flex items-center gap-6 border-b border-[var(--color-border)] mt-5 overflow-x-auto">
+      <div className="flex items-center border-b border-[var(--color-border)] mt-5 overflow-x-auto gap-1 sm:gap-2">
         {TABS.map((t) => (
           <button
             key={t}
             onClick={() => setTab(t)}
-            className={`py-3 text-sm font-medium whitespace-nowrap border-b-2 transition-colors ${
+            className={`px-3 sm:px-4 py-3 text-sm font-medium whitespace-nowrap border-b-2 transition-colors ${
               tab === t
                 ? "text-[var(--color-fg)] border-[var(--color-primary)] font-semibold"
                 : "text-[var(--color-fg-muted)] border-transparent hover:text-[var(--color-fg)]"
@@ -49,10 +49,10 @@ export function ProfileTabs({ profile, setups, events, userGames }: Props) {
           >
             {t}
             {t === "Assetti" && (
-              <span className="ml-1.5 text-[var(--color-fg-muted)]/60">{setups.length}</span>
+              <span className="ml-1 text-[var(--color-fg-muted)]/60">{setups.length}</span>
             )}
             {t === "Eventi" && (
-              <span className="ml-1.5 text-[var(--color-fg-muted)]/60">{events.length}</span>
+              <span className="ml-1 text-[var(--color-fg-muted)]/60">{events.length}</span>
             )}
           </button>
         ))}
@@ -60,7 +60,7 @@ export function ProfileTabs({ profile, setups, events, userGames }: Props) {
 
       {/* TAB: PROFILO */}
       {tab === "Profilo" && (
-        <div className="mt-5 space-y-5">
+        <div className="mt-5 space-y-5 pb-6">
           <div className="rounded-2xl border border-[var(--color-border)] bg-[var(--color-bg-elev)] p-5 sm:p-6">
             <h2 className="text-lg font-bold mb-5">Informazioni</h2>
             <div className="grid gap-x-10 gap-y-5 sm:grid-cols-2">
@@ -95,7 +95,7 @@ export function ProfileTabs({ profile, setups, events, userGames }: Props) {
 
       {/* TAB: ASSETTI */}
       {tab === "Assetti" && (
-        <div className="mt-5 rounded-2xl border border-[var(--color-border)] bg-[var(--color-bg-elev)] p-5 sm:p-6">
+        <div className="mt-5 mb-6 rounded-2xl border border-[var(--color-border)] bg-[var(--color-bg-elev)] p-5 sm:p-6">
           <h2 className="text-lg font-bold mb-4 flex items-center gap-2">
             <Settings2 className="h-5 w-5 text-[var(--color-primary)]" /> Assetti pubblicati
           </h2>
@@ -122,7 +122,7 @@ export function ProfileTabs({ profile, setups, events, userGames }: Props) {
 
       {/* TAB: EVENTI */}
       {tab === "Eventi" && (
-        <div className="mt-5 rounded-2xl border border-[var(--color-border)] bg-[var(--color-bg-elev)] p-5 sm:p-6">
+        <div className="mt-5 mb-6 rounded-2xl border border-[var(--color-border)] bg-[var(--color-bg-elev)] p-5 sm:p-6">
           <h2 className="text-lg font-bold mb-4 flex items-center gap-2">
             <Trophy className="h-5 w-5 text-[var(--color-accent)]" /> Eventi
           </h2>
