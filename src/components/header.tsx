@@ -6,6 +6,7 @@ import { UserMenu } from "@/components/user-menu";
 import { NotificationBell } from "@/components/notification-bell";
 import { MobileHamburger } from "@/components/mobile-nav";
 import { Calendar, Users, Settings2, Search, BookOpen } from "lucide-react";
+import { NavLink } from "@/components/nav-link";
 
 export async function Header() {
   const profile = await getProfile();
@@ -19,46 +20,41 @@ export async function Header() {
   ];
 
   return (
-    <header className="sticky top-0 z-50 nav-glass">
-      <div className="mx-auto max-w-7xl px-4 sm:px-6">
+    <header className="sticky top-0 z-50 pt-4 pb-3 px-4">
+      <div className="mx-auto max-w-7xl flex items-center justify-between gap-4">
 
-        {/* DESKTOP */}
-        <div className="hidden md:flex h-16 items-center justify-between gap-4">
+        {/* LOGO */}
+        <div className="hidden md:block shrink-0">
           <Logo />
+        </div>
 
-          <nav className="flex items-center gap-1">
-            {nav.map((n) => (
-              <Link
-                key={n.href}
-                href={n.href}
-                className="px-3 py-2 text-sm font-medium text-[var(--color-fg-muted)] hover:text-[var(--color-primary)] hover:bg-[var(--color-bg-elev)] rounded-lg transition-colors flex items-center gap-2"
-              >
-                <n.icon className="h-4 w-4" />
-                {n.label}
+        {/* DESKTOP PILL NAV */}
+        <nav className="hidden md:flex items-center gap-0 bg-[#111118] rounded-full px-2 py-1.5 shadow-[0_4px_24px_rgba(0,0,0,0.6)] border border-white/[0.06]">
+          {nav.map((n) => (
+            <NavLink key={n.href} href={n.href} label={n.label} />
+          ))}
+        </nav>
+
+        {/* RIGHT ACTIONS */}
+        <div className="hidden md:flex items-center gap-2 shrink-0">
+          {profile && <NotificationBell />}
+          {profile ? (
+            <UserMenu profile={profile} />
+          ) : (
+            <>
+              <Link href="/auth/login">
+                <Button variant="ghost" size="sm">Accedi</Button>
               </Link>
-            ))}
-          </nav>
-
-          <div className="flex items-center gap-2">
-            {profile && <NotificationBell />}
-            {profile ? (
-              <UserMenu profile={profile} />
-            ) : (
-              <>
-                <Link href="/auth/login">
-                  <Button variant="ghost" size="sm">Accedi</Button>
-                </Link>
-                <Link href="/auth/register">
-                  <Button size="sm">Registrati</Button>
-                </Link>
-              </>
-            )}
-          </div>
+              <Link href="/auth/register">
+                <Button size="sm">Registrati</Button>
+              </Link>
+            </>
+          )}
         </div>
 
         {/* MOBILE */}
-        <div className="md:hidden flex h-16 items-center justify-between gap-2">
-          <div className="flex items-center gap-1 w-20">
+        <div className="md:hidden flex w-full h-12 items-center justify-between">
+          <div className="flex items-center gap-1">
             {profile ? (
               <>
                 <NotificationBell />
@@ -70,14 +66,10 @@ export async function Header() {
               </Link>
             )}
           </div>
-
-          <Link href="/" className="flex items-center group absolute left-1/2 -translate-x-1/2">
+          <Link href="/" className="absolute left-1/2 -translate-x-1/2">
             <Logo size="sm" href={null} />
           </Link>
-
-          <div className="flex justify-end w-20">
-            <MobileHamburger isLoggedIn={!!profile} />
-          </div>
+          <MobileHamburger isLoggedIn={!!profile} />
         </div>
 
       </div>
