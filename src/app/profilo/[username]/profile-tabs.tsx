@@ -36,7 +36,7 @@ export function ProfileTabs({ profile, setups, events, userGames }: Props) {
   return (
     <>
       {/* TABS BAR */}
-      <div className="flex items-center gap-6 border-t border-[var(--color-border)] -mx-4 sm:-mx-6 px-4 sm:px-6 overflow-x-auto">
+      <div className="flex items-center gap-6 border-b border-[var(--color-border)] mt-5 overflow-x-auto">
         {TABS.map((t) => (
           <button
             key={t}

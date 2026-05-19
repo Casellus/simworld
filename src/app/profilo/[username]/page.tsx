@@ -96,15 +96,16 @@ export default async function ProfiloPage({ params }: { params: Promise<{ userna
             </div>
           </div>
 
-          {/* TABS — gestiti lato client */}
-          <ProfileTabs
-            profile={profile}
-            setups={setupsClean}
-            events={events}
-            userGames={userGamesClean}
-          />
         </div>
       </div>
+
+      {/* TABS — fuori dalla card header */}
+      <ProfileTabs
+        profile={profile}
+        setups={setupsClean}
+        events={events}
+        userGames={userGamesClean}
+      />
     </div>
   );
 }
