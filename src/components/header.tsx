@@ -22,22 +22,22 @@ export async function Header() {
   return (
     <header className="sticky top-0 z-50">
       <div className="mx-auto max-w-7xl px-4 sm:px-6">
-        <div className="hidden md:flex h-14 items-center gap-6 bg-[#0d0d12] border border-[var(--color-border-strong)] rounded-2xl px-5 my-3 shadow-[0_4px_32px_rgba(0,0,0,0.5)]">
+        <div className="hidden md:flex h-14 items-center bg-[#0d0d12] border border-[var(--color-border-strong)] rounded-2xl px-5 my-3 shadow-[0_4px_32px_rgba(0,0,0,0.5)]">
 
         {/* LOGO */}
-        <div className="shrink-0 mr-2">
+        <div className="shrink-0 flex-1">
           <Logo />
         </div>
 
-        {/* DESKTOP NAV */}
-        <nav className="flex items-center gap-1 flex-1">
+        {/* DESKTOP NAV — centrato */}
+        <nav className="flex items-center gap-1 absolute left-1/2 -translate-x-1/2">
           {nav.map((n) => (
             <NavLink key={n.href} href={n.href} label={n.label} />
           ))}
         </nav>
 
         {/* RIGHT ACTIONS */}
-        <div className="flex items-center gap-2 shrink-0">
+        <div className="flex items-center gap-2 shrink-0 flex-1 justify-end">
           {profile && <NotificationBell />}
           {profile ? (
             <UserMenu profile={profile} />
