@@ -67,10 +67,10 @@ export default async function Home() {
   return (
     <>
       {/* ── CINEMATIC HERO ── */}
-      <section className="hero-fullscreen">
+      <section className="hero-fullscreen" style={{ marginTop: "calc(-56px - 1.5rem)" }}>
         <HeroVideo />
         <div className="hero-video-overlay" />
-        <div className="relative z-10 mx-auto max-w-7xl px-4 sm:px-6 w-full">
+        <div className="relative z-10 mx-auto max-w-7xl px-4 sm:px-6 w-full" style={{ paddingTop: "calc(56px + 1.5rem)" }}>
             <div className="flex flex-col items-center text-center">
               {user ? (
                 <>
@@ -212,7 +212,6 @@ export default async function Home() {
             </div>
             <div className="mt-12 flex flex-wrap gap-3">
               <Link href="/auth/register"><Button size="lg">Crea account <ArrowRight className="h-4 w-4" /></Button></Link>
-              <Link href="/eventi"><Button size="lg" variant="outline">Esplora senza account</Button></Link>
             </div>
           </div>
         </section>
