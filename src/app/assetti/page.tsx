@@ -38,7 +38,7 @@ export default async function AssettiPage({ searchParams }: { searchParams: SP }
 
   let q = supabase
     .from("setups")
-    .select("id, title, car, track, conditions, category, setup_type, downloads, rating_sum, photo_url, games(slug, name), profiles(username, display_name)")
+    .select("id, title, car, track, conditions, category, setup_type, downloads, rating_sum, rating_count, photo_url, games(slug, name), profiles(username, display_name)")
     .eq("setup_type", tipo)
     .order(col, { ascending: asc })
     .limit(50);
@@ -119,7 +119,7 @@ export default async function AssettiPage({ searchParams }: { searchParams: SP }
 type S = {
   id: string; title: string; car: string | null; track: string | null;
   conditions: string | null; category: string | null; setup_type: string;
-  downloads: number; rating_sum: number; photo_url: string | null;
+  downloads: number; rating_sum: number; rating_count: number; photo_url: string | null;
   games: { name: string; slug: string } | { name: string; slug: string }[];
   profiles: { username: string; display_name: string | null } | { username: string; display_name: string | null }[] | null;
 };
@@ -166,7 +166,9 @@ function GameGroups({ setups, tipo }: { setups: S[]; tipo: string }) {
 function SetupCard({ s }: { s: S }) {
   const profile = one<{ username: string; display_name: string | null }>(s.profiles);
   const author = profile?.display_name || profile?.username || "Anonimo";
-  const rating = s.rating_sum > 0 ? (s.rating_sum / 10).toFixed(1) : null;
+  const positivi = (s.rating_count + s.rating_sum) / 2;
+  const stelle = s.rating_count > 0 ? (positivi / s.rating_count) * 5 : null;
+  const rating = stelle !== null ? stelle.toFixed(1) : null;
   return (
     <Link href={`/assetti/${s.id}`}>
       <div className="rounded-2xl overflow-hidden h-full flex flex-col shadow-xl hover:scale-[1.02] transition-transform duration-200">
