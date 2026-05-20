@@ -38,7 +38,7 @@ export default async function AssettiPage({ searchParams }: { searchParams: SP }
 
   let q = supabase
     .from("setups")
-    .select("id, title, car, track, conditions, category, setup_type, downloads, rating_sum, rating_count, photo_url, games(slug, name), profiles(username, display_name)")
+    .select("id, title, car, track, conditions, category, setup_type, downloads, rating_sum, rating_count, photo_url, games(slug, name), profiles!left(username, display_name)")
     .eq("setup_type", tipo)
     .order(col, { ascending: asc })
     .limit(50);
