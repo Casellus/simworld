@@ -5,6 +5,7 @@ import { createClient } from "@/lib/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Input, Label } from "@/components/ui/input";
 import { CheckCircle2 } from "lucide-react";
+import { checkEmailExists } from "./actions";
 
 export function ForgotPasswordForm() {
   const [loading, setLoading] = useState(false);
@@ -16,6 +17,14 @@ export function ForgotPasswordForm() {
     setError(null);
     setLoading(true);
     const email = String(new FormData(e.currentTarget).get("email"));
+
+    const exists = await checkEmailExists(email);
+    if (!exists) {
+      setError("Nessun account registrato con questa email.");
+      setLoading(false);
+      return;
+    }
+
     const supabase = createClient();
     const { error } = await supabase.auth.resetPasswordForEmail(email, {
       redirectTo: `${window.location.origin}/auth/callback?next=/auth/reset-password`,
