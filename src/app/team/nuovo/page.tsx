@@ -17,6 +17,12 @@ export default function NuovoTeamPage() {
   const [preview, setPreview] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
+  const [selectedGames, setSelectedGames] = useState<string[]>([]);
+  const [recruiting, setRecruiting] = useState(true);
+
+  function toggleGame(slug: string) {
+    setSelectedGames((prev) => prev.includes(slug) ? prev.filter((s) => s !== slug) : [...prev, slug]);
+  }
 
   function handleFile(e: React.ChangeEvent<HTMLInputElement>) {
     const file = e.target.files?.[0];
@@ -139,13 +145,31 @@ export default function NuovoTeamPage() {
               <Label>Giochi praticati</Label>
               <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-2 mt-1">
                 {GAMES.map((g) => (
-                  <label
+                  <div
                     key={g.slug}
-                    className="flex items-center gap-2 text-sm px-3 py-2 rounded border border-[var(--color-border)] bg-[var(--color-bg-elev)] cursor-pointer hover:border-[var(--color-primary)]"
+                    onClick={() => toggleGame(g.slug)}
+                    className={`p-3 rounded-xl border cursor-pointer transition-all duration-150 ${
+                      selectedGames.includes(g.slug)
+                        ? "border-[var(--color-primary)] bg-[var(--color-primary)]/10 shadow-[0_0_0_1px_var(--color-primary)]"
+                        : "border-[var(--color-border)] bg-[var(--color-bg-elev)] hover:border-[var(--color-primary)]/40"
+                    }`}
                   >
-                    <input type="checkbox" name="games" value={g.slug} />
-                    {g.short}
-                  </label>
+                    <label className="flex items-center gap-3 text-sm font-medium cursor-pointer select-none">
+                      <span className={`flex-shrink-0 h-5 w-5 rounded-md border-2 flex items-center justify-center transition-all duration-150 ${
+                        selectedGames.includes(g.slug)
+                          ? "border-[var(--color-primary)] bg-[var(--color-primary)]"
+                          : "border-[var(--color-border-strong)] bg-transparent"
+                      }`}>
+                        {selectedGames.includes(g.slug) && (
+                          <svg className="h-3 w-3 text-white" viewBox="0 0 12 12" fill="none">
+                            <path d="M2 6l3 3 5-5" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                          </svg>
+                        )}
+                        <input type="checkbox" name="games" value={g.slug} checked={selectedGames.includes(g.slug)} onChange={() => {}} className="sr-only" />
+                      </span>
+                      {g.short}
+                    </label>
+                  </div>
                 ))}
               </div>
             </div>
@@ -155,10 +179,30 @@ export default function NuovoTeamPage() {
               <Textarea id="description" name="description" rows={5} placeholder="Chi siete, obiettivi, requisiti..." />
             </div>
 
-            <label className="flex items-center gap-2 text-sm">
-              <input type="checkbox" name="recruiting" defaultChecked />
-              <span>Aperto al reclutamento</span>
-            </label>
+            <div
+              onClick={() => setRecruiting((v) => !v)}
+              className={`p-3 rounded-xl border cursor-pointer transition-all duration-150 ${
+                recruiting
+                  ? "border-[var(--color-primary)] bg-[var(--color-primary)]/10 shadow-[0_0_0_1px_var(--color-primary)]"
+                  : "border-[var(--color-border)] bg-[var(--color-bg-elev)] hover:border-[var(--color-primary)]/40"
+              }`}
+            >
+              <label className="flex items-center gap-3 text-sm font-medium cursor-pointer select-none">
+                <span className={`flex-shrink-0 h-5 w-5 rounded-md border-2 flex items-center justify-center transition-all duration-150 ${
+                  recruiting
+                    ? "border-[var(--color-primary)] bg-[var(--color-primary)]"
+                    : "border-[var(--color-border-strong)] bg-transparent"
+                }`}>
+                  {recruiting && (
+                    <svg className="h-3 w-3 text-white" viewBox="0 0 12 12" fill="none">
+                      <path d="M2 6l3 3 5-5" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                    </svg>
+                  )}
+                  <input type="checkbox" name="recruiting" checked={recruiting} onChange={() => {}} className="sr-only" />
+                </span>
+                Aperto al reclutamento
+              </label>
+            </div>
 
             {error && <p className="text-sm text-red-500">{error}</p>}
 

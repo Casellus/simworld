@@ -403,33 +403,42 @@ function PostCard({ post }: { post: PostShape }) {
 
 function FeatureBlock({ emoji, title, desc }: { emoji: string; title: string; desc: string }) {
   return (
-    <div className="p-6 rounded-2xl border border-[var(--color-border)] bg-[var(--color-bg-elev)] hover:border-[var(--color-primary)]/40 transition-colors">
-      <div className="text-3xl mb-4">{emoji}</div>
-      <h3 className="font-bold text-lg mb-2" style={{ fontFamily: "var(--font-heading)" }}>{title}</h3>
+    <div className="group relative p-6 rounded-2xl border border-[var(--color-border)] bg-[var(--color-bg-elev)] hover:border-[var(--color-primary)]/60 transition-all duration-200 overflow-hidden">
+      <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none"
+        style={{ background: "radial-gradient(ellipse at top left, rgba(46,125,255,0.07), transparent 70%)" }} />
+      <div className="text-4xl mb-4 leading-none">{emoji}</div>
+      <h3 className="font-bold text-lg mb-2 text-white" style={{ fontFamily: "var(--font-heading)" }}>{title}</h3>
       <p className="text-sm text-[var(--color-fg-muted)] leading-relaxed">{desc}</p>
+      <div className="absolute bottom-0 left-0 h-0.5 w-0 group-hover:w-full bg-[var(--color-primary)] transition-all duration-300" />
     </div>
   );
 }
 
 function StepBlock({ num, title, desc }: { num: string; title: string; desc: string }) {
   return (
-    <div className="relative p-6 sm:p-8 rounded-2xl border border-[var(--color-border)] bg-[var(--color-bg-elev)]">
-      <div className="text-5xl sm:text-6xl font-extrabold text-[var(--color-primary)]/30 leading-none mb-3" style={{ fontFamily: "var(--font-heading)" }}>
+    <div className="relative p-6 sm:p-8 rounded-2xl border border-[var(--color-border)] bg-[var(--color-bg-elev)] overflow-hidden">
+      <div className="absolute top-0 right-0 text-[120px] font-extrabold leading-none select-none pointer-events-none"
+        style={{ color: "rgba(46,125,255,0.06)", fontFamily: "var(--font-heading)", lineHeight: 1, transform: "translate(10px,-10px)" }}>
         {num}
       </div>
-      <h3 className="font-bold text-xl mb-2" style={{ fontFamily: "var(--font-heading)" }}>{title}</h3>
-      <p className="text-sm text-[var(--color-fg-muted)] leading-relaxed">{desc}</p>
+      <div className="relative">
+        <div className="inline-flex items-center justify-center h-10 w-10 rounded-xl bg-[var(--color-primary)]/15 border border-[var(--color-primary)]/30 mb-4">
+          <span className="text-sm font-extrabold text-[var(--color-primary)]">{num}</span>
+        </div>
+        <h3 className="font-bold text-xl mb-2 text-white" style={{ fontFamily: "var(--font-heading)" }}>{title}</h3>
+        <p className="text-sm text-[var(--color-fg-muted)] leading-relaxed">{desc}</p>
+      </div>
     </div>
   );
 }
 
 function AudienceBlock({ emoji, title, desc }: { emoji: string; title: string; desc: string }) {
   return (
-    <div className="p-5 rounded-xl border border-[var(--color-border)] bg-[var(--color-bg-elev)] hover:border-[var(--color-accent)]/40 transition-colors">
-      <div className="flex items-center gap-3 mb-2">
-        <span className="text-2xl">{emoji}</span>
-        <h3 className="font-bold text-base" style={{ fontFamily: "var(--font-heading)" }}>{title}</h3>
-      </div>
+    <div className="group relative p-5 rounded-xl border border-[var(--color-border)] bg-[var(--color-bg-elev)] hover:border-[var(--color-accent)]/50 transition-all duration-200 overflow-hidden">
+      <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none"
+        style={{ background: "radial-gradient(ellipse at top left, rgba(0,220,170,0.06), transparent 70%)" }} />
+      <div className="text-3xl mb-3 leading-none">{emoji}</div>
+      <h3 className="font-bold text-base text-white mb-1" style={{ fontFamily: "var(--font-heading)" }}>{title}</h3>
       <p className="text-sm text-[var(--color-fg-muted)] leading-relaxed">{desc}</p>
     </div>
   );

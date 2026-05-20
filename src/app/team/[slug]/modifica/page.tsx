@@ -28,6 +28,11 @@ export default function ModificaTeamPage() {
 
   const [team, setTeam] = useState<Team | null>(null);
   const [currentGames, setCurrentGames] = useState<string[]>([]);
+  const [recruitingState, setRecruitingState] = useState(false);
+
+  function toggleGame(slug: string) {
+    setCurrentGames((prev) => prev.includes(slug) ? prev.filter((s) => s !== slug) : [...prev, slug]);
+  }
   const [preview, setPreview] = useState<string | null>(null);
   const [clearLogo, setClearLogo] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -54,6 +59,7 @@ export default function ModificaTeamPage() {
         .eq("team_id", t.id);
 
       setTeam(t);
+      setRecruitingState(t.recruiting);
       setCurrentGames(tg?.map((r) => {
         const g = Array.isArray(r.games) ? r.games[0] : r.games;
         return (g as GameRow | null)?.slug ?? "";
@@ -177,13 +183,31 @@ export default function ModificaTeamPage() {
               <Label>Giochi praticati</Label>
               <div className="grid grid-cols-2 sm:grid-cols-3 gap-2 mt-1">
                 {GAMES.map((g) => (
-                  <label
+                  <div
                     key={g.slug}
-                    className="flex items-center gap-2 text-sm px-3 py-2 rounded border border-[var(--color-border)] bg-[var(--color-bg-elev)] cursor-pointer hover:border-[var(--color-primary)]"
+                    onClick={() => toggleGame(g.slug)}
+                    className={`p-3 rounded-xl border cursor-pointer transition-all duration-150 ${
+                      currentGames.includes(g.slug)
+                        ? "border-[var(--color-primary)] bg-[var(--color-primary)]/10 shadow-[0_0_0_1px_var(--color-primary)]"
+                        : "border-[var(--color-border)] bg-[var(--color-bg-elev)] hover:border-[var(--color-primary)]/40"
+                    }`}
                   >
-                    <input type="checkbox" name="games" value={g.slug} defaultChecked={currentGames.includes(g.slug)} />
-                    {g.short}
-                  </label>
+                    <label className="flex items-center gap-3 text-sm font-medium cursor-pointer select-none">
+                      <span className={`flex-shrink-0 h-5 w-5 rounded-md border-2 flex items-center justify-center transition-all duration-150 ${
+                        currentGames.includes(g.slug)
+                          ? "border-[var(--color-primary)] bg-[var(--color-primary)]"
+                          : "border-[var(--color-border-strong)] bg-transparent"
+                      }`}>
+                        {currentGames.includes(g.slug) && (
+                          <svg className="h-3 w-3 text-white" viewBox="0 0 12 12" fill="none">
+                            <path d="M2 6l3 3 5-5" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                          </svg>
+                        )}
+                        <input type="checkbox" name="games" value={g.slug} checked={currentGames.includes(g.slug)} onChange={() => {}} className="sr-only" />
+                      </span>
+                      {g.short}
+                    </label>
+                  </div>
                 ))}
               </div>
             </div>
@@ -193,10 +217,30 @@ export default function ModificaTeamPage() {
               <Textarea id="description" name="description" rows={5} defaultValue={team.description ?? ""} />
             </div>
 
-            <label className="flex items-center gap-2 text-sm">
-              <input type="checkbox" name="recruiting" defaultChecked={team.recruiting} />
-              <span>Aperto al reclutamento</span>
-            </label>
+            <div
+              onClick={() => setRecruitingState((v) => !v)}
+              className={`p-3 rounded-xl border cursor-pointer transition-all duration-150 ${
+                recruitingState
+                  ? "border-[var(--color-primary)] bg-[var(--color-primary)]/10 shadow-[0_0_0_1px_var(--color-primary)]"
+                  : "border-[var(--color-border)] bg-[var(--color-bg-elev)] hover:border-[var(--color-primary)]/40"
+              }`}
+            >
+              <label className="flex items-center gap-3 text-sm font-medium cursor-pointer select-none">
+                <span className={`flex-shrink-0 h-5 w-5 rounded-md border-2 flex items-center justify-center transition-all duration-150 ${
+                  recruitingState
+                    ? "border-[var(--color-primary)] bg-[var(--color-primary)]"
+                    : "border-[var(--color-border-strong)] bg-transparent"
+                }`}>
+                  {recruitingState && (
+                    <svg className="h-3 w-3 text-white" viewBox="0 0 12 12" fill="none">
+                      <path d="M2 6l3 3 5-5" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                    </svg>
+                  )}
+                  <input type="checkbox" name="recruiting" checked={recruitingState} onChange={() => {}} className="sr-only" />
+                </span>
+                Aperto al reclutamento
+              </label>
+            </div>
 
             {error && <p className="text-sm text-red-500">{error}</p>}
 

@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Input, Label } from "@/components/ui/input";
+import { Checkbox } from "@/components/ui/checkbox";
 import { Eye, EyeOff } from "lucide-react";
 
 export function RegisterForm() {
@@ -138,35 +139,20 @@ export function RegisterForm() {
           </div>
         </div>
         <div className="space-y-3 pt-1">
-          <label className="flex items-start gap-3 cursor-pointer">
-            <input
-              type="checkbox"
-              checked={acceptedAge}
-              onChange={(e) => setAcceptedAge(e.target.checked)}
-              className="mt-0.5 shrink-0 accent-[var(--color-primary)]"
-            />
-            <span className="text-sm" style={{ color: "rgba(255,255,255,0.8)" }}>
-              Confermo di avere almeno <strong className="text-white">16 anni</strong>.
-            </span>
-          </label>
-          <label className="flex items-start gap-3 cursor-pointer">
-            <input
-              type="checkbox"
-              checked={acceptedTerms}
-              onChange={(e) => setAcceptedTerms(e.target.checked)}
-              className="mt-0.5 shrink-0 accent-[var(--color-primary)]"
-            />
-            <span className="text-sm" style={{ color: "rgba(255,255,255,0.8)" }}>
-              Ho letto e accetto i{" "}
-              <a href="/info/termini" target="_blank" className="font-semibold underline underline-offset-2" style={{ color: "#60a5fa" }}>
-                Termini di Servizio
-              </a>{" "}
+          <Checkbox
+            checked={acceptedAge}
+            onChange={(e) => setAcceptedAge((e.target as HTMLInputElement).checked)}
+            label={<>Confermo di avere almeno <strong className="text-white">16 anni</strong>.</>}
+          />
+          <Checkbox
+            checked={acceptedTerms}
+            onChange={(e) => setAcceptedTerms((e.target as HTMLInputElement).checked)}
+            label={<>Ho letto e accetto i{" "}
+              <a href="/info/termini" target="_blank" className="font-semibold underline underline-offset-2" style={{ color: "#60a5fa" }}>Termini di Servizio</a>{" "}
               e la{" "}
-              <a href="/info/privacy" target="_blank" className="font-semibold underline underline-offset-2" style={{ color: "#60a5fa" }}>
-                Privacy Policy
-              </a>.
-            </span>
-          </label>
+              <a href="/info/privacy" target="_blank" className="font-semibold underline underline-offset-2" style={{ color: "#60a5fa" }}>Privacy Policy</a>.
+            </>}
+          />
         </div>
         {error && <p className="text-sm text-[var(--color-danger)]">{error}</p>}
         <Button type="submit" className="w-full" disabled={loading || !acceptedTerms || !acceptedAge}>
