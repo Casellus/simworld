@@ -203,17 +203,21 @@ export async function deleteSetup(setupId: string): Promise<{ error?: string }> 
   return {};
 }
 
-export async function voteSetup(setupId: string, value: 1 | -1) {
+export async function voteSetup(setupId: string, value: 1 | -1 | 0) {
   const supabase = await createClient();
   const {
     data: { user },
   } = await supabase.auth.getUser();
   if (!user) return { error: "Non autorizzato" };
 
-  await supabase.from("setup_votes").upsert(
-    { setup_id: setupId, user_id: user.id, value },
-    { onConflict: "setup_id,user_id" }
-  );
+  if (value === 0) {
+    await supabase.from("setup_votes").delete().eq("setup_id", setupId).eq("user_id", user.id);
+  } else {
+    await supabase.from("setup_votes").upsert(
+      { setup_id: setupId, user_id: user.id, value },
+      { onConflict: "setup_id,user_id" }
+    );
+  }
 
   const { data: votes } = await supabase.from("setup_votes").select("value").eq("setup_id", setupId);
   const sum = (votes || []).reduce((a, v) => a + v.value, 0);

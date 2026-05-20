@@ -23,7 +23,7 @@ export function VoteButtons({ setupId, myVote, isLogged }: { setupId: string; my
 
   function vote(v: 1 | -1) {
     start(async () => {
-      await voteSetup(setupId, v);
+      await voteSetup(setupId, (myVote === v ? 0 : v) as 1 | -1 | 0);
       router.refresh();
     });
   }
