@@ -64,18 +64,23 @@ export default async function EventiPage({ searchParams }: { searchParams: SP })
         </Link>
       </div>
 
-      <form action="/eventi" method="get" className="flex gap-2 mb-6">
-        {sp.gioco && <input type="hidden" name="gioco" value={sp.gioco} />}
-        {sp.tipo && <input type="hidden" name="tipo" value={sp.tipo} />}
-        {sp.ordina && <input type="hidden" name="ordina" value={sp.ordina} />}
-        <input
-          name="q"
-          defaultValue={sp.q || ""}
-          placeholder="Cerca eventi..."
-          className="flex-1 h-10 rounded border border-[var(--color-border)] bg-[var(--color-bg-elev)] px-3 text-sm focus:border-[var(--color-primary)] focus:outline-none"
-        />
-        <Button type="submit" variant="secondary">Cerca</Button>
-      </form>
+      <div className="flex gap-2 mb-6">
+        <form action="/eventi" method="get" className="flex flex-1 gap-2">
+          {sp.gioco && <input type="hidden" name="gioco" value={sp.gioco} />}
+          {sp.tipo && <input type="hidden" name="tipo" value={sp.tipo} />}
+          {sp.ordina && <input type="hidden" name="ordina" value={sp.ordina} />}
+          <input
+            name="q"
+            defaultValue={sp.q || ""}
+            placeholder="Cerca eventi..."
+            className="flex-1 h-10 rounded border border-[var(--color-border)] bg-[var(--color-bg-elev)] px-3 text-sm focus:border-[var(--color-primary)] focus:outline-none"
+          />
+          <Button type="submit" variant="secondary">Cerca</Button>
+        </form>
+        <Suspense>
+          <SortSelect options={SORT_OPTIONS} defaultValue="prossimi" />
+        </Suspense>
+      </div>
 
       <Suspense>
         <div className="flex flex-wrap gap-2 mb-4">
@@ -88,9 +93,6 @@ export default async function EventiPage({ searchParams }: { searchParams: SP })
           {EVENT_TYPES.map((t) => (
             <FilterChip key={t.value} baseHref="/eventi" paramKey="tipo" value={t.value} label={t.label} />
           ))}
-        </div>
-        <div className="flex justify-end mb-6">
-          <SortSelect options={SORT_OPTIONS} defaultValue="prossimi" />
         </div>
       </Suspense>
 

@@ -64,18 +64,23 @@ export default async function CercaPage({ searchParams }: { searchParams: SP }) 
         </Link>
       </div>
 
-      <form action="/cerca" method="get" className="flex gap-2 mb-6">
-        {sp.tipo && <input type="hidden" name="tipo" value={sp.tipo} />}
-        {sp.gioco && <input type="hidden" name="gioco" value={sp.gioco} />}
-        {sp.ordina && <input type="hidden" name="ordina" value={sp.ordina} />}
-        <input
-          name="q"
-          defaultValue={sp.q || ""}
-          placeholder="Cerca annunci..."
-          className="flex-1 h-10 rounded border border-[var(--color-border)] bg-[var(--color-bg-elev)] px-3 text-sm focus:border-[var(--color-primary)] focus:outline-none"
-        />
-        <Button type="submit" variant="secondary">Cerca</Button>
-      </form>
+      <div className="flex gap-2 mb-6">
+        <form action="/cerca" method="get" className="flex flex-1 gap-2">
+          {sp.tipo && <input type="hidden" name="tipo" value={sp.tipo} />}
+          {sp.gioco && <input type="hidden" name="gioco" value={sp.gioco} />}
+          {sp.ordina && <input type="hidden" name="ordina" value={sp.ordina} />}
+          <input
+            name="q"
+            defaultValue={sp.q || ""}
+            placeholder="Cerca annunci..."
+            className="flex-1 h-10 rounded border border-[var(--color-border)] bg-[var(--color-bg-elev)] px-3 text-sm focus:border-[var(--color-primary)] focus:outline-none"
+          />
+          <Button type="submit" variant="secondary">Cerca</Button>
+        </form>
+        <Suspense>
+          <SortSelect options={SORT_OPTIONS} />
+        </Suspense>
+      </div>
 
       <Suspense>
         <div className="flex flex-wrap gap-2 mb-4">
@@ -88,9 +93,6 @@ export default async function CercaPage({ searchParams }: { searchParams: SP }) 
           {GAMES.map((g) => (
             <FilterChip key={g.slug} baseHref="/cerca" paramKey="gioco" value={g.slug} label={g.short} />
           ))}
-        </div>
-        <div className="flex justify-end mb-6">
-          <SortSelect options={SORT_OPTIONS} />
         </div>
       </Suspense>
 
