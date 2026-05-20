@@ -24,7 +24,7 @@ export default function RegisterPage() {
         <RegisterForm />
         <p className="mt-6 text-sm text-center" style={{ color: "rgba(255,255,255,0.85)" }}>
           Hai già un account?{" "}
-          <Link href="/auth/login" className="text-[var(--color-primary)] font-semibold hover:underline">
+          <Link href="/auth/login" className="text-[var(--color-primary)] font-bold hover:underline">
             Accedi
           </Link>
         </p>

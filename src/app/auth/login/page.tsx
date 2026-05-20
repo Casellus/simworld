@@ -24,7 +24,7 @@ export default function LoginPage() {
         <LoginForm />
         <p className="mt-6 text-sm text-center" style={{ color: "rgba(255,255,255,0.85)" }}>
           Non hai account?{" "}
-          <Link href="/auth/register" className="text-[var(--color-primary)] font-semibold hover:underline">
+          <Link href="/auth/register" className="text-[var(--color-primary)] font-bold hover:underline">
             Registrati
           </Link>
         </p>
