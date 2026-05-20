@@ -239,14 +239,25 @@ export function SettingsForm({ profile, userGames }: { profile: Profile; userGam
             return (
               <div
                 key={g.slug}
-                className={`p-3 rounded border cursor-pointer transition-colors ${
+                onClick={() => toggleGame(g.slug)}
+                className={`p-3 rounded-xl border cursor-pointer transition-all duration-150 ${
                   isSel
-                    ? "border-[var(--color-primary)] bg-[var(--color-primary)]/5"
-                    : "border-[var(--color-border)] bg-[var(--color-bg-elev)] hover:border-[var(--color-fg-muted)]"
+                    ? "border-[var(--color-primary)] bg-[var(--color-primary)]/10 shadow-[0_0_0_1px_var(--color-primary)]"
+                    : "border-[var(--color-border)] bg-[var(--color-bg-elev)] hover:border-[var(--color-primary)]/40"
                 }`}
               >
-                <label className="flex items-center gap-2 text-sm font-medium cursor-pointer">
-                  <input type="checkbox" checked={isSel} onChange={() => toggleGame(g.slug)} />
+                <label className="flex items-center gap-3 text-sm font-medium cursor-pointer select-none">
+                  <span className={`flex-shrink-0 h-5 w-5 rounded-md border-2 flex items-center justify-center transition-all duration-150 ${
+                    isSel
+                      ? "border-[var(--color-primary)] bg-[var(--color-primary)]"
+                      : "border-[var(--color-border-strong)] bg-transparent"
+                  }`}>
+                    {isSel && (
+                      <svg className="h-3 w-3 text-white" viewBox="0 0 12 12" fill="none">
+                        <path d="M2 6l3 3 5-5" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                      </svg>
+                    )}
+                  </span>
                   {g.name}
                 </label>
                 {isSel && (
