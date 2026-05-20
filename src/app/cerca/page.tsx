@@ -1,15 +1,14 @@
 import Link from "next/link";
 import { createClient } from "@/lib/supabase/server";
-import { Card, CardBody, Badge } from "@/components/ui/card";
+import { Card, CardBody } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { FilterChip } from "@/components/ui/filter-chip";
 import { Search, Plus, Mail, ExternalLink } from "lucide-react";
-import { formatDate } from "@/lib/utils";
 import { GAMES } from "@/lib/constants";
 import { Suspense } from "react";
 import { PostActions } from "./post-actions";
 
-export const metadata = { title: "Cerca pilota/team · SimUniverse" };
+export const metadata = { title: "Community · SimUniverse" };
 export const revalidate = 30;
 
 type SP = Promise<{ tipo?: string; gioco?: string }>;
@@ -41,7 +40,7 @@ export default async function CercaPage({ searchParams }: { searchParams: SP }) 
     <div className="mx-auto max-w-7xl px-4 sm:px-6 py-10">
       <div className="flex flex-wrap items-center justify-between gap-4 mb-8">
         <div>
-          <h1 className="text-3xl md:text-4xl font-extrabold tracking-tight">Cerca</h1>
+          <h1 className="text-3xl md:text-4xl font-extrabold tracking-tight">Community</h1>
           <p className="text-[var(--color-fg-muted)] mt-1">Cerca pilota o team con cui correre.</p>
         </div>
         <Link href="/cerca/nuovo">
@@ -64,25 +63,25 @@ export default async function CercaPage({ searchParams }: { searchParams: SP }) 
       </Suspense>
 
       {posts && posts.length > 0 ? (
-        <div className="stagger grid gap-4 md:grid-cols-2">
+        <div className="stagger grid gap-4 md:grid-cols-2 lg:grid-cols-3">
           {posts.map((p) => {
-            const gameArr = Array.isArray(p.games) ? p.games : p.games ? [p.games] : [];
-            const game = gameArr[0] as { name: string; slug: string } | undefined;
             const isOwner = user && p.user_id === user.id;
             const contactIsUrl = p.contact ? /^https?:\/\//i.test(p.contact.trim()) : false;
+            const isPilota = p.post_type === "cerca_pilota";
             return (
-              <div key={p.id} className="rounded-3xl border border-[var(--color-border)] overflow-hidden hover:border-[var(--color-primary)] transition-colors h-full flex flex-col relative" style={{ background: "#111118" }}>
+              <div key={p.id} className="rounded-2xl overflow-hidden h-full flex flex-col shadow-xl hover:scale-[1.02] transition-transform duration-200 relative">
                 <Link href={`/cerca/${p.id}`} className="absolute inset-0 z-[1]" aria-label={p.title} />
-                {/* TOP: gradient con tipo e gioco */}
-                <div className="relative h-40 shrink-0 flex flex-col items-end justify-start p-3"
-                  style={{ background: p.post_type === "cerca_pilota"
+                {/* Immagine / gradient */}
+                <div className="relative h-44 shrink-0"
+                  style={{ background: isPilota
                     ? "linear-gradient(135deg, #0d2a1a, #0a1a2e, #050507)"
                     : "linear-gradient(135deg, #0d1b3e, #1a1a2e, #050507)" }}>
-                  <div className="flex gap-1.5 flex-wrap justify-end">
-                    <Badge variant={p.post_type === "cerca_pilota" ? "accent" : "primary"} className="text-[10px]">
-                      {p.post_type === "cerca_pilota" ? "Team cerca pilota" : "Pilota cerca team"}
-                    </Badge>
-                    {game?.name && <Badge className="text-[10px]">{game.name}</Badge>}
+                  {/* Badge tipo in alto a destra */}
+                  <div className="absolute top-3 right-3 flex items-center gap-1 bg-white/95 rounded-full px-2.5 py-1 shadow-md">
+                    <span className="text-sm leading-none">{isPilota ? "🏁" : "🧑‍✈️"}</span>
+                    <span className="text-xs font-bold text-gray-800 leading-none">
+                      {isPilota ? "Cerca pilota" : "Cerca team"}
+                    </span>
                   </div>
                   {isOwner && (
                     <div className="absolute top-3 left-3 z-[2]">
@@ -90,23 +89,18 @@ export default async function CercaPage({ searchParams }: { searchParams: SP }) 
                     </div>
                   )}
                 </div>
-                {/* BOTTOM con clip angolare */}
-                <div className="flex flex-col flex-1 px-4 pb-4 pt-3 -mt-5 relative" style={{ clipPath: "polygon(32px 0%, 100% 0%, 100% 100%, 0% 100%, 0% 32px)", background: "#111118" }}>
-                  <h3 className="font-bold text-base leading-tight mb-0.5">{p.title}</h3>
-                  <p className="text-sm text-[var(--color-fg-muted)] line-clamp-2 mb-auto">{p.description}</p>
-                  <div className="flex items-end justify-between mt-6">
-                    <span className="text-[var(--color-fg-muted)] text-sm leading-none">
-                      <span className="text-lg font-extrabold text-[var(--color-fg)] mr-1">{formatDate(p.created_at)}</span>
+                {/* Pannello info */}
+                <div className="flex flex-col flex-1 px-4 py-3 bg-[var(--color-bg-elev)]">
+                  <h3 className="font-bold text-base text-white leading-tight">{p.title}</h3>
+                  <p className="text-sm text-[var(--color-fg-muted)] mt-0.5 truncate">{p.description}</p>
+                  {p.contact && (
+                    <span className="flex items-center gap-1 text-[var(--color-fg-muted)] text-xs mt-2 z-[2] relative">
+                      {contactIsUrl
+                        ? <ExternalLink className="h-3 w-3 text-[var(--color-primary)]" />
+                        : <Mail className="h-3 w-3 text-[var(--color-primary)]" />}
+                      {contactIsUrl ? "Link" : p.contact}
                     </span>
-                    {p.contact && (
-                      <span className="flex items-center gap-1 text-[var(--color-fg-muted)] text-xs z-[2] relative">
-                        {contactIsUrl
-                          ? <ExternalLink className="h-3 w-3 text-[var(--color-primary)]" />
-                          : <Mail className="h-3 w-3 text-[var(--color-primary)]" />}
-                        {contactIsUrl ? "Link" : p.contact}
-                      </span>
-                    )}
-                  </div>
+                  )}
                 </div>
               </div>
             );
