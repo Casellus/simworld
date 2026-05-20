@@ -4,9 +4,7 @@ import { HeroVideo } from "@/components/hero-video";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/card";
 import { createClient } from "@/lib/supabase/server";
-import { GAMES } from "@/lib/constants";
 import { formatDate } from "@/lib/utils";
-import { one } from "@/lib/types";
 import { Calendar, Settings2, ArrowRight, LayoutDashboard, ChevronRight } from "lucide-react";
 
 export default async function Home() {
@@ -105,13 +103,6 @@ export default async function Home() {
                         Eventi attivi
                       </Button>
                     </Link>
-                  </div>
-                  <div className="hero-badges mt-12 flex flex-wrap justify-center gap-2">
-                    {GAMES.map((g) => (
-                      <span key={g.slug} className="px-3 py-1.5 rounded-full text-xs font-semibold border border-[var(--color-border-strong)] bg-black/30 text-[var(--color-fg-muted)] backdrop-blur-sm">
-                        {g.short}
-                      </span>
-                    ))}
                   </div>
                 </>
               )}
@@ -240,17 +231,10 @@ export default async function Home() {
                     Dal rookie<br />
                     <span className="text-accent-glow">al veterano.</span>
                   </h2>
-                  <p className="text-base sm:text-lg text-[var(--color-fg-muted)] leading-relaxed mb-8">
+                  <p className="text-base sm:text-lg text-[var(--color-fg-muted)] leading-relaxed">
                     Non serve essere un alien. SimUniverse è aperto a chiunque ami il sim racing:
                     da chi ha appena acceso il volante per la prima volta a chi macina ore di endurance ogni weekend.
                   </p>
-                  <div className="flex flex-wrap gap-2">
-                    {GAMES.map((g) => (
-                      <span key={g.slug} className="px-3 py-1.5 rounded-full text-xs font-semibold border border-[var(--color-border-strong)] bg-[var(--color-bg-elev)] text-[var(--color-fg-muted)]">
-                        {g.short}
-                      </span>
-                    ))}
-                  </div>
                 </div>
                 <div className="grid gap-4 sm:grid-cols-2">
                   <AudienceBlock emoji="🌱" title="Rookie" desc="Trova team paziente, primi tornei, guide per iniziare." />
@@ -328,7 +312,6 @@ type EventShape = {
 };
 
 function EventCard({ event }: { event: EventShape }) {
-  const game = one<{ name: string; slug: string }>(event.games);
   return (
     <Link href={`/eventi/${event.slug}`} className="media-card block group">
       <div className="media-image">
@@ -347,7 +330,6 @@ function EventCard({ event }: { event: EventShape }) {
         )}
         <div className="absolute top-3 left-3 flex gap-2 z-10">
           <Badge variant="primary" className="!bg-black/60 backdrop-blur-sm !border-white/20 !text-white">{event.event_type}</Badge>
-          {game?.name && <Badge className="!bg-black/60 backdrop-blur-sm !border-white/20 !text-white/80">{game.name}</Badge>}
         </div>
       </div>
       <div className="media-body">
@@ -373,7 +355,6 @@ type SetupShape = {
 };
 
 function SetupCard({ setup }: { setup: SetupShape }) {
-  const game = one<{ name: string; slug: string }>(setup.games);
   return (
     <Link href={`/assetti/${setup.id}`} className="media-card block group">
       <div className="media-image">
@@ -384,9 +365,6 @@ function SetupCard({ setup }: { setup: SetupShape }) {
             <Settings2 className="h-10 w-10 text-[var(--color-border-strong)]" />
           </div>
         )}
-        <div className="absolute top-3 left-3 z-10">
-          {game?.name && <Badge className="bg-black/60 backdrop-blur-sm border-white/20 text-white">{game.name}</Badge>}
-        </div>
       </div>
       <div className="media-body">
         <h3 className="font-bold text-lg leading-tight mb-1 group-hover:text-[var(--color-primary)] transition-colors">{setup.title}</h3>
@@ -409,14 +387,12 @@ type PostShape = {
 };
 
 function PostCard({ post }: { post: PostShape }) {
-  const game = one<{ name: string; slug: string }>(post.games);
   return (
     <Link href="/cerca" className="block rounded-2xl border border-[var(--color-border)] bg-[var(--color-bg-elev)] p-5 hover:border-[var(--color-primary)] transition-colors group">
       <div className="flex items-center gap-2 mb-3">
         <Badge variant={post.post_type === "cerca_pilota" ? "accent" : "primary"}>
           {post.post_type === "cerca_pilota" ? "Team cerca pilota" : "Pilota cerca team"}
         </Badge>
-        {game?.name && <Badge>{game.name}</Badge>}
       </div>
       <h3 className="font-bold text-base leading-tight mb-2 group-hover:text-[var(--color-primary)] transition-colors">{post.title}</h3>
       <p className="text-xs text-[var(--color-fg-muted)]">{formatDate(post.created_at)}</p>
