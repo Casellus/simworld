@@ -1,7 +1,7 @@
 import Link from "next/link";
 import Image from "next/image";
 import { createClient } from "@/lib/supabase/server";
-import { Card, CardBody, Badge } from "@/components/ui/card";
+import { Card, CardBody } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { FilterChip } from "@/components/ui/filter-chip";
 import { formatDate } from "@/lib/utils";
@@ -74,36 +74,26 @@ export default async function EventiPage({ searchParams }: { searchParams: SP })
         <div className="stagger grid gap-4 md:grid-cols-2 lg:grid-cols-3">
           {events.map((e) => (
             <Link key={e.id} href={`/eventi/${e.slug}`}>
-              <div className="rounded-3xl border border-[var(--color-border)] overflow-hidden hover:border-[var(--color-primary)] transition-colors h-full flex flex-col" style={{ background: "#111118" }}>
-                {/* TOP */}
-                <div className="relative h-40 shrink-0">
+              <div className="rounded-2xl overflow-hidden h-full flex flex-col shadow-xl hover:scale-[1.02] transition-transform duration-200">
+                {/* Immagine */}
+                <div className="relative h-44 shrink-0">
                   {e.banner_url ? (
                     <Image src={e.banner_url} alt="" fill sizes="(max-width: 768px) 100vw, 33vw" className="object-cover" />
                   ) : (
                     <div className="h-full w-full bg-gradient-to-br from-[#0d1b3e] via-[#1a1a2e] to-[#050507]" />
                   )}
-                  <div className="absolute top-3 right-3 flex gap-1.5">
-                    <Badge variant="primary" className="text-[10px]">{e.event_type}</Badge>
-                    {/* @ts-expect-error join */}
-                    {e.games?.name && <Badge className="text-[10px]">{e.games.name}</Badge>}
+                  {/* Badge data */}
+                  <div className="absolute top-3 right-3 flex items-center gap-1 bg-white/95 rounded-full px-2.5 py-1 shadow-md">
+                    <span className="text-[var(--color-primary)] text-sm leading-none">📅</span>
+                    <span className="text-xs font-bold text-gray-800 leading-none">{formatDate(e.start_at)}</span>
                   </div>
                 </div>
-                {/* BOTTOM con clip angolare */}
-                <div className="flex flex-col flex-1 px-4 pb-4 pt-3 -mt-5 relative" style={{ clipPath: "polygon(32px 0%, 100% 0%, 100% 100%, 0% 100%, 0% 32px)", background: "#111118" }}>
-                  <h3 className="font-bold text-base leading-tight mb-0.5">{e.title}</h3>
-                  <p className="text-sm text-[var(--color-fg-muted)] mb-auto">
+                {/* Pannello info */}
+                <div className="flex flex-col flex-1 px-4 py-3 bg-[var(--color-bg-elev)]">
+                  <h3 className="font-bold text-base text-white leading-tight">{e.title}</h3>
+                  <p className="text-sm text-[var(--color-fg-muted)] mt-0.5 truncate">
                     {[e.track, e.event_type].filter(Boolean).join(" · ")}
                   </p>
-                  <div className="flex items-end justify-between mt-6">
-                    <span className="text-[var(--color-fg-muted)] text-sm leading-none">
-                      <span className="text-lg font-extrabold text-[var(--color-fg)] mr-1">{formatDate(e.start_at)}</span>
-                    </span>
-                    {e.max_participants && (
-                      <span className="text-[var(--color-fg-muted)] text-sm leading-none">
-                        <span className="text-3xl font-extrabold text-[var(--color-fg)] mr-1">{e.max_participants}</span>Piloti
-                      </span>
-                    )}
-                  </div>
                 </div>
               </div>
             </Link>

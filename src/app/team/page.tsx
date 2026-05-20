@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { createClient } from "@/lib/supabase/server";
-import { Card, CardBody, Badge } from "@/components/ui/card";
+import { Card, CardBody } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Plus, Users } from "lucide-react";
 
@@ -57,34 +57,28 @@ export default async function TeamPage({ searchParams }: { searchParams: SP }) {
         <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
           {teams.map((t) => (
             <Link key={t.id} href={`/team/${t.slug}`}>
-              <div className="rounded-3xl border border-[var(--color-border)] overflow-hidden hover:border-[var(--color-primary)] transition-colors h-full flex flex-col" style={{ background: "#111118" }}>
-                {/* TOP */}
-                <div className="relative h-40 shrink-0 bg-gradient-to-br from-[#0d1b3e] via-[#1a1a2e] to-[#050507]">
+              <div className="rounded-2xl overflow-hidden h-full flex flex-col shadow-xl hover:scale-[1.02] transition-transform duration-200">
+                {/* Immagine */}
+                <div className="relative h-44 shrink-0 bg-gradient-to-br from-[#0d1b3e] via-[#1a1a2e] to-[#050507]">
                   {t.logo_url && (
                     // eslint-disable-next-line @next/next/no-img-element
                     <img src={t.logo_url} alt={t.name} className="h-full w-full object-cover opacity-40" />
                   )}
-                  <div className="absolute top-3 right-3">
-                    {t.recruiting && <Badge variant="success" className="text-[10px]">Recluta</Badge>}
+                  {/* Badge piloti */}
+                  <div className="absolute top-3 right-3 flex items-center gap-1 bg-white/95 rounded-full px-2.5 py-1 shadow-md">
+                    <span className="text-sm leading-none">👥</span>
+                    <span className="text-xs font-bold text-gray-800 leading-none">{t.team_members?.[0]?.count ?? 0}</span>
                   </div>
+                  {t.recruiting && (
+                    <div className="absolute top-3 left-3 bg-[var(--color-success)] text-white text-[10px] font-bold px-2 py-1 rounded-full">
+                      Recluta
+                    </div>
+                  )}
                 </div>
-                {/* BOTTOM con clip angolare */}
-                <div className="flex flex-col flex-1 px-4 pb-4 pt-3 -mt-5 relative" style={{ clipPath: "polygon(32px 0%, 100% 0%, 100% 100%, 0% 100%, 0% 32px)", background: "#111118" }}>
-                  <h3 className="font-bold text-base leading-tight mb-0.5">{t.name}</h3>
-                  <p className="text-sm text-[var(--color-fg-muted)] mb-auto line-clamp-1">
-                    {t.description ?? "Team sim racing"}
-                  </p>
-                  <div className="flex items-end justify-between mt-6">
-                    <span className="text-[var(--color-fg-muted)] text-sm leading-none">
-                      <span className="text-3xl font-extrabold text-[var(--color-fg)] mr-1">{t.team_members?.[0]?.count ?? 0}</span>Piloti
-                    </span>
-                    {t.logo_url && (
-                      <div className="h-10 w-10 rounded-lg border border-white/10 overflow-hidden">
-                        {/* eslint-disable-next-line @next/next/no-img-element */}
-                        <img src={t.logo_url} alt={t.name} className="h-full w-full object-cover" />
-                      </div>
-                    )}
-                  </div>
+                {/* Pannello info */}
+                <div className="flex flex-col flex-1 px-4 py-3 bg-[var(--color-bg-elev)]">
+                  <h3 className="font-bold text-base text-white leading-tight">{t.name}</h3>
+                  <p className="text-sm text-[var(--color-fg-muted)] mt-0.5 truncate">{t.description ?? "Team sim racing"}</p>
                 </div>
               </div>
             </Link>
