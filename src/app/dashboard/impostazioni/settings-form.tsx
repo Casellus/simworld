@@ -264,6 +264,7 @@ export function SettingsForm({ profile, userGames }: { profile: Profile; userGam
                   <Select
                     className="mt-2 h-8"
                     value={selected[g.slug]}
+                    onClick={(e) => e.stopPropagation()}
                     onChange={(e) => setSelected((s) => ({ ...s, [g.slug]: e.target.value }))}
                   >
                     {SKILL_LEVELS.map((sk) => (
