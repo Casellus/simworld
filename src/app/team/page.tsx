@@ -37,36 +37,41 @@ export default async function TeamPage({ searchParams }: { searchParams: SP }) {
         </Link>
       </div>
 
-      <form className="flex gap-2 mb-6" action="/team" method="get">
-        <input
-          name="q"
-          defaultValue={sp.q || ""}
-          placeholder="Cerca team..."
-          className="flex-1 h-10 rounded border border-[var(--color-border)] bg-[var(--color-bg-elev)] px-3 text-sm focus:border-[var(--color-primary)] focus:outline-none"
-        />
-        <label className={`flex items-center gap-3 px-3 py-2 rounded-xl border cursor-pointer transition-all duration-150 text-sm font-medium select-none ${
-          sp.recruiting === "1"
-            ? "border-[var(--color-primary)] bg-[var(--color-primary)]/10 shadow-[0_0_0_1px_var(--color-primary)]"
-            : "border-[var(--color-border)] bg-[var(--color-bg-elev)] hover:border-[var(--color-primary)]/40"
-        }`}>
-          <span className={`flex-shrink-0 h-5 w-5 rounded-md border-2 flex items-center justify-center transition-all duration-150 ${
+      <div className="flex gap-2 mb-6">
+        <form action="/team" method="get" className="flex flex-1 gap-2">
+          {sp.recruiting === "1" && <input type="hidden" name="recruiting" value="1" />}
+          <input
+            name="q"
+            defaultValue={sp.q || ""}
+            placeholder="Cerca team..."
+            className="flex-1 h-10 rounded border border-[var(--color-border)] bg-[var(--color-bg-elev)] px-3 text-sm focus:border-[var(--color-primary)] focus:outline-none"
+          />
+          <Button type="submit" variant="secondary">Filtra</Button>
+        </form>
+        <Link href={sp.recruiting === "1"
+          ? `/team${sp.q ? `?q=${sp.q}` : ""}`
+          : `/team?recruiting=1${sp.q ? `&q=${sp.q}` : ""}`}
+        >
+          <div className={`flex items-center gap-3 h-10 px-3 rounded-xl border cursor-pointer transition-all duration-150 text-sm font-medium select-none ${
             sp.recruiting === "1"
-              ? "border-[var(--color-primary)] bg-[var(--color-primary)]"
-              : "border-[var(--color-border-strong)] bg-transparent"
+              ? "border-[var(--color-primary)] bg-[var(--color-primary)]/10 shadow-[0_0_0_1px_var(--color-primary)]"
+              : "border-[var(--color-border)] bg-[var(--color-bg-elev)] hover:border-[var(--color-primary)]/40"
           }`}>
-            {sp.recruiting === "1" && (
-              <svg className="h-3 w-3 text-white" viewBox="0 0 12 12" fill="none">
-                <path d="M2 6l3 3 5-5" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-              </svg>
-            )}
-            <input type="checkbox" name="recruiting" value="1" defaultChecked={sp.recruiting === "1"} className="sr-only" />
-          </span>
-          Solo che reclutano
-        </label>
-        <Button type="submit" variant="secondary">
-          Filtra
-        </Button>
-      </form>
+            <span className={`flex-shrink-0 h-5 w-5 rounded-md border-2 flex items-center justify-center transition-all duration-150 ${
+              sp.recruiting === "1"
+                ? "border-[var(--color-primary)] bg-[var(--color-primary)]"
+                : "border-[var(--color-border-strong)] bg-transparent"
+            }`}>
+              {sp.recruiting === "1" && (
+                <svg className="h-3 w-3 text-white" viewBox="0 0 12 12" fill="none">
+                  <path d="M2 6l3 3 5-5" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                </svg>
+              )}
+            </span>
+            Solo che reclutano
+          </div>
+        </Link>
+      </div>
 
       {teams && teams.length > 0 ? (
         <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
