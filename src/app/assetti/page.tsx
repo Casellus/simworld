@@ -165,8 +165,8 @@ function SetupCard({ s }: { s: S }) {
             <span className="text-xs font-bold text-gray-800 leading-none">{rating ?? "–"}</span>
           </div>
         </div>
-        {/* Pannello blu */}
-        <div className="flex flex-col flex-1 px-4 py-3" style={{ background: "linear-gradient(135deg, #1a3a8f 0%, #1565c0 100%)" }}>
+        {/* Pannello info */}
+        <div className="flex flex-col flex-1 px-4 py-3 bg-[var(--color-bg-elev)]">
           <h3 className="font-bold text-base text-white leading-tight">{s.title}</h3>
           {subtitle && <p className="text-sm text-white/70 mt-0.5 truncate">{subtitle}</p>}
         </div>
