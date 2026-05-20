@@ -43,19 +43,10 @@ export default async function Home() {
     supabase.from("setups").select("*", { count: "exact", head: true }),
   ]);
 
-  let myTeam: { name: string; slug: string } | null = null;
   let profile: { display_name: string | null; username: string } | null = null;
 
   if (user) {
-    const [{ data: tm }, { data: pr }] = await Promise.all([
-      supabase.from("team_members").select("teams(name, slug)").eq("user_id", user.id).limit(1).maybeSingle(),
-      supabase.from("profiles").select("display_name, username").eq("id", user.id).maybeSingle(),
-    ]);
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const tmRow = (tm as any)?.data ?? tm;
-    if (tmRow?.teams) {
-      myTeam = one<{ name: string; slug: string }>(tmRow.teams as { name: string; slug: string }[] | { name: string; slug: string });
-    }
+    const { data: pr } = await supabase.from("profiles").select("display_name, username").eq("id", user.id).maybeSingle();
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const prRow = (pr as any)?.data ?? pr;
     profile = prRow ?? null;
@@ -296,9 +287,6 @@ export default async function Home() {
                   </Button>
                 </Link>
               </div>
-              <p className="text-xs text-[var(--color-fg-muted)] mt-8">
-                Nessuna carta di credito. Profilo pronto in 30 secondi.
-              </p>
             </div>
           </section>
         </>
