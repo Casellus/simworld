@@ -7,14 +7,29 @@ import { Search, Plus, Mail, ExternalLink } from "lucide-react";
 import { GAMES } from "@/lib/constants";
 import { Suspense } from "react";
 import { PostActions } from "./post-actions";
+import { SortSelect } from "@/components/ui/sort-select";
 
 export const metadata = { title: "Community · SimUniverse" };
 export const revalidate = 30;
 
-type SP = Promise<{ tipo?: string; gioco?: string }>;
+type SP = Promise<{ tipo?: string; gioco?: string; ordina?: string }>;
+
+const SORT_OPTIONS = [
+  { value: "recenti", label: "Più recenti" },
+  { value: "vecchi",  label: "Meno recenti" },
+  { value: "az",      label: "A → Z" },
+];
+
+const ORDER_MAP: Record<string, { col: string; asc: boolean }> = {
+  recenti: { col: "created_at", asc: false },
+  vecchi:  { col: "created_at", asc: true  },
+  az:      { col: "title",      asc: true  },
+};
 
 export default async function CercaPage({ searchParams }: { searchParams: SP }) {
   const sp = await searchParams;
+  const ordina = sp.ordina ?? "recenti";
+  const { col, asc } = ORDER_MAP[ordina] ?? ORDER_MAP.recenti;
   const supabase = await createClient();
 
   let gameId: string | null = null;
@@ -27,7 +42,7 @@ export default async function CercaPage({ searchParams }: { searchParams: SP }) 
     .from("recruitment_posts")
     .select("id, post_type, title, description, contact, created_at, user_id, team_id, games(name, slug)")
     .eq("active", true)
-    .order("created_at", { ascending: false })
+    .order(col, { ascending: asc })
     .limit(50);
 
   if (sp.tipo) q = q.eq("post_type", sp.tipo);
@@ -54,11 +69,14 @@ export default async function CercaPage({ searchParams }: { searchParams: SP }) 
           <FilterChip baseHref="/cerca" paramKey="tipo" value="cerca_pilota" label="Team cerca piloti" />
           <FilterChip baseHref="/cerca" paramKey="tipo" value="cerca_team" label="Piloti cercano team" />
         </div>
-        <div className="flex flex-wrap gap-2 mb-8">
+        <div className="flex flex-wrap gap-2 mb-6">
           <FilterChip baseHref="/cerca" paramKey="gioco" value={null} label="Tutti giochi" />
           {GAMES.map((g) => (
             <FilterChip key={g.slug} baseHref="/cerca" paramKey="gioco" value={g.slug} label={g.short} />
           ))}
+        </div>
+        <div className="flex justify-end mb-6">
+          <SortSelect options={SORT_OPTIONS} />
         </div>
       </Suspense>
 

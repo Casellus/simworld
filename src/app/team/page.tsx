@@ -2,26 +2,45 @@ import Link from "next/link";
 import { createClient } from "@/lib/supabase/server";
 import { Card, CardBody } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
+import { SortSelect } from "@/components/ui/sort-select";
 import { Plus, Users } from "lucide-react";
+import { Suspense } from "react";
 
 export const revalidate = 30;
 export const metadata = { title: "Team · SimUniverse" };
 
-type SP = Promise<{ q?: string; recruiting?: string }>;
+type SP = Promise<{ q?: string; recruiting?: string; ordina?: string }>;
+
+const SORT_OPTIONS = [
+  { value: "recenti", label: "Più recenti" },
+  { value: "az",      label: "A → Z" },
+  { value: "membri",  label: "Più membri" },
+];
+
+const ORDER_MAP: Record<string, { col: string; asc: boolean }> = {
+  recenti: { col: "created_at", asc: false },
+  az:      { col: "name",       asc: true  },
+  membri:  { col: "created_at", asc: false }, // fallback, sorted client-side below
+};
 
 export default async function TeamPage({ searchParams }: { searchParams: SP }) {
   const sp = await searchParams;
+  const ordina = sp.ordina ?? "recenti";
+  const { col, asc } = ORDER_MAP[ordina] ?? ORDER_MAP.recenti;
   const supabase = await createClient();
 
-  let q = supabase
+  let dbq = supabase
     .from("teams")
     .select("id, slug, name, description, recruiting, country, logo_url, team_members(count)")
-    .order("created_at", { ascending: false });
+    .order(col, { ascending: asc });
 
-  if (sp.q) q = q.ilike("name", `%${sp.q}%`);
-  if (sp.recruiting === "1") q = q.eq("recruiting", true);
+  if (sp.q) dbq = dbq.ilike("name", `%${sp.q}%`);
+  if (sp.recruiting === "1") dbq = dbq.eq("recruiting", true);
 
-  const { data: teams } = await q;
+  const { data: teamsRaw } = await dbq;
+  const teams = ordina === "membri"
+    ? (teamsRaw ?? []).sort((a, b) => (b.team_members?.[0]?.count ?? 0) - (a.team_members?.[0]?.count ?? 0))
+    : (teamsRaw ?? []);
 
   return (
     <div className="mx-auto max-w-7xl px-4 sm:px-6 py-10">
@@ -37,7 +56,7 @@ export default async function TeamPage({ searchParams }: { searchParams: SP }) {
         </Link>
       </div>
 
-      <div className="flex gap-2 mb-6">
+      <div className="flex gap-2 mb-6 flex-wrap">
         <form action="/team" method="get" className="flex flex-1 gap-2">
           {sp.recruiting === "1" && <input type="hidden" name="recruiting" value="1" />}
           <input
@@ -71,6 +90,9 @@ export default async function TeamPage({ searchParams }: { searchParams: SP }) {
             Solo che reclutano
           </div>
         </Link>
+        <Suspense>
+          <SortSelect options={SORT_OPTIONS} />
+        </Suspense>
       </div>
 
       {teams && teams.length > 0 ? (
