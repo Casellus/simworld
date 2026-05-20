@@ -13,7 +13,7 @@ import { Suspense } from "react";
 export const metadata = { title: "Eventi · SimUniverse" };
 export const revalidate = 30;
 
-type SP = Promise<{ gioco?: string; tipo?: string; ordina?: string }>;
+type SP = Promise<{ gioco?: string; tipo?: string; ordina?: string; q?: string }>;
 
 const SORT_OPTIONS = [
   { value: "prossimi", label: "Prossimi" },
@@ -48,6 +48,7 @@ export default async function EventiPage({ searchParams }: { searchParams: SP })
 
   if (gameId) query = query.eq("game_id", gameId);
   if (sp.tipo) query = query.eq("event_type", sp.tipo);
+  if (sp.q) query = query.ilike("title", `%${sp.q}%`);
 
   const { data: events } = await query;
 
@@ -62,6 +63,19 @@ export default async function EventiPage({ searchParams }: { searchParams: SP })
           <Button><Plus className="h-4 w-4" /> Crea evento</Button>
         </Link>
       </div>
+
+      <form action="/eventi" method="get" className="flex gap-2 mb-6">
+        {sp.gioco && <input type="hidden" name="gioco" value={sp.gioco} />}
+        {sp.tipo && <input type="hidden" name="tipo" value={sp.tipo} />}
+        {sp.ordina && <input type="hidden" name="ordina" value={sp.ordina} />}
+        <input
+          name="q"
+          defaultValue={sp.q || ""}
+          placeholder="Cerca eventi..."
+          className="flex-1 h-10 rounded border border-[var(--color-border)] bg-[var(--color-bg-elev)] px-3 text-sm focus:border-[var(--color-primary)] focus:outline-none"
+        />
+        <Button type="submit" variant="secondary">Cerca</Button>
+      </form>
 
       <Suspense>
         <div className="flex flex-wrap gap-2 mb-4">

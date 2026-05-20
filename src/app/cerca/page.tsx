@@ -12,7 +12,7 @@ import { SortSelect } from "@/components/ui/sort-select";
 export const metadata = { title: "Community · SimUniverse" };
 export const revalidate = 30;
 
-type SP = Promise<{ tipo?: string; gioco?: string; ordina?: string }>;
+type SP = Promise<{ tipo?: string; gioco?: string; ordina?: string; q?: string }>;
 
 const SORT_OPTIONS = [
   { value: "recenti", label: "Più recenti" },
@@ -47,6 +47,7 @@ export default async function CercaPage({ searchParams }: { searchParams: SP }) 
 
   if (sp.tipo) q = q.eq("post_type", sp.tipo);
   if (gameId) q = q.eq("game_id", gameId);
+  if (sp.q) q = q.ilike("title", `%${sp.q}%`);
 
   const { data: posts } = await q;
   const { data: { user } } = await supabase.auth.getUser();
@@ -62,6 +63,19 @@ export default async function CercaPage({ searchParams }: { searchParams: SP }) 
           <Button><Plus className="h-4 w-4" /> Pubblica annuncio</Button>
         </Link>
       </div>
+
+      <form action="/cerca" method="get" className="flex gap-2 mb-6">
+        {sp.tipo && <input type="hidden" name="tipo" value={sp.tipo} />}
+        {sp.gioco && <input type="hidden" name="gioco" value={sp.gioco} />}
+        {sp.ordina && <input type="hidden" name="ordina" value={sp.ordina} />}
+        <input
+          name="q"
+          defaultValue={sp.q || ""}
+          placeholder="Cerca annunci..."
+          className="flex-1 h-10 rounded border border-[var(--color-border)] bg-[var(--color-bg-elev)] px-3 text-sm focus:border-[var(--color-primary)] focus:outline-none"
+        />
+        <Button type="submit" variant="secondary">Cerca</Button>
+      </form>
 
       <Suspense>
         <div className="flex flex-wrap gap-2 mb-4">
