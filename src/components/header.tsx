@@ -15,7 +15,7 @@ export async function Header() {
     { href: "/eventi", label: "Eventi", icon: Calendar },
     { href: "/team", label: "Team", icon: Users },
     { href: "/assetti", label: "Assetti", icon: Settings2 },
-    { href: "/cerca", label: "Cerca", icon: Search },
+    { href: "/cerca", label: "Community", icon: Search },
     { href: "/guide", label: "Guide", icon: BookOpen },
   ];
 
