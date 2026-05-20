@@ -4,19 +4,21 @@ import { createClient } from "@/lib/supabase/server";
 import { Card, CardBody } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { FilterChip } from "@/components/ui/filter-chip";
-import { GAMES, SIM_CATEGORIES } from "@/lib/constants";
+import { GAMES } from "@/lib/constants";
 import { Settings2, Plus, Car, Cpu } from "lucide-react";
 import { one } from "@/lib/types";
 import { Suspense } from "react";
+import { AssettiSort } from "./assetti-sort";
 
 export const metadata = { title: "Assetti · SimUniverse" };
 export const revalidate = 30;
 
-type SP = Promise<{ gioco?: string; q?: string; tipo?: string }>;
+type SP = Promise<{ gioco?: string; q?: string; tipo?: string; ordina?: string }>;
 
 export default async function AssettiPage({ searchParams }: { searchParams: SP }) {
   const sp = await searchParams;
   const tipo: "auto" | "simulatore" = sp.tipo === "simulatore" ? "simulatore" : "auto";
+  const ordina = sp.ordina ?? "recenti";
   const supabase = await createClient();
 
   let gameId: string | null = null;
@@ -25,11 +27,20 @@ export default async function AssettiPage({ searchParams }: { searchParams: SP }
     gameId = g?.id ?? null;
   }
 
+  const orderMap: Record<string, { col: string; asc: boolean }> = {
+    recenti:  { col: "created_at", asc: false },
+    vecchi:   { col: "created_at", asc: true },
+    rating:   { col: "rating_sum", asc: false },
+    az:       { col: "title",      asc: true },
+    za:       { col: "title",      asc: false },
+  };
+  const { col, asc } = orderMap[ordina] ?? orderMap.recenti;
+
   let q = supabase
     .from("setups")
-    .select("id, title, car, track, conditions, category, setup_type, downloads, rating_sum, photo_url, games(slug, name)")
+    .select("id, title, car, track, conditions, category, setup_type, downloads, rating_sum, photo_url, games(slug, name), profiles(username, display_name)")
     .eq("setup_type", tipo)
-    .order("created_at", { ascending: false })
+    .order(col, { ascending: asc })
     .limit(50);
 
   if (gameId) q = q.eq("game_id", gameId);
@@ -57,16 +68,23 @@ export default async function AssettiPage({ searchParams }: { searchParams: SP }
         </div>
       </Suspense>
 
-      <form action="/assetti" method="get" className="flex gap-2 mb-6">
-        <input type="hidden" name="tipo" value={tipo} />
-        <input
-          name="q"
-          defaultValue={sp.q || ""}
-          placeholder={tipo === "auto" ? "Cerca per titolo, auto o pista..." : "Cerca per titolo..."}
-          className="flex-1 h-10 rounded border border-[var(--color-border)] bg-[var(--color-bg-elev)] px-3 text-sm focus:border-[var(--color-primary)] focus:outline-none"
-        />
-        <Button type="submit" variant="secondary">Cerca</Button>
-      </form>
+      <div className="flex gap-2 mb-6">
+        <form action="/assetti" method="get" className="flex flex-1 gap-2">
+          <input type="hidden" name="tipo" value={tipo} />
+          {sp.gioco && <input type="hidden" name="gioco" value={sp.gioco} />}
+          {ordina !== "recenti" && <input type="hidden" name="ordina" value={ordina} />}
+          <input
+            name="q"
+            defaultValue={sp.q || ""}
+            placeholder={tipo === "auto" ? "Cerca per titolo, auto o pista..." : "Cerca per titolo..."}
+            className="flex-1 h-10 rounded border border-[var(--color-border)] bg-[var(--color-bg-elev)] px-3 text-sm focus:border-[var(--color-primary)] focus:outline-none"
+          />
+          <Button type="submit" variant="secondary">Cerca</Button>
+        </form>
+        <Suspense>
+          <AssettiSort current={ordina} tipo={tipo} gioco={sp.gioco} q={sp.q} />
+        </Suspense>
+      </div>
 
       {/* Filtro gioco */}
       <Suspense>
@@ -103,10 +121,10 @@ type S = {
   conditions: string | null; category: string | null; setup_type: string;
   downloads: number; rating_sum: number; photo_url: string | null;
   games: { name: string; slug: string } | { name: string; slug: string }[];
+  profiles: { username: string; display_name: string | null } | { username: string; display_name: string | null }[] | null;
 };
 
 function GameGroups({ setups, tipo }: { setups: S[]; tipo: string }) {
-  // Raggruppa per gioco preservando l'ordine di GAMES
   const gameOrder: string[] = GAMES.map((g) => g.slug);
   const groups = new Map<string, { name: string; slug: string; items: S[] }>();
 
@@ -146,8 +164,8 @@ function GameGroups({ setups, tipo }: { setups: S[]; tipo: string }) {
 }
 
 function SetupCard({ s }: { s: S }) {
-  const catLabel = SIM_CATEGORIES.find((c) => c.value === s.category)?.label ?? s.category;
-  const subtitle = s.setup_type === "simulatore" ? catLabel : [s.car, s.track].filter(Boolean).join(" · ");
+  const profile = one<{ username: string; display_name: string | null }>(s.profiles);
+  const author = profile?.display_name || profile?.username || "Anonimo";
   const rating = s.rating_sum > 0 ? (s.rating_sum / 10).toFixed(1) : null;
   return (
     <Link href={`/assetti/${s.id}`}>
@@ -168,7 +186,7 @@ function SetupCard({ s }: { s: S }) {
         {/* Pannello info */}
         <div className="flex flex-col flex-1 px-4 py-3 bg-[var(--color-bg-elev)]">
           <h3 className="font-bold text-base text-white leading-tight">{s.title}</h3>
-          {subtitle && <p className="text-sm text-white/70 mt-0.5 truncate">{subtitle}</p>}
+          <p className="text-sm text-[var(--color-fg-muted)] mt-0.5 truncate">di {author}</p>
         </div>
       </div>
     </Link>
