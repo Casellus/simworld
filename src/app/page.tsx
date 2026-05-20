@@ -237,7 +237,7 @@ export default async function Home() {
                   </p>
                 </div>
                 <div className="grid gap-4 sm:grid-cols-2">
-                  <AudienceBlock emoji="🌱" title="Rookie" desc="Trova team paziente, primi tornei, guide per iniziare." />
+                  <AudienceBlock emoji="🥉" title="Rookie" desc="Trova team paziente, primi tornei, guide per iniziare." />
                   <AudienceBlock emoji="⚡" title="Amatori" desc="Gare settimanali, assetti condivisi, community attiva." />
                   <AudienceBlock emoji="🏆" title="Competitivi" desc="Campionati seri, lineup di team, sfide ad alto livello." />
                   <AudienceBlock emoji="🔥" title="Pro" desc="Esports, endurance, eventi premium e visibilità." />
