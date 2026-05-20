@@ -147,28 +147,28 @@ function GameGroups({ setups, tipo }: { setups: S[]; tipo: string }) {
 
 function SetupCard({ s }: { s: S }) {
   const catLabel = SIM_CATEGORIES.find((c) => c.value === s.category)?.label ?? s.category;
+  const subtitle = s.setup_type === "simulatore" ? catLabel : [s.car, s.track].filter(Boolean).join(" · ");
+  const rating = s.rating_sum > 0 ? (s.rating_sum / 10).toFixed(1) : null;
   return (
     <Link href={`/assetti/${s.id}`}>
-      <div className="rounded-3xl border border-[var(--color-border)] overflow-hidden hover:border-[var(--color-primary)] transition-colors h-full flex flex-col" style={{ background: "#111118" }}>
-        {/* TOP: immagine */}
-        <div className="relative h-40 shrink-0">
+      <div className="rounded-2xl overflow-hidden h-full flex flex-col shadow-xl hover:scale-[1.02] transition-transform duration-200">
+        {/* Immagine */}
+        <div className="relative h-44 shrink-0">
           {s.photo_url ? (
             <Image src={s.photo_url} alt="" fill sizes="(max-width: 768px) 100vw, 33vw" className="object-cover" />
           ) : (
             <div className="h-full w-full bg-gradient-to-br from-[#1a2a4a] via-[#0d1b3e] to-[#050507]" />
           )}
-        </div>
-        {/* BOTTOM: pannello scuro con clip angolare in alto-sinistra */}
-        <div className="flex flex-col flex-1 px-4 pb-4 pt-3 -mt-5 relative" style={{ clipPath: "polygon(32px 0%, 100% 0%, 100% 100%, 0% 100%, 0% 32px)", background: "#111118" }}>
-          <h3 className="font-bold text-base leading-tight mb-0.5">{s.title}</h3>
-          <p className="text-sm text-[var(--color-fg-muted)] mb-auto">
-            {s.setup_type === "simulatore" ? catLabel : [s.car, s.track].filter(Boolean).join(" · ")}
-          </p>
-          <div className="flex items-end justify-end mt-6">
-            <span className="text-[var(--color-fg-muted)] text-sm leading-none">
-              <span className="text-3xl font-extrabold text-[var(--color-fg)] mr-1">{s.rating_sum > 0 ? s.rating_sum : 0}</span>Voti
-            </span>
+          {/* Badge stelle */}
+          <div className="absolute top-3 right-3 flex items-center gap-1 bg-white/95 rounded-full px-2.5 py-1 shadow-md">
+            <span className="text-yellow-400 text-sm leading-none">★</span>
+            <span className="text-xs font-bold text-gray-800 leading-none">{rating ?? "–"}</span>
           </div>
+        </div>
+        {/* Pannello blu */}
+        <div className="flex flex-col flex-1 px-4 py-3" style={{ background: "linear-gradient(135deg, #1a3a8f 0%, #1565c0 100%)" }}>
+          <h3 className="font-bold text-base text-white leading-tight">{s.title}</h3>
+          {subtitle && <p className="text-sm text-white/70 mt-0.5 truncate">{subtitle}</p>}
         </div>
       </div>
     </Link>
