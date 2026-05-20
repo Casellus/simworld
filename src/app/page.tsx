@@ -434,12 +434,13 @@ function StepBlock({ num, title, desc }: { num: string; title: string; desc: str
 
 function AudienceBlock({ emoji, title, desc }: { emoji: string; title: string; desc: string }) {
   return (
-    <div className="group relative p-5 rounded-xl border border-[var(--color-border)] bg-[var(--color-bg-elev)] hover:border-[var(--color-accent)]/50 transition-all duration-200 overflow-hidden">
+    <div className="group relative p-5 rounded-2xl border border-[var(--color-border)] bg-[var(--color-bg-elev)] hover:border-[var(--color-primary)]/60 transition-all duration-200 overflow-hidden">
       <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none"
-        style={{ background: "radial-gradient(ellipse at top left, rgba(0,220,170,0.06), transparent 70%)" }} />
+        style={{ background: "radial-gradient(ellipse at top left, rgba(46,125,255,0.07), transparent 70%)" }} />
       <div className="text-3xl mb-3 leading-none">{emoji}</div>
       <h3 className="font-bold text-base text-white mb-1" style={{ fontFamily: "var(--font-heading)" }}>{title}</h3>
       <p className="text-sm text-[var(--color-fg-muted)] leading-relaxed">{desc}</p>
+      <div className="absolute bottom-0 left-0 h-0.5 w-0 group-hover:w-full bg-[var(--color-primary)] transition-all duration-300" />
     </div>
   );
 }
