@@ -1,7 +1,7 @@
 import Link from "next/link";
 import Image from "next/image";
 import { createClient } from "@/lib/supabase/server";
-import { Card, CardBody, Badge } from "@/components/ui/card";
+import { Card, CardBody } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { FilterChip } from "@/components/ui/filter-chip";
 import { GAMES, SIM_CATEGORIES } from "@/lib/constants";
@@ -137,7 +137,7 @@ function GameGroups({ setups, tipo }: { setups: S[]; tipo: string }) {
             <div className="flex-1 h-px bg-[var(--color-border-strong)]" />
           </div>
           <div className="stagger grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-            {items.map((s) => <SetupCard key={s.id} s={s} game={one<{ name: string; slug: string }>(s.games)} />)}
+            {items.map((s) => <SetupCard key={s.id} s={s} />)}
           </div>
         </section>
       ))}
@@ -145,7 +145,7 @@ function GameGroups({ setups, tipo }: { setups: S[]; tipo: string }) {
   );
 }
 
-function SetupCard({ s, game }: { s: S; game: { name: string; slug: string } | null | undefined }) {
+function SetupCard({ s }: { s: S }) {
   const catLabel = SIM_CATEGORIES.find((c) => c.value === s.category)?.label ?? s.category;
   return (
     <Link href={`/assetti/${s.id}`}>
@@ -157,9 +157,6 @@ function SetupCard({ s, game }: { s: S; game: { name: string; slug: string } | n
           ) : (
             <div className="h-full w-full bg-gradient-to-br from-[#1a2a4a] via-[#0d1b3e] to-[#050507]" />
           )}
-          <div className="absolute top-3 right-3">
-            <Badge variant="primary" className="text-[10px]">{game?.name}</Badge>
-          </div>
         </div>
         {/* BOTTOM: pannello scuro con clip angolare in alto-sinistra */}
         <div className="flex flex-col flex-1 px-4 pb-4 pt-3 -mt-5 relative" style={{ clipPath: "polygon(32px 0%, 100% 0%, 100% 100%, 0% 100%, 0% 32px)", background: "#111118" }}>
@@ -167,10 +164,7 @@ function SetupCard({ s, game }: { s: S; game: { name: string; slug: string } | n
           <p className="text-sm text-[var(--color-fg-muted)] mb-auto">
             {s.setup_type === "simulatore" ? catLabel : [s.car, s.track].filter(Boolean).join(" · ")}
           </p>
-          <div className="flex items-end justify-between mt-6">
-            <span className="text-[var(--color-fg-muted)] text-sm leading-none">
-              <span className="text-3xl font-extrabold text-[var(--color-fg)] mr-1">{s.downloads}</span>Download
-            </span>
+          <div className="flex items-end justify-end mt-6">
             <span className="text-[var(--color-fg-muted)] text-sm leading-none">
               <span className="text-3xl font-extrabold text-[var(--color-fg)] mr-1">{s.rating_sum > 0 ? s.rating_sum : 0}</span>Voti
             </span>
