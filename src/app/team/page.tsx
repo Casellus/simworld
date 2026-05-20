@@ -44,8 +44,23 @@ export default async function TeamPage({ searchParams }: { searchParams: SP }) {
           placeholder="Cerca team..."
           className="flex-1 h-10 rounded border border-[var(--color-border)] bg-[var(--color-bg-elev)] px-3 text-sm focus:border-[var(--color-primary)] focus:outline-none"
         />
-        <label className="flex items-center gap-2 text-sm px-3 rounded border border-[var(--color-border)] bg-[var(--color-bg-elev)] cursor-pointer">
-          <input type="checkbox" name="recruiting" value="1" defaultChecked={sp.recruiting === "1"} />
+        <label className={`flex items-center gap-3 px-3 py-2 rounded-xl border cursor-pointer transition-all duration-150 text-sm font-medium select-none ${
+          sp.recruiting === "1"
+            ? "border-[var(--color-primary)] bg-[var(--color-primary)]/10 shadow-[0_0_0_1px_var(--color-primary)]"
+            : "border-[var(--color-border)] bg-[var(--color-bg-elev)] hover:border-[var(--color-primary)]/40"
+        }`}>
+          <span className={`flex-shrink-0 h-5 w-5 rounded-md border-2 flex items-center justify-center transition-all duration-150 ${
+            sp.recruiting === "1"
+              ? "border-[var(--color-primary)] bg-[var(--color-primary)]"
+              : "border-[var(--color-border-strong)] bg-transparent"
+          }`}>
+            {sp.recruiting === "1" && (
+              <svg className="h-3 w-3 text-white" viewBox="0 0 12 12" fill="none">
+                <path d="M2 6l3 3 5-5" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+              </svg>
+            )}
+            <input type="checkbox" name="recruiting" value="1" defaultChecked={sp.recruiting === "1"} className="sr-only" />
+          </span>
           Solo che reclutano
         </label>
         <Button type="submit" variant="secondary">
