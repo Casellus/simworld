@@ -38,7 +38,7 @@ export default async function AssettiPage({ searchParams }: { searchParams: SP }
 
   let q = supabase
     .from("setups")
-    .select("id, title, car, track, conditions, category, setup_type, downloads, rating_sum, rating_count, photo_url, games(slug, name), profiles!left(username, display_name)")
+    .select("id, title, car, track, conditions, category, setup_type, downloads, rating_sum, rating_count, photo_url, user_id, games(slug, name)")
     .eq("setup_type", tipo)
     .order(col, { ascending: asc })
     .limit(50);
@@ -46,7 +46,24 @@ export default async function AssettiPage({ searchParams }: { searchParams: SP }
   if (gameId) q = q.eq("game_id", gameId);
   if (sp.q) q = q.or(`title.ilike.%${sp.q}%,car.ilike.%${sp.q}%,track.ilike.%${sp.q}%`);
 
-  const { data: setups } = await q;
+  const { data: rawSetups, error: setupsError } = await q;
+  if (setupsError) console.error("SETUPS ERROR:", JSON.stringify(setupsError));
+
+  // Fetch profiles separatamente per evitare problemi RLS con join
+  const userIds = [...new Set((rawSetups ?? []).map((s) => s.user_id).filter(Boolean))];
+  const profileMap = new Map<string, { username: string; display_name: string | null }>();
+  if (userIds.length > 0) {
+    const { data: profiles } = await supabase
+      .from("profiles")
+      .select("id, username, display_name")
+      .in("id", userIds);
+    for (const p of profiles ?? []) profileMap.set(p.id, p);
+  }
+
+  const setups = (rawSetups ?? []).map((s) => ({
+    ...s,
+    profiles: profileMap.get(s.user_id) ?? null,
+  }));
 
   return (
     <div className="mx-auto max-w-7xl px-4 sm:px-6 py-10">
@@ -120,8 +137,9 @@ type S = {
   id: string; title: string; car: string | null; track: string | null;
   conditions: string | null; category: string | null; setup_type: string;
   downloads: number; rating_sum: number; rating_count: number; photo_url: string | null;
+  user_id: string;
   games: { name: string; slug: string } | { name: string; slug: string }[];
-  profiles: { username: string; display_name: string | null } | { username: string; display_name: string | null }[] | null;
+  profiles: { username: string; display_name: string | null } | null;
 };
 
 function GameGroups({ setups, tipo }: { setups: S[]; tipo: string }) {
@@ -164,8 +182,7 @@ function GameGroups({ setups, tipo }: { setups: S[]; tipo: string }) {
 }
 
 function SetupCard({ s }: { s: S }) {
-  const profile = one<{ username: string; display_name: string | null }>(s.profiles);
-  const author = profile?.display_name || profile?.username || "Anonimo";
+  const author = s.profiles?.display_name || s.profiles?.username || "Anonimo";
   const positivi = (s.rating_count + s.rating_sum) / 2;
   const stelle = s.rating_count > 0 ? (positivi / s.rating_count) * 5 : null;
   const rating = stelle !== null ? stelle.toFixed(1) : null;
