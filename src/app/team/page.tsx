@@ -46,7 +46,7 @@ export default async function TeamPage({ searchParams }: { searchParams: SP }) {
             placeholder="Cerca team..."
             className="flex-1 h-10 rounded border border-[var(--color-border)] bg-[var(--color-bg-elev)] px-3 text-sm focus:border-[var(--color-primary)] focus:outline-none"
           />
-          <Button type="submit" variant="secondary">Filtra</Button>
+          <Button type="submit" variant="secondary">Cerca</Button>
         </form>
         <Link href={sp.recruiting === "1"
           ? `/team${sp.q ? `?q=${sp.q}` : ""}`
