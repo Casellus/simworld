@@ -182,7 +182,7 @@ export default async function Home() {
               <div className="text-center max-w-3xl mx-auto mb-16">
                 <p className="text-xs font-semibold tracking-widest uppercase text-[var(--color-accent)] mb-4">Chi siamo</p>
                 <h2 className="text-3xl sm:text-4xl md:text-5xl font-extrabold tracking-tight mb-6" style={{ fontFamily: "var(--font-heading)" }}>
-                  L&apos;hub italiano del<br />
+                  L&apos;Hub Italiano del<br />
                   <span className="text-accent-glow">sim racing.</span>
                 </h2>
                 <p className="text-base sm:text-lg text-[var(--color-fg-muted)] leading-relaxed">
