@@ -1,10 +1,9 @@
 import Link from "next/link";
-import Image from "next/image";
-import { createClient } from "@/lib/supabase/server";
+import { createClient, createAdminClient } from "@/lib/supabase/server";
 import { Card, CardBody } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { FilterChip } from "@/components/ui/filter-chip";
-import { Search, Plus, Mail, ExternalLink, User as UserIcon } from "lucide-react";
+import { Search, Plus, Mail, ExternalLink } from "lucide-react";
 import { GAMES } from "@/lib/constants";
 import { Suspense } from "react";
 import { PostActions } from "./post-actions";
@@ -56,7 +55,8 @@ export default async function CercaPage({ searchParams }: { searchParams: SP }) 
   const userIds = [...new Set((posts ?? []).map((p) => p.user_id).filter(Boolean))];
   const profileMap: Record<string, { display_name: string | null; username: string | null; avatar_url: string | null }> = {};
   if (userIds.length > 0) {
-    const { data: profiles } = await supabase
+    const admin = createAdminClient();
+    const { data: profiles } = await admin
       .from("profiles")
       .select("id, display_name, username, avatar_url")
       .in("id", userIds);
@@ -123,11 +123,12 @@ export default async function CercaPage({ searchParams }: { searchParams: SP }) 
                 {/* Header: avatar + nome + badge */}
                 <div className="flex items-center gap-3 px-4 pt-4 pb-3">
                   {/* Avatar */}
-                  <div className="h-11 w-11 rounded-xl overflow-hidden shrink-0 bg-[var(--color-bg-elev-2)] border border-[var(--color-border)] flex items-center justify-center">
+                  <div className="h-11 w-11 rounded-xl overflow-hidden shrink-0 bg-[var(--color-primary)]/20 border border-[var(--color-border)] flex items-center justify-center text-sm font-bold text-[var(--color-primary)]">
                     {profile?.avatar_url ? (
-                      <Image src={profile.avatar_url} alt={authorName} width={44} height={44} className="object-cover w-full h-full" />
+                      // eslint-disable-next-line @next/next/no-img-element
+                      <img src={profile.avatar_url} alt={authorName} className="object-cover w-full h-full" />
                     ) : (
-                      <UserIcon className="h-5 w-5 text-[var(--color-fg-muted)]" />
+                      authorName.slice(0, 2).toUpperCase()
                     )}
                   </div>
                   {/* Nome + badge */}
