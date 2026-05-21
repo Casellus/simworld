@@ -53,7 +53,7 @@ export function RegisterForm() {
     }
     setSuccess(true);
     setTimeout(() => {
-      router.push("/");
+      router.push("/onboarding");
       router.refresh();
     }, 1500);
   }

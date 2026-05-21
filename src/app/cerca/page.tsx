@@ -1,9 +1,10 @@
 import Link from "next/link";
+import Image from "next/image";
 import { createClient } from "@/lib/supabase/server";
 import { Card, CardBody } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { FilterChip } from "@/components/ui/filter-chip";
-import { Search, Plus, Mail, ExternalLink } from "lucide-react";
+import { Search, Plus, Mail, ExternalLink, User as UserIcon } from "lucide-react";
 import { GAMES } from "@/lib/constants";
 import { Suspense } from "react";
 import { PostActions } from "./post-actions";
@@ -51,6 +52,16 @@ export default async function CercaPage({ searchParams }: { searchParams: SP }) 
 
   const { data: posts } = await q;
   const { data: { user } } = await supabase.auth.getUser();
+
+  const userIds = [...new Set((posts ?? []).map((p) => p.user_id).filter(Boolean))];
+  const profileMap: Record<string, { display_name: string | null; username: string | null; avatar_url: string | null }> = {};
+  if (userIds.length > 0) {
+    const { data: profiles } = await supabase
+      .from("profiles")
+      .select("id, display_name, username, avatar_url")
+      .in("id", userIds);
+    profiles?.forEach((p) => { profileMap[p.id] = p; });
+  }
 
   return (
     <div className="mx-auto max-w-7xl px-4 sm:px-6 py-10">
@@ -102,40 +113,68 @@ export default async function CercaPage({ searchParams }: { searchParams: SP }) 
             const isOwner = user && p.user_id === user.id;
             const contactIsUrl = p.contact ? /^https?:\/\//i.test(p.contact.trim()) : false;
             const isPilota = p.post_type === "cerca_pilota";
+            const profile = p.user_id ? profileMap[p.user_id] : null;
+            const authorName = profile?.display_name || profile?.username || "Utente";
+            const gameName = Array.isArray(p.games) ? p.games[0]?.name : (p.games as { name: string } | null)?.name;
             return (
-              <div key={p.id} className="rounded-2xl overflow-hidden h-full flex flex-col shadow-xl hover:scale-[1.02] transition-transform duration-200 relative">
+              <div key={p.id} className="rounded-2xl overflow-hidden h-full flex flex-col shadow-xl hover:scale-[1.02] transition-transform duration-200 relative bg-[var(--color-bg-elev)]">
                 <Link href={`/cerca/${p.id}`} className="absolute inset-0 z-[1]" aria-label={p.title} />
-                {/* Immagine / gradient */}
-                <div className="relative h-44 shrink-0"
-                  style={{ background: isPilota
-                    ? "linear-gradient(135deg, #0d2a1a, #0a1a2e, #050507)"
-                    : "linear-gradient(135deg, #0d1b3e, #1a1a2e, #050507)" }}>
-                  {/* Badge tipo in alto a destra */}
-                  <div className="absolute top-3 right-3 flex items-center gap-1 bg-white/95 rounded-full px-2.5 py-1 shadow-md">
-                    <span className="text-sm leading-none">{isPilota ? "🏁" : "🧑‍✈️"}</span>
-                    <span className="text-xs font-bold text-gray-800 leading-none">
+
+                {/* Header: avatar + nome + badge */}
+                <div className="flex items-center gap-3 px-4 pt-4 pb-3">
+                  {/* Avatar */}
+                  <div className="h-11 w-11 rounded-xl overflow-hidden shrink-0 bg-[var(--color-bg-elev-2)] border border-[var(--color-border)] flex items-center justify-center">
+                    {profile?.avatar_url ? (
+                      <Image src={profile.avatar_url} alt={authorName} width={44} height={44} className="object-cover w-full h-full" />
+                    ) : (
+                      <UserIcon className="h-5 w-5 text-[var(--color-fg-muted)]" />
+                    )}
+                  </div>
+                  {/* Nome + badge */}
+                  <div className="flex-1 min-w-0">
+                    <p className="font-bold text-sm text-white leading-tight truncate">{authorName}</p>
+                    <span className={`inline-flex items-center gap-1 mt-0.5 rounded-full px-2 py-0.5 text-xs font-semibold ${
+                      isPilota
+                        ? "bg-blue-500/20 text-blue-300 border border-blue-500/30"
+                        : "bg-emerald-500/20 text-emerald-300 border border-emerald-500/30"
+                    }`}>
+                      <span className="leading-none">{isPilota ? "🏁" : "🧑‍✈️"}</span>
                       {isPilota ? "Cerca pilota" : "Cerca team"}
                     </span>
                   </div>
                   {isOwner && (
-                    <div className="absolute top-3 left-3 z-[2]">
+                    <div className="relative z-[2]">
                       <PostActions postId={p.id} />
                     </div>
                   )}
                 </div>
-                {/* Pannello info */}
-                <div className="flex flex-col flex-1 px-4 py-3 bg-[var(--color-bg-elev)]">
+
+                {/* Divider */}
+                <div className="h-px bg-[var(--color-border)] mx-4" />
+
+                {/* Body */}
+                <div className="flex flex-col flex-1 px-4 py-3 gap-1.5">
+                  {/* Gioco */}
+                  {gameName && (
+                    <span className="text-xs font-semibold text-[var(--color-primary)] uppercase tracking-wide">{gameName}</span>
+                  )}
                   <h3 className="font-bold text-base text-white leading-tight">{p.title}</h3>
-                  <p className="text-sm text-[var(--color-fg-muted)] mt-0.5 truncate">{p.description}</p>
-                  {p.contact && (
-                    <span className="flex items-center gap-1 text-[var(--color-fg-muted)] text-xs mt-2 z-[2] relative">
+                  {p.description && (
+                    <p className="text-sm text-[var(--color-fg-muted)] line-clamp-2 mt-0.5">{p.description}</p>
+                  )}
+                </div>
+
+                {/* Footer: contatto */}
+                {p.contact && (
+                  <div className="px-4 pb-3 pt-1 border-t border-[var(--color-border)] mt-auto">
+                    <span className="flex items-center gap-1.5 text-[var(--color-fg-muted)] text-xs z-[2] relative">
                       {contactIsUrl
                         ? <ExternalLink className="h-3 w-3 text-[var(--color-primary)]" />
                         : <Mail className="h-3 w-3 text-[var(--color-primary)]" />}
-                      {contactIsUrl ? "Link" : p.contact}
+                      <span className="truncate">{contactIsUrl ? p.contact : p.contact}</span>
                     </span>
-                  )}
-                </div>
+                  </div>
+                )}
               </div>
             );
           })}
