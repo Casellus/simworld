@@ -10,6 +10,7 @@ import { GAMES, SKILL_LEVELS } from "@/lib/constants";
 import { User as UserIcon, Upload, Trash2, Image as ImageIcon } from "lucide-react";
 
 type Profile = {
+  username: string | null;
   display_name: string | null;
   bio: string | null;
   country: string | null;
@@ -192,6 +193,24 @@ export function SettingsForm({ profile, userGames }: { profile: Profile; userGam
           </div>
           <input ref={fileRef} type="file" accept="image/*" className="hidden" onChange={handleAvatarChange} />
         </div>
+      </div>
+
+      <div>
+        <Label htmlFor="username">Username (@)</Label>
+        <div className="relative">
+          <span className="absolute left-3 top-1/2 -translate-y-1/2 text-[var(--color-fg-muted)] text-sm select-none">@</span>
+          <Input
+            id="username"
+            name="username"
+            defaultValue={profile.username || ""}
+            pattern="[a-zA-Z0-9_]+"
+            minLength={3}
+            maxLength={30}
+            placeholder="il_tuo_username"
+            className="pl-7"
+          />
+        </div>
+        <p className="text-xs text-[var(--color-fg-muted)] mt-1">Solo lettere, numeri e _. Min 3 caratteri.</p>
       </div>
 
       <div>

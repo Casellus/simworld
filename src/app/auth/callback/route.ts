@@ -13,7 +13,7 @@ export async function GET(request: Request) {
   if (token_hash && type) {
     const { error } = await supabase.auth.verifyOtp({ token_hash, type: type as "recovery" | "email" | "signup" | "invite" | "magiclink" | "email_change" | "phone_change" });
     if (!error) {
-      const dest = type === "recovery" ? "/auth/reset-password" : next;
+      const dest = type === "recovery" ? "/auth/reset-password" : type === "signup" ? "/onboarding" : next;
       return NextResponse.redirect(`${origin}${dest}`);
     }
   }

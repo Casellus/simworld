@@ -11,6 +11,7 @@ export async function updateProfile(formData: FormData) {
   } = await supabase.auth.getUser();
   if (!user) return { error: "Non autorizzato" };
 
+  const username = String(formData.get("username") || "").trim().toLowerCase().replace(/[^a-z0-9_]/g, "");
   const display_name = String(formData.get("display_name") || "").trim();
   const bio = String(formData.get("bio") || "").trim();
   const country = String(formData.get("country") || "IT").trim();
@@ -20,9 +21,22 @@ export async function updateProfile(formData: FormData) {
   const avatar_url = String(formData.get("avatar_url") || "").trim();
   const cover_url = String(formData.get("cover_url") || "").trim();
 
+  if (username && username.length < 3) return { error: "Username deve avere almeno 3 caratteri." };
+
+  if (username) {
+    const { data: existing } = await supabase
+      .from("profiles")
+      .select("id")
+      .eq("username", username)
+      .neq("id", user.id)
+      .maybeSingle();
+    if (existing) return { error: "Username già in uso. Scegline un altro." };
+  }
+
   const { error } = await supabase
     .from("profiles")
     .update({
+      ...(username ? { username } : {}),
       display_name: display_name || null,
       bio: bio || null,
       country: country || "IT",

@@ -43,7 +43,7 @@ export function RegisterForm() {
       password,
       options: {
         data: { username, full_name: username },
-        emailRedirectTo: `${window.location.origin}/auth/callback`,
+        emailRedirectTo: `${window.location.origin}/auth/callback?next=/onboarding`,
       },
     });
     setLoading(false);
@@ -52,10 +52,8 @@ export function RegisterForm() {
       return;
     }
     setSuccess(true);
-    setTimeout(() => {
-      router.push("/onboarding");
-      router.refresh();
-    }, 1500);
+    router.push("/onboarding");
+    router.refresh();
   }
 
   async function registerDiscord() {
@@ -67,13 +65,7 @@ export function RegisterForm() {
     if (error) setError(error.message);
   }
 
-  if (success) {
-    return (
-      <div className="rounded-xl border border-[var(--color-success)]/40 bg-[var(--color-success)]/15 p-4 text-sm text-white">
-        Account creato. Controlla email per conferma se richiesta. Reindirizzamento...
-      </div>
-    );
-  }
+  if (success) return null;
 
   return (
     <div className="space-y-6">

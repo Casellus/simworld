@@ -106,6 +106,24 @@ export function OnboardingForm() {
         </div>
       </div>
 
+      {/* USERNAME */}
+      <div>
+        <Label htmlFor="username">Username (@)</Label>
+        <div className="relative">
+          <span className="absolute left-3 top-1/2 -translate-y-1/2 text-[var(--color-fg-muted)] text-sm select-none">@</span>
+          <Input
+            id="username"
+            name="username"
+            pattern="[a-zA-Z0-9_]+"
+            minLength={3}
+            maxLength={30}
+            placeholder="il_tuo_username"
+            className="pl-7"
+          />
+        </div>
+        <p className="text-xs text-[var(--color-fg-muted)] mt-1">Solo lettere, numeri e _. Min 3 caratteri.</p>
+      </div>
+
       {/* NOME */}
       <div>
         <Label htmlFor="display_name">Nome visualizzato</Label>
