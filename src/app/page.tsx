@@ -198,7 +198,7 @@ export default async function Home() {
                 <FeatureBlock emoji="⚙️" title="Condividi assetti" desc="Setup per ogni auto e tracciato. Vota, scarica, contribuisci alla libreria della community." />
                 <FeatureBlock emoji="🎮" title="Tutti i sim principali" desc="ACC, iRacing, LMU, Assetto Corsa, AC EVO, F1 25. Un solo profilo, tutti i tuoi sim." />
                 <FeatureBlock emoji="🤝" title="Trova compagni" desc="Cerca piloti del tuo livello o team aperti al reclutamento. Niente più gare in solitaria." />
-                <FeatureBlock emoji="🇮🇹" title="100% italiano" desc="Una community costruita da piloti italiani, per piloti italiani. Lingua, fuso orario, mentalità." />
+                <FeatureBlock emoji={<svg viewBox="0 0 3 2" className="h-10 w-14 rounded-sm" aria-label="Bandiera italiana"><rect width="1" height="2" fill="#009246"/><rect x="1" width="1" height="2" fill="#fff"/><rect x="2" width="1" height="2" fill="#ce2b37"/></svg>} title="100% italiano" desc="Una community costruita da piloti italiani, per piloti italiani. Lingua, fuso orario, mentalità." />
               </div>
             </div>
           </section>
@@ -401,7 +401,7 @@ function PostCard({ post }: { post: PostShape }) {
 }
 
 
-function FeatureBlock({ emoji, title, desc }: { emoji: string; title: string; desc: string }) {
+function FeatureBlock({ emoji, title, desc }: { emoji: React.ReactNode; title: string; desc: string }) {
   return (
     <div className="group relative p-6 rounded-2xl border border-[var(--color-border)] bg-[var(--color-bg-elev)] hover:border-[var(--color-primary)]/60 transition-all duration-200 overflow-hidden">
       <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none"

@@ -10,7 +10,7 @@ export default async function OnboardingPage() {
   if (!user) redirect("/auth/login");
 
   return (
-    <div className="min-h-screen flex items-center justify-center px-4 py-12 bg-[var(--color-bg)]">
+    <div className="fixed inset-0 z-[200] overflow-y-auto bg-[var(--color-bg)] flex items-start justify-center px-4 py-12">
       <div className="w-full max-w-2xl">
         <div className="mb-8 text-center">
           <div className="inline-flex items-center justify-center h-16 w-16 rounded-2xl bg-[var(--color-primary)]/15 border border-[var(--color-primary)]/30 mb-4">
