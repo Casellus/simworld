@@ -36,7 +36,7 @@ export function VoteButtons({ setupId, myVote, isLogged }: { setupId: string; my
         onClick={() => vote(1)}
         disabled={pending}
       >
-        <ThumbsUp className="h-3 w-3" /> Up
+        <ThumbsUp className="h-4 w-4" />
       </Button>
       <Button
         variant={myVote === -1 ? "danger" : "outline"}
@@ -44,7 +44,7 @@ export function VoteButtons({ setupId, myVote, isLogged }: { setupId: string; my
         onClick={() => vote(-1)}
         disabled={pending}
       >
-        <ThumbsDown className="h-3 w-3" /> Down
+        <ThumbsDown className="h-4 w-4" />
       </Button>
     </div>
   );

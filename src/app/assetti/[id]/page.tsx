@@ -150,13 +150,13 @@ export default async function SetupDetailPage({ params }: { params: Promise<{ id
               </div>
               <div className="flex items-center justify-between text-sm">
                 <span className="flex items-center gap-2">
-                  <ThumbsUp className="h-4 w-4 text-[var(--color-success)]" /> Up
+                  <ThumbsUp className="h-4 w-4 text-[var(--color-success)]" /> Mi piace
                 </span>
                 <span className="font-bold">{setup.rating_sum > 0 ? setup.rating_sum : 0}</span>
               </div>
               <div className="flex items-center justify-between text-sm">
                 <span className="flex items-center gap-2">
-                  <ThumbsDown className="h-4 w-4 text-[var(--color-danger)]" /> Down
+                  <ThumbsDown className="h-4 w-4 text-[var(--color-danger)]" /> Non mi piace
                 </span>
                 <span className="font-bold">{setup.rating_sum < 0 ? -setup.rating_sum : 0}</span>
               </div>
