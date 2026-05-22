@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { headers } from "next/headers";
 import { Logo } from "@/components/logo";
 import { getProfile } from "@/lib/auth";
 import { Button } from "@/components/ui/button";
@@ -9,6 +10,9 @@ import { Calendar, Users, Settings2, Search, BookOpen } from "lucide-react";
 import { NavLink } from "@/components/nav-link";
 
 export async function Header() {
+  const pathname = (await headers()).get("x-pathname") ?? "";
+  if (pathname === "/onboarding") return null;
+
   const profile = await getProfile();
 
   const nav = [
