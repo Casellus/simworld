@@ -15,9 +15,6 @@ export default async function Home() {
     { data: upcomingEvents },
     { data: topSetups },
     { data: recentPosts },
-    { count: totalEvents },
-    { count: totalTeams },
-    { count: totalSetups },
   ] = await Promise.all([
     supabase
       .from("events")
@@ -36,9 +33,6 @@ export default async function Home() {
       .eq("active", true)
       .order("created_at", { ascending: false })
       .limit(6),
-    supabase.from("events").select("*", { count: "exact", head: true }),
-    supabase.from("teams").select("*", { count: "exact", head: true }),
-    supabase.from("setups").select("*", { count: "exact", head: true }),
   ]);
 
   let profile: { display_name: string | null; username: string } | null = null;
@@ -109,16 +103,6 @@ export default async function Home() {
             </div>
         </div>
 
-        {/* stats overlay bottom — hide if featured event shown on right */}
-        <div className="hidden lg:block absolute bottom-12 right-8 z-10">
-          {!featuredEvent && (
-            <div className="flex gap-6 text-right">
-              <StatPill value={totalEvents ?? 0} label="Eventi" />
-              <StatPill value={totalTeams ?? 0} label="Team" />
-              <StatPill value={totalSetups ?? 0} label="Assetti" />
-            </div>
-          )}
-        </div>
       </section>
 
       {user ? (
@@ -441,16 +425,6 @@ function AudienceBlock({ emoji, title, desc }: { emoji: string; title: string; d
       <h3 className="font-bold text-base text-white mb-1" style={{ fontFamily: "var(--font-heading)" }}>{title}</h3>
       <p className="text-sm text-[var(--color-fg-muted)] leading-relaxed">{desc}</p>
       <div className="absolute bottom-0 left-0 h-0.5 w-0 group-hover:w-full bg-[var(--color-primary)] transition-all duration-300" />
-    </div>
-  );
-}
-
-
-function StatPill({ value, label }: { value: number; label: string }) {
-  return (
-    <div>
-      <div className="text-2xl font-extrabold text-[var(--color-fg)]" style={{ fontFamily: "var(--font-heading)" }}>{value}</div>
-      <div className="text-[10px] font-semibold tracking-widest uppercase text-[var(--color-fg-muted)]">{label}</div>
     </div>
   );
 }
