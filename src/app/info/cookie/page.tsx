@@ -114,7 +114,7 @@ export default function CookiePage() {
       <h2>Contatti</h2>
       <p>
         Per qualsiasi domanda sui cookie e sulla privacy:<br />
-        <a href="mailto:privacy@simuniverse.it">privacy@simuniverse.it</a>
+        <a href="mailto:simuniverseit@gmail.com">simuniverseit@gmail.com</a>
       </p>
     </article>
   );

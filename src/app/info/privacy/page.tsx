@@ -18,7 +18,7 @@ export default function PrivacyPage() {
         <p>
           <strong>In sintesi:</strong> raccogliamo solo i dati strettamente necessari per far funzionare la piattaforma.
           Non vendiamo i tuoi dati. Puoi richiederne la cancellazione in qualsiasi momento scrivendo a{" "}
-          <a href="mailto:privacy@simuniverse.it">privacy@simuniverse.it</a>.
+          <a href="mailto:simuniverseit@gmail.com">simuniverseit@gmail.com</a>.
         </p>
       </div>
 
@@ -26,7 +26,7 @@ export default function PrivacyPage() {
       <h2>1. Titolare del trattamento</h2>
       <p>
         Il Titolare del trattamento dei dati personali è <strong>SimUniverse</strong> (di seguito "Piattaforma"),
-        contattabile all'indirizzo e-mail <a href="mailto:privacy@simuniverse.it">privacy@simuniverse.it</a>.
+        contattabile all'indirizzo e-mail <a href="mailto:simuniverseit@gmail.com">simuniverseit@gmail.com</a>.
       </p>
 
       {/* 2 */}
@@ -154,7 +154,7 @@ export default function PrivacyPage() {
         <li><strong>Revoca del consenso</strong> — ove il trattamento sia basato sul consenso, revocarlo in qualsiasi momento.</li>
       </ul>
       <p>
-        Per esercitare questi diritti scrivi a <a href="mailto:privacy@simuniverse.it">privacy@simuniverse.it</a>.
+        Per esercitare questi diritti scrivi a <a href="mailto:simuniverseit@gmail.com">simuniverseit@gmail.com</a>.
         Risponderemo entro 30 giorni. Hai inoltre il diritto di proporre reclamo al{" "}
         <a href="https://www.garanteprivacy.it" target="_blank" rel="noopener noreferrer">
           Garante per la protezione dei dati personali
@@ -174,7 +174,7 @@ export default function PrivacyPage() {
       <h2>10. Minori</h2>
       <p>
         La piattaforma non è rivolta a minori di 16 anni. Se ritieni che un minore abbia creato un account,
-        contattaci a <a href="mailto:privacy@simuniverse.it">privacy@simuniverse.it</a> per la cancellazione immediata.
+        contattaci a <a href="mailto:simuniverseit@gmail.com">simuniverseit@gmail.com</a> per la cancellazione immediata.
       </p>
 
       {/* 11 */}
@@ -189,7 +189,7 @@ export default function PrivacyPage() {
       <h2>12. Contatti</h2>
       <p>
         Per qualsiasi domanda relativa alla privacy:<br />
-        <a href="mailto:privacy@simuniverse.it">privacy@simuniverse.it</a>
+        <a href="mailto:simuniverseit@gmail.com">simuniverseit@gmail.com</a>
       </p>
     </article>
   );

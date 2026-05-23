@@ -109,7 +109,7 @@ export default function TerminiPage() {
       </ul>
       <p>
         Puoi chiudere il tuo account in qualsiasi momento dalle impostazioni del profilo o
-        inviando una richiesta a <a href="mailto:support@simuniverse.it">support@simuniverse.it</a>.
+        inviando una richiesta a <a href="mailto:simuniverseit@gmail.com">simuniverseit@gmail.com</a>.
         I tuoi dati saranno eliminati entro 30 giorni.
       </p>
 
@@ -155,7 +155,7 @@ export default function TerminiPage() {
       <h2>11. Contatti</h2>
       <p>
         Per domande sui presenti Termini:<br />
-        <a href="mailto:support@simuniverse.it">support@simuniverse.it</a>
+        <a href="mailto:simuniverseit@gmail.com">simuniverseit@gmail.com</a>
       </p>
     </article>
   );
