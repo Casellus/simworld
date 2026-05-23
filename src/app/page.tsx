@@ -160,33 +160,6 @@ export default async function Home() {
         </>
       ) : (
         <>
-          {/* ── CHI SIAMO ── */}
-          <section className="border-t border-[var(--color-border)]">
-            <div className="mx-auto max-w-7xl px-4 sm:px-6 py-20 sm:py-28">
-              <div className="text-center max-w-3xl mx-auto mb-16">
-                <p className="text-xs font-semibold tracking-widest uppercase text-[var(--color-accent)] mb-4">Chi siamo</p>
-                <h2 className="text-3xl sm:text-4xl md:text-5xl font-extrabold tracking-tight mb-6" style={{ fontFamily: "var(--font-heading)" }}>
-                  L&apos;Hub Italiano del<br />
-                  <span className="text-accent-glow">Sim Racing.</span>
-                </h2>
-                <p className="text-base sm:text-lg text-[var(--color-fg-muted)] leading-relaxed">
-                  SimUniverse nasce per riunire la community italiana del sim racing in un unico spazio.
-                  Niente forum dispersivi, niente gruppi WhatsApp scollegati — solo strumenti pensati
-                  per chi vive di curve, settaggi e gomme che si scaldano.
-                </p>
-              </div>
-
-              <div className="grid gap-5 md:grid-cols-3">
-                <FeatureBlock emoji="🏆" title="Organizza eventi" desc="Tornei, campionati, gare endurance. Crea, gestisci iscrizioni e raduna piloti in pochi clic." />
-                <FeatureBlock emoji="🏎️" title="Costruisci il tuo team" desc="Logo, lineup, descrizione. Recluta nuovi piloti tramite la bacheca pubblica." />
-                <FeatureBlock emoji="⚙️" title="Condividi assetti" desc="Setup per ogni auto e tracciato. Vota, scarica, contribuisci alla libreria della community." />
-                <FeatureBlock emoji="🎮" title="Tutti i sim principali" desc="ACC, iRacing, LMU, Assetto Corsa, AC EVO, F1 25. Un solo profilo, tutti i tuoi sim." />
-                <FeatureBlock emoji="🤝" title="Trova compagni" desc="Cerca piloti del tuo livello o team aperti al reclutamento. Niente più gare in solitaria." />
-                <FeatureBlock emoji={<svg viewBox="0 0 3 2" className="h-10 w-14 rounded-sm" aria-label="Bandiera italiana"><rect width="1" height="2" fill="#009246"/><rect x="1" width="1" height="2" fill="#fff"/><rect x="2" width="1" height="2" fill="#ce2b37"/></svg>} title="100% italiano" desc="Una community costruita da piloti italiani, per piloti italiani. Lingua, fuso orario, mentalità." />
-              </div>
-            </div>
-          </section>
-
           {/* ── COME FUNZIONA ── */}
           <section className="border-t border-[var(--color-border)]" style={{ background: "linear-gradient(180deg, transparent, rgba(46,125,255,0.04))" }}>
             <div className="mx-auto max-w-7xl px-4 sm:px-6 py-20 sm:py-28">
@@ -385,18 +358,6 @@ function PostCard({ post }: { post: PostShape }) {
 }
 
 
-function FeatureBlock({ emoji, title, desc }: { emoji: React.ReactNode; title: string; desc: string }) {
-  return (
-    <div className="group relative p-6 rounded-2xl border border-[var(--color-border)] bg-[var(--color-bg-elev)] hover:border-[var(--color-primary)]/60 transition-all duration-200 overflow-hidden">
-      <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none"
-        style={{ background: "radial-gradient(ellipse at top left, rgba(46,125,255,0.07), transparent 70%)" }} />
-      <div className="text-4xl mb-4 leading-none">{emoji}</div>
-      <h3 className="font-bold text-lg mb-2 text-white" style={{ fontFamily: "var(--font-heading)" }}>{title}</h3>
-      <p className="text-sm text-[var(--color-fg-muted)] leading-relaxed">{desc}</p>
-      <div className="absolute bottom-0 left-0 h-0.5 w-0 group-hover:w-full bg-[var(--color-primary)] transition-all duration-300" />
-    </div>
-  );
-}
 
 function StepBlock({ num, title, desc }: { num: string; title: string; desc: string }) {
   return (
