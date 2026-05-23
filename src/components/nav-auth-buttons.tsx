@@ -24,7 +24,7 @@ export function MobileNavAuthButton() {
   if (pathname.startsWith("/auth/")) return null;
   return (
     <Link href="/auth/login">
-      <Button variant="ghost" size="sm">Accedi</Button>
+      <Button size="sm">Accedi</Button>
     </Link>
   );
 }
