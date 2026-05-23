@@ -33,6 +33,7 @@ export default function CookiePage() {
         della piattaforma. Non richiedono il consenso dell'utente ai sensi della normativa vigente.
       </p>
 
+      <div className="overflow-x-auto">
       <table>
         <thead>
           <tr>
@@ -60,6 +61,7 @@ export default function CookiePage() {
           </tr>
         </tbody>
       </table>
+      </div>
 
       <h2>Cookie di terze parti</h2>
       <p>
