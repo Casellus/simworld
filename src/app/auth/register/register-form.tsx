@@ -16,6 +16,7 @@ function EmailConfirmWaiting() {
     const supabase = createClient();
     const { data: { subscription } } = supabase.auth.onAuthStateChange((event) => {
       if (event === "SIGNED_IN") {
+        sessionStorage.removeItem("pendingEmailConfirm");
         setConfirmed(true);
         setTimeout(() => router.push("/"), 1500);
       }
@@ -59,7 +60,9 @@ function EmailConfirmWaiting() {
 export function RegisterForm() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [success, setSuccess] = useState(false);
+  const [success, setSuccess] = useState(() =>
+    typeof window !== "undefined" && sessionStorage.getItem("pendingEmailConfirm") === "1"
+  );
   const [showPassword, setShowPassword] = useState(false);
   const [acceptedTerms, setAcceptedTerms] = useState(false);
   const [acceptedAge, setAcceptedAge] = useState(false);
@@ -98,6 +101,7 @@ export function RegisterForm() {
       setError(error.message);
       return;
     }
+    sessionStorage.setItem("pendingEmailConfirm", "1");
     setSuccess(true);
   }
 
