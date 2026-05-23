@@ -4,7 +4,7 @@ import Image from "next/image";
 import { createClient } from "@/lib/supabase/server";
 import { Card, CardBody, CardHeader, Badge } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Download, ThumbsUp, ThumbsDown, Car, MapPin, User as UserIcon, Pencil, Cpu } from "lucide-react";
+import { ThumbsUp, ThumbsDown, Car, MapPin, User as UserIcon, Pencil, Cpu } from "lucide-react";
 import { SIM_CATEGORIES } from "@/lib/constants";
 import { VoteButtons } from "./vote-buttons";
 import { DownloadButton } from "./download-button";
@@ -142,12 +142,6 @@ export default async function SetupDetailPage({ params }: { params: Promise<{ id
         <div className="space-y-4">
           <Card>
             <CardBody className="space-y-3">
-              <div className="flex items-center justify-between text-sm">
-                <span className="flex items-center gap-2">
-                  <Download className="h-4 w-4 text-[var(--color-primary)]" /> Download
-                </span>
-                <span className="font-bold">{setup.downloads}</span>
-              </div>
               <div className="flex items-center justify-between text-sm">
                 <span className="flex items-center gap-2">
                   <ThumbsUp className="h-4 w-4 text-[var(--color-success)]" /> Mi piace
