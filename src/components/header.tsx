@@ -46,7 +46,7 @@ export async function Header() {
           {profile && <NotificationBell />}
           {profile ? (
             <UserMenu profile={profile} />
-          ) : !isAuthPage ? (
+          ) : (
             <>
               <Link href="/auth/login">
                 <Button variant="ghost" size="sm">Accedi</Button>
@@ -55,7 +55,7 @@ export async function Header() {
                 <Button size="sm">Registrati</Button>
               </Link>
             </>
-          ) : null}
+          )}
         </div>
 
         </div>
