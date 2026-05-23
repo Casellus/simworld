@@ -11,6 +11,7 @@ import { Eye, EyeOff } from "lucide-react";
 function EmailConfirmWaiting() {
   const router = useRouter();
   const [confirmed, setConfirmed] = useState(false);
+  const [checking, setChecking] = useState(false);
 
   useEffect(() => {
     let done = false;
@@ -28,7 +29,7 @@ function EmailConfirmWaiting() {
       if (event === "SIGNED_IN" || event === "USER_UPDATED") handleConfirmed();
     });
 
-    // Poll every 2s as fallback — server-side OTP verification doesn't fire onAuthStateChange
+    // Poll every 2s — catches same-device confirmation where server-side OTP doesn't fire onAuthStateChange
     const interval = setInterval(async () => {
       const { data: { session } } = await supabase.auth.getSession();
       if (session) handleConfirmed();
@@ -39,6 +40,22 @@ function EmailConfirmWaiting() {
       clearInterval(interval);
     };
   }, [router]);
+
+  async function handleManualCheck() {
+    setChecking(true);
+    const supabase = createClient();
+    const { data: { session } } = await supabase.auth.getSession();
+    if (session) {
+      sessionStorage.removeItem("pendingEmailConfirm");
+      setConfirmed(true);
+      setTimeout(() => router.push("/"), 1500);
+    } else {
+      // Confirmed on another device — no session here, redirect to login
+      sessionStorage.removeItem("pendingEmailConfirm");
+      router.push("/auth/login?message=email_confirmed");
+    }
+    setChecking(false);
+  }
 
   if (confirmed) return (
     <div className="text-center space-y-4 py-2">
@@ -69,6 +86,13 @@ function EmailConfirmWaiting() {
         Clicca il link nell&apos;email per confermare il tuo account ed entrare in pista.
       </p>
       <p className="text-xs text-white/40 pt-1">Non trovi l&apos;email? Controlla la cartella spam.</p>
+      <button
+        onClick={handleManualCheck}
+        disabled={checking}
+        className="mt-2 text-xs text-[var(--color-primary)] hover:underline disabled:opacity-50"
+      >
+        {checking ? "Verifica in corso..." : "Ho già confermato l'email →"}
+      </button>
     </div>
   );
 }
