@@ -20,8 +20,7 @@ const NAV = [
   {
     title: "Info",
     links: [
-      { href: "/info/chi-siamo", label: "Chi siamo" },
-      { href: "/info/privacy", label: "Privacy Policy" },
+{ href: "/info/privacy", label: "Privacy Policy" },
       { href: "/info/cookie", label: "Cookie Policy" },
       { href: "/info/termini", label: "Termini di servizio" },
     ],
