@@ -23,9 +23,9 @@ export function NotificationBell() {
 
   const unread = notifications.filter((n) => !n.read).length;
 
-  // fetch on mount
   useEffect(() => {
     const supabase = createClient();
+
     supabase
       .from("notifications")
       .select("id, title, body, link, read, created_at")
@@ -35,6 +35,20 @@ export function NotificationBell() {
         setNotifications(data ?? []);
         setLoaded(true);
       });
+
+    const channel = supabase
+      .channel("notifications-realtime")
+      .on(
+        "postgres_changes",
+        { event: "INSERT", schema: "public", table: "notifications" },
+        (payload) => {
+          const n = payload.new as Notification;
+          setNotifications((prev) => [n, ...prev].slice(0, 20));
+        }
+      )
+      .subscribe();
+
+    return () => { supabase.removeChannel(channel); };
   }, []);
 
   useEffect(() => {
