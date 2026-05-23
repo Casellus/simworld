@@ -23,7 +23,7 @@ export function SortSelect({ options, paramKey = "ordina", defaultValue = option
   }
 
   return (
-    <div className="flex items-center gap-2 h-10 rounded border border-[var(--color-border)] bg-[var(--color-bg-elev)] px-3">
+    <div className="flex items-center gap-1.5 h-10 rounded border border-[var(--color-border)] bg-[var(--color-bg-elev)] px-2">
       <SlidersHorizontal className="h-4 w-4 text-[var(--color-fg-muted)] shrink-0" />
       <select
         value={current}
