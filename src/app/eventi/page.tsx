@@ -99,8 +99,8 @@ export default async function EventiPage({ searchParams }: { searchParams: SP })
       {events && events.length > 0 ? (
         <div className="stagger grid gap-4 md:grid-cols-2 lg:grid-cols-3">
           {events.map((e) => (
-            <Link key={e.id} href={`/eventi/${e.slug}`} className="block">
-              <div className="rounded-2xl overflow-hidden h-full flex flex-col shadow-xl hover:scale-[1.02] transition-transform duration-200">
+            <Link key={e.id} href={`/eventi/${e.slug}`} className="block w-full min-w-0">
+              <div className="w-full rounded-2xl overflow-hidden flex flex-col shadow-xl hover:scale-[1.02] transition-transform duration-200">
                 <div className="relative h-44 shrink-0">
                   {e.banner_url ? (
                     <Image src={e.banner_url} alt="" fill sizes="(max-width: 768px) 100vw, 33vw" className="object-cover" />

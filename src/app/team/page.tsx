@@ -43,7 +43,7 @@ export default async function TeamPage({ searchParams }: { searchParams: SP }) {
     : (teamsRaw ?? []);
 
   return (
-    <div className="mx-auto max-w-7xl px-4 sm:px-6 py-10">
+    <div className="w-full mx-auto max-w-7xl px-4 sm:px-6 py-10">
       <div className="flex flex-wrap items-center justify-between gap-4 mb-8">
         <div>
           <h1 className="text-3xl md:text-4xl font-extrabold tracking-tight">Team</h1>
@@ -100,13 +100,13 @@ export default async function TeamPage({ searchParams }: { searchParams: SP }) {
       {teams && teams.length > 0 ? (
         <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
           {teams.map((t) => (
-            <Link key={t.id} href={`/team/${t.slug}`} className="block">
-              <div className="rounded-2xl overflow-hidden h-full flex flex-col shadow-xl hover:scale-[1.02] transition-transform duration-200">
+            <Link key={t.id} href={`/team/${t.slug}`} className="block w-full min-w-0">
+              <div className="w-full rounded-2xl overflow-hidden flex flex-col shadow-xl hover:scale-[1.02] transition-transform duration-200">
                 {/* Immagine */}
-                <div className="relative h-44 shrink-0 bg-gradient-to-br from-[#0d1b3e] via-[#1a1a2e] to-[#050507]">
+                <div className="relative h-44 w-full overflow-hidden bg-gradient-to-br from-[#0d1b3e] via-[#1a1a2e] to-[#050507]">
                   {t.logo_url && (
                     // eslint-disable-next-line @next/next/no-img-element
-                    <img src={t.logo_url} alt={t.name} className="h-full w-full object-cover opacity-40" />
+                    <img src={t.logo_url} alt={t.name} className="absolute inset-0 h-full w-full object-cover opacity-40" />
                   )}
                   {/* Badge piloti */}
                   <div className="absolute top-3 right-3 flex items-center gap-1 bg-white/95 rounded-full px-2.5 py-1 shadow-md">
@@ -120,8 +120,8 @@ export default async function TeamPage({ searchParams }: { searchParams: SP }) {
                   )}
                 </div>
                 {/* Pannello info */}
-                <div className="flex flex-col flex-1 px-4 py-3 bg-[var(--color-bg-elev)]">
-                  <h3 className="font-bold text-base text-white leading-tight">{t.name}</h3>
+                <div className="flex flex-col flex-1 px-4 py-3 bg-[var(--color-bg-elev)] min-w-0">
+                  <h3 className="font-bold text-base text-white leading-tight truncate">{t.name}</h3>
                   <p className="text-sm text-[var(--color-fg-muted)] mt-0.5 truncate">{t.description ?? "Team sim racing"}</p>
                 </div>
               </div>
