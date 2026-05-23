@@ -46,7 +46,6 @@ export default async function Home() {
   }
 
   const displayName = profile?.display_name || profile?.username || "Pilota";
-  const featuredEvent = upcomingEvents?.[0];
 
   return (
     <>
@@ -104,32 +103,6 @@ export default async function Home() {
             </div>
         </div>
 
-      </section>
-
-      {/* ── CHI SIAMO (sempre visibile per debug) ── */}
-      <section className="border-t border-[var(--color-border)]">
-        <div className="mx-auto max-w-7xl px-4 sm:px-6 py-20 sm:py-28">
-          <div className="text-center max-w-3xl mx-auto mb-16">
-            <p className="text-xs font-semibold tracking-widest uppercase text-[var(--color-accent)] mb-4">Chi siamo</p>
-            <h2 className="text-3xl sm:text-4xl md:text-5xl font-extrabold tracking-tight mb-6" style={{ fontFamily: "var(--font-heading)" }}>
-              L&apos;Hub Italiano del<br />
-              <span className="text-accent-glow">Sim Racing.</span>
-            </h2>
-            <p className="text-base sm:text-lg text-[var(--color-fg-muted)] leading-relaxed">
-              SimUniverse nasce per riunire la community italiana del sim racing in un unico spazio.
-              Niente forum dispersivi, niente gruppi WhatsApp scollegati — solo strumenti pensati
-              per chi vive di curve, settaggi e gomme che si scaldano.
-            </p>
-          </div>
-          <div className="grid gap-5 md:grid-cols-3">
-            <FeatureBlock emoji="🏆" title="Organizza eventi" desc="Tornei, campionati, gare endurance. Crea, gestisci iscrizioni e raduna piloti in pochi clic." />
-            <FeatureBlock emoji="🏎️" title="Costruisci il tuo team" desc="Logo, lineup, descrizione. Recluta nuovi piloti tramite la bacheca pubblica." />
-            <FeatureBlock emoji="⚙️" title="Condividi assetti" desc="Setup per ogni auto e tracciato. Vota, scarica, contribuisci alla libreria della community." />
-            <FeatureBlock emoji="🎮" title="Tutti i sim principali" desc="ACC, iRacing, LMU, Assetto Corsa, AC EVO, F1 25. Un solo profilo, tutti i tuoi sim." />
-            <FeatureBlock emoji="🤝" title="Trova compagni" desc="Cerca piloti del tuo livello o team aperti al reclutamento. Niente più gare in solitaria." />
-            <FeatureBlock emoji={<svg viewBox="0 0 3 2" className="h-10 w-14 rounded-sm" aria-label="Bandiera italiana"><rect width="1" height="2" fill="#009246"/><rect x="1" width="1" height="2" fill="#fff"/><rect x="2" width="1" height="2" fill="#ce2b37"/></svg>} title="100% italiano" desc="Una community costruita da piloti italiani, per piloti italiani. Lingua, fuso orario, mentalità." />
-          </div>
-        </div>
       </section>
 
       {user ? (
