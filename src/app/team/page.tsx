@@ -56,49 +56,51 @@ export default async function TeamPage({ searchParams }: { searchParams: SP }) {
         </Link>
       </div>
 
-      <div className="flex gap-2 mb-6 flex-wrap">
-        <form action="/team" method="get" className="flex flex-1 gap-2">
+      <div className="flex flex-col gap-2 mb-6">
+        <form action="/team" method="get" className="flex gap-2 min-w-0">
           {sp.recruiting === "1" && <input type="hidden" name="recruiting" value="1" />}
           <input
             name="q"
             defaultValue={sp.q || ""}
             placeholder="Cerca team..."
-            className="flex-1 h-10 rounded border border-[var(--color-border)] bg-[var(--color-bg-elev)] px-3 text-sm focus:border-[var(--color-primary)] focus:outline-none"
+            className="min-w-0 flex-1 h-10 rounded border border-[var(--color-border)] bg-[var(--color-bg-elev)] px-3 text-sm focus:border-[var(--color-primary)] focus:outline-none"
           />
-          <Button type="submit" variant="secondary">Cerca</Button>
+          <Button type="submit" variant="secondary" className="shrink-0">Cerca</Button>
         </form>
-        <Link href={sp.recruiting === "1"
-          ? `/team${sp.q ? `?q=${sp.q}` : ""}`
-          : `/team?recruiting=1${sp.q ? `&q=${sp.q}` : ""}`}
-        >
-          <div className={`flex items-center gap-3 h-10 px-3 rounded-xl border cursor-pointer transition-all duration-150 text-sm font-medium select-none ${
-            sp.recruiting === "1"
-              ? "border-[var(--color-primary)] bg-[var(--color-primary)]/10 shadow-[0_0_0_1px_var(--color-primary)]"
-              : "border-[var(--color-border)] bg-[var(--color-bg-elev)] hover:border-[var(--color-primary)]/40"
-          }`}>
-            <span className={`flex-shrink-0 h-5 w-5 rounded-md border-2 flex items-center justify-center transition-all duration-150 ${
+        <div className="flex gap-2 flex-wrap">
+          <Link href={sp.recruiting === "1"
+            ? `/team${sp.q ? `?q=${sp.q}` : ""}`
+            : `/team?recruiting=1${sp.q ? `&q=${sp.q}` : ""}`}
+          >
+            <div className={`flex items-center gap-3 h-10 px-3 rounded-xl border cursor-pointer transition-all duration-150 text-sm font-medium select-none ${
               sp.recruiting === "1"
-                ? "border-[var(--color-primary)] bg-[var(--color-primary)]"
-                : "border-[var(--color-border-strong)] bg-transparent"
+                ? "border-[var(--color-primary)] bg-[var(--color-primary)]/10 shadow-[0_0_0_1px_var(--color-primary)]"
+                : "border-[var(--color-border)] bg-[var(--color-bg-elev)] hover:border-[var(--color-primary)]/40"
             }`}>
-              {sp.recruiting === "1" && (
-                <svg className="h-3 w-3 text-white" viewBox="0 0 12 12" fill="none">
-                  <path d="M2 6l3 3 5-5" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-                </svg>
-              )}
-            </span>
-            Solo che reclutano
-          </div>
-        </Link>
-        <Suspense>
-          <SortSelect options={SORT_OPTIONS} />
-        </Suspense>
+              <span className={`flex-shrink-0 h-5 w-5 rounded-md border-2 flex items-center justify-center transition-all duration-150 ${
+                sp.recruiting === "1"
+                  ? "border-[var(--color-primary)] bg-[var(--color-primary)]"
+                  : "border-[var(--color-border-strong)] bg-transparent"
+              }`}>
+                {sp.recruiting === "1" && (
+                  <svg className="h-3 w-3 text-white" viewBox="0 0 12 12" fill="none">
+                    <path d="M2 6l3 3 5-5" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                  </svg>
+                )}
+              </span>
+              Solo che reclutano
+            </div>
+          </Link>
+          <Suspense>
+            <SortSelect options={SORT_OPTIONS} />
+          </Suspense>
+        </div>
       </div>
 
       {teams && teams.length > 0 ? (
         <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
           {teams.map((t) => (
-            <Link key={t.id} href={`/team/${t.slug}`}>
+            <Link key={t.id} href={`/team/${t.slug}`} className="block">
               <div className="rounded-2xl overflow-hidden h-full flex flex-col shadow-xl hover:scale-[1.02] transition-transform duration-200">
                 {/* Immagine */}
                 <div className="relative h-44 shrink-0 bg-gradient-to-br from-[#0d1b3e] via-[#1a1a2e] to-[#050507]">
