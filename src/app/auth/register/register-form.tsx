@@ -12,6 +12,7 @@ function EmailConfirmWaiting() {
   const router = useRouter();
   const [confirmed, setConfirmed] = useState(false);
   const [checking, setChecking] = useState(false);
+  const [notYetConfirmed, setNotYetConfirmed] = useState(false);
 
   useEffect(() => {
     let done = false;
@@ -44,17 +45,37 @@ function EmailConfirmWaiting() {
   async function handleManualCheck() {
     setChecking(true);
     const supabase = createClient();
+
+    // Check for session first (same-device confirmation)
     const { data: { session } } = await supabase.auth.getSession();
     if (session) {
       sessionStorage.removeItem("pendingEmailConfirm");
+      sessionStorage.removeItem("pendingUserId");
       setConfirmed(true);
       setTimeout(() => router.push("/"), 1500);
-    } else {
-      // Confirmed on another device — no session here, redirect to login
-      sessionStorage.removeItem("pendingEmailConfirm");
-      router.push("/auth/login?message=email_confirmed");
+      return;
     }
+
+    // No session — query server to check if email is confirmed in DB (cross-device)
+    const userId = sessionStorage.getItem("pendingUserId");
+    if (userId) {
+      const res = await fetch("/api/check-email-confirmed", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ userId }),
+      });
+      const { confirmed: isConfirmed } = await res.json();
+      if (isConfirmed) {
+        sessionStorage.removeItem("pendingEmailConfirm");
+        sessionStorage.removeItem("pendingUserId");
+        router.push("/auth/login?message=email_confirmed");
+        return;
+      }
+    }
+
     setChecking(false);
+    setNotYetConfirmed(true);
+    setTimeout(() => setNotYetConfirmed(false), 3000);
   }
 
   if (confirmed) return (
@@ -93,6 +114,9 @@ function EmailConfirmWaiting() {
       >
         {checking ? "Verifica in corso..." : "Ho già confermato l'email →"}
       </button>
+      {notYetConfirmed && (
+        <p className="text-xs text-[var(--color-danger)]">Email non ancora confermata. Controlla la tua casella di posta.</p>
+      )}
     </div>
   );
 }
@@ -128,7 +152,7 @@ export function RegisterForm() {
     }
 
     const supabase = createClient();
-    const { error } = await supabase.auth.signUp({
+    const { data, error } = await supabase.auth.signUp({
       email,
       password,
       options: {
@@ -142,6 +166,7 @@ export function RegisterForm() {
       return;
     }
     sessionStorage.setItem("pendingEmailConfirm", "1");
+    if (data.user?.id) sessionStorage.setItem("pendingUserId", data.user.id);
     setSuccess(true);
   }
 
