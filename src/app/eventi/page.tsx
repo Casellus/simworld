@@ -64,8 +64,8 @@ export default async function EventiPage({ searchParams }: { searchParams: SP })
         </Link>
       </div>
 
-      <div className="flex gap-2 mb-6">
-        <form action="/eventi" method="get" className="flex flex-1 gap-2">
+      <div className="flex flex-wrap gap-2 mb-6">
+        <form action="/eventi" method="get" className="flex flex-1 min-w-0 gap-2">
           {sp.gioco && <input type="hidden" name="gioco" value={sp.gioco} />}
           {sp.tipo && <input type="hidden" name="tipo" value={sp.tipo} />}
           {sp.ordina && <input type="hidden" name="ordina" value={sp.ordina} />}
@@ -73,9 +73,9 @@ export default async function EventiPage({ searchParams }: { searchParams: SP })
             name="q"
             defaultValue={sp.q || ""}
             placeholder="Cerca eventi..."
-            className="flex-1 h-10 rounded border border-[var(--color-border)] bg-[var(--color-bg-elev)] px-3 text-sm focus:border-[var(--color-primary)] focus:outline-none"
+            className="min-w-0 flex-1 h-10 rounded border border-[var(--color-border)] bg-[var(--color-bg-elev)] px-3 text-sm focus:border-[var(--color-primary)] focus:outline-none"
           />
-          <Button type="submit" variant="secondary">Cerca</Button>
+          <Button type="submit" variant="secondary" className="shrink-0">Cerca</Button>
         </form>
         <Suspense>
           <SortSelect options={SORT_OPTIONS} defaultValue="prossimi" />
