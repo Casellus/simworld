@@ -27,12 +27,14 @@ export function HeroVideo() {
     <video
       ref={ref}
       className="hero-video"
-      src="/video-homepage.mp4"
       autoPlay
       muted
       loop
       playsInline
       preload="none"
-    />
+    >
+      <source src="/video-homepage.webm" type="video/webm" />
+      <source src="/video-homepage.mp4" type="video/mp4" />
+    </video>
   );
 }
