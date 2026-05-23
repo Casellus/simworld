@@ -40,67 +40,48 @@ export function MobileHamburger({ isLoggedIn = false }: { isLoggedIn?: boolean }
         <Menu className="h-6 w-6" />
       </button>
 
-      {/* Backdrop */}
+      {/* Fullscreen overlay */}
       <div
-        onClick={() => setOpen(false)}
         style={{
           position: "fixed",
           inset: 0,
-          zIndex: 998,
-          background: "rgba(0,0,0,0.55)",
-          backdropFilter: "blur(3px)",
-          opacity: open ? 1 : 0,
-          pointerEvents: open ? "auto" : "none",
-          transition: "opacity 0.3s ease",
-        }}
-      />
-
-      {/* Drawer */}
-      <div
-        style={{
-          position: "fixed",
-          top: 0,
-          right: 0,
-          maxHeight: "100dvh",
-          overflowY: "auto",
-          width: "min(300px, 80vw)",
           zIndex: 999,
           background: "#0d0d12",
-          borderLeft: "1px solid rgba(255,255,255,0.07)",
-          borderBottomLeftRadius: 20,
-          boxShadow: "-12px 0 40px rgba(0,0,0,0.5)",
           display: "flex",
           flexDirection: "column",
-          padding: "1.25rem 1.5rem 2rem",
-          transform: open ? "translateX(0)" : "translateX(100%)",
-          transition: "transform 0.32s cubic-bezier(0.4, 0, 0.2, 1)",
+          alignItems: "center",
+          justifyContent: "center",
+          padding: "2rem",
+          opacity: open ? 1 : 0,
+          pointerEvents: open ? "auto" : "none",
+          transition: "opacity 0.25s ease",
         }}
       >
-        {/* Close button */}
-        <div style={{ display: "flex", justifyContent: "flex-end", marginBottom: "2.5rem" }}>
-          <button
-            onClick={() => setOpen(false)}
-            aria-label="Chiudi menu"
-            style={{
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-              width: 42,
-              height: 42,
-              borderRadius: "50%",
-              background: "var(--primary)",
-              border: "none",
-              color: "#fff",
-              cursor: "pointer",
-              flexShrink: 0,
-            }}
-          >
-            <X size={20} />
-          </button>
-        </div>
+        {/* Close button — top right */}
+        <button
+          onClick={() => setOpen(false)}
+          aria-label="Chiudi menu"
+          style={{
+            position: "absolute",
+            top: "1.25rem",
+            right: "1.25rem",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            width: 44,
+            height: 44,
+            borderRadius: "50%",
+            background: "rgba(255,255,255,0.08)",
+            border: "1px solid rgba(255,255,255,0.12)",
+            color: "#fff",
+            cursor: "pointer",
+          }}
+        >
+          <X size={20} />
+        </button>
 
         {/* Nav links */}
-        <nav style={{ display: "flex", flexDirection: "column", gap: "0.25rem" }}>
+        <nav style={{ display: "flex", flexDirection: "column", gap: "0.5rem", width: "100%", maxWidth: 320, textAlign: "center" }}>
           {nav.map((n) => {
             const active = n.href === "/"
               ? pathname === "/"
@@ -112,10 +93,10 @@ export function MobileHamburger({ isLoggedIn = false }: { isLoggedIn?: boolean }
                 onClick={() => setOpen(false)}
                 style={{
                   display: "block",
-                  padding: "13px 16px",
-                  borderRadius: 12,
+                  padding: "14px 16px",
+                  borderRadius: 14,
                   textDecoration: "none",
-                  fontSize: 19,
+                  fontSize: 22,
                   fontWeight: 700,
                   fontFamily: "var(--font-heading)",
                   color: active ? "var(--primary)" : "#f5f7fa",
@@ -136,13 +117,13 @@ export function MobileHamburger({ isLoggedIn = false }: { isLoggedIn?: boolean }
           style={{
             display: "block",
             textAlign: "center",
-            marginTop: "1.75rem",
-            alignSelf: "center",
+            marginTop: "2rem",
             width: "100%",
-            padding: "13px 24px",
+            maxWidth: 320,
+            padding: "14px 24px",
             borderRadius: 9999,
             textDecoration: "none",
-            fontSize: 15,
+            fontSize: 16,
             fontWeight: 700,
             fontFamily: "var(--font-heading)",
             background: "var(--primary)",
