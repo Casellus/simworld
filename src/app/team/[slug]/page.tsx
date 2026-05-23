@@ -33,10 +33,11 @@ export default async function TeamDetailPage({ params }: { params: Promise<{ slu
   ]);
 
   const isOwner = !!user && user.id === team.owner_id;
+  const isMember = !!user && (members ?? []).some((m) => m.user_id === user.id);
 
   // check if current user already applied
   let alreadyApplied = false;
-  if (user && !isOwner) {
+  if (user && !isOwner && !isMember) {
     const { data: existing } = await supabase
       .from("team_applications")
       .select("id")
@@ -100,10 +101,10 @@ export default async function TeamDetailPage({ params }: { params: Promise<{ slu
         </div>
 
         <div className="flex flex-wrap gap-2">
-          {team.recruiting && !isOwner && user && (
+          {team.recruiting && !isOwner && !isMember && user && (
             alreadyApplied ? (
-              <div className="px-4 py-2 rounded border border-[var(--color-success)] text-[var(--color-success)] text-sm font-medium">
-                Candidatura inviata
+              <div className="px-4 py-2 rounded border border-[var(--color-fg-muted)] text-[var(--color-fg-muted)] text-sm font-medium">
+                In attesa
               </div>
             ) : (
               <ApplyButton teamId={team.id} />

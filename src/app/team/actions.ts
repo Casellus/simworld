@@ -114,9 +114,7 @@ export async function deleteTeam(teamId: string): Promise<{ error?: string }> {
 
 export async function joinTeam(teamId: string, message?: string) {
   const supabase = await createClient();
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
+  const { data: { user } } = await supabase.auth.getUser();
   if (!user) return { error: "Non autorizzato" };
 
   const { error } = await supabase.from("team_applications").insert({
@@ -125,6 +123,31 @@ export async function joinTeam(teamId: string, message?: string) {
     message: message || null,
   });
   if (error) return { error: error.message };
+
+  // notify team owner
+  const { data: team } = await supabase
+    .from("teams")
+    .select("owner_id, name, slug")
+    .eq("id", teamId)
+    .single();
+
+  if (team && team.owner_id !== user.id) {
+    const { data: applicantProfile } = await supabase
+      .from("profiles")
+      .select("display_name, username")
+      .eq("id", user.id)
+      .single();
+    const pilotName = applicantProfile?.display_name || applicantProfile?.username || "Un pilota";
+
+    await supabase.from("notifications").insert({
+      user_id: team.owner_id,
+      type: "new_application",
+      title: "Nuova candidatura",
+      body: `${pilotName} vuole entrare nel tuo team ${team.name}.`,
+      link: `/team/${team.slug}`,
+    });
+  }
+
   return { ok: true };
 }
 
