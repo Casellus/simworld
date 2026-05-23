@@ -12,7 +12,7 @@ import { NavLink } from "@/components/nav-link";
 export async function Header() {
   const pathname = (await headers()).get("x-pathname") ?? "";
   if (pathname === "/onboarding") return null;
-  const isAuthPage = pathname.startsWith("/auth/");
+  if (pathname.startsWith("/auth/")) return null;
 
   const profile = await getProfile();
 
