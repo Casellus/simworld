@@ -93,6 +93,7 @@ html, body {
   background: var(--bg);
   color: var(--fg);
   min-height: 100%;
+  overflow-x: hidden;
 }
 
 body {
