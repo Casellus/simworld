@@ -13,8 +13,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     { url: `${BASE}/assetti`, priority: 0.8, changeFrequency: "daily" },
     { url: `${BASE}/guide`, priority: 0.8, changeFrequency: "weekly" },
     { url: `${BASE}/cerca`, priority: 0.7, changeFrequency: "hourly" },
-    { url: `${BASE}/info/chi-siamo`, priority: 0.5, changeFrequency: "monthly" },
-    { url: `${BASE}/info/privacy`, priority: 0.3, changeFrequency: "monthly" },
+{ url: `${BASE}/info/privacy`, priority: 0.3, changeFrequency: "monthly" },
     { url: `${BASE}/info/termini`, priority: 0.3, changeFrequency: "monthly" },
     { url: `${BASE}/info/cookie`, priority: 0.3, changeFrequency: "monthly" },
   ];
