@@ -12,7 +12,7 @@ import { NavLink } from "@/components/nav-link";
 export async function Header() {
   const pathname = (await headers()).get("x-pathname") ?? "";
   if (pathname === "/onboarding") return null;
-  if (pathname.startsWith("/auth/")) return null;
+  const isAuthPage = pathname.startsWith("/auth/");
 
   const profile = await getProfile();
 
@@ -46,7 +46,7 @@ export async function Header() {
           {profile && <NotificationBell />}
           {profile ? (
             <UserMenu profile={profile} />
-          ) : (
+          ) : !isAuthPage ? (
             <>
               <Link href="/auth/login">
                 <Button variant="ghost" size="sm">Accedi</Button>
@@ -55,7 +55,7 @@ export async function Header() {
                 <Button size="sm">Registrati</Button>
               </Link>
             </>
-          )}
+          ) : null}
         </div>
 
         </div>
@@ -68,11 +68,11 @@ export async function Header() {
                 <NotificationBell />
                 <UserMenu profile={profile} />
               </>
-            ) : (
+            ) : !isAuthPage ? (
               <Link href="/auth/login">
                 <Button variant="ghost" size="sm">Accedi</Button>
               </Link>
-            )}
+            ) : null}
           </div>
           <Link href="/" className="absolute left-1/2 -translate-x-1/2">
             <Logo size="sm" href={null} />
