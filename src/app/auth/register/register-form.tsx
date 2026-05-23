@@ -7,6 +7,7 @@ import { Button } from "@/components/ui/button";
 import { Input, Label } from "@/components/ui/input";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Eye, EyeOff } from "lucide-react";
+import Link from "next/link";
 
 export function RegisterForm() {
   const router = useRouter();
@@ -52,14 +53,34 @@ export function RegisterForm() {
       return;
     }
     setSuccess(true);
-    router.push("/onboarding");
-    router.refresh();
   }
 
-  if (success) return null;
+  if (success) return (
+    <div className="text-center space-y-4 py-4">
+      <div className="flex items-center justify-center w-14 h-14 rounded-full bg-[var(--color-primary)]/15 border border-[var(--color-primary)]/30 mx-auto">
+        <svg className="w-7 h-7 text-[var(--color-primary)]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+          <path strokeLinecap="round" strokeLinejoin="round" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+        </svg>
+      </div>
+      <h2 className="text-xl font-extrabold text-white">Controlla la tua email!</h2>
+      <p className="text-sm text-white/70 leading-relaxed">
+        Ti abbiamo inviato un link di conferma.<br />
+        Clicca il link per attivare il tuo account ed entrare in pista.
+      </p>
+      <p className="text-xs text-white/40">Non trovi l&apos;email? Controlla la cartella spam.</p>
+    </div>
+  );
 
   return (
     <div className="space-y-6">
+      <div className="text-center mb-2">
+        <h1 className="text-3xl font-extrabold tracking-tight mb-2" style={{ fontFamily: "var(--font-heading)" }}>
+          Crea account
+        </h1>
+        <p className="text-sm" style={{ color: "rgba(255,255,255,0.85)" }}>
+          Entra in pista con la community italiana.
+        </p>
+      </div>
       <form onSubmit={register} className="space-y-4">
         <div>
           <Label htmlFor="username" className="!text-white/90">Username pilota</Label>
@@ -128,6 +149,12 @@ export function RegisterForm() {
           {loading ? "Caricamento..." : "Crea account"}
         </Button>
       </form>
+      <p className="text-sm text-center" style={{ color: "rgba(255,255,255,0.85)" }}>
+        Hai già un account?{" "}
+        <Link href="/auth/login" className="text-[var(--color-primary)] font-bold hover:underline">
+          Accedi
+        </Link>
+      </p>
     </div>
   );
 }
