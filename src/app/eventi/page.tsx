@@ -64,8 +64,8 @@ export default async function EventiPage({ searchParams }: { searchParams: SP })
         </Link>
       </div>
 
-      <div className="flex flex-wrap gap-2 mb-6">
-        <form action="/eventi" method="get" className="flex flex-1 min-w-0 gap-2">
+      <div className="flex flex-col sm:flex-row gap-2 mb-6">
+        <form action="/eventi" method="get" className="flex flex-1 gap-2 min-w-0">
           {sp.gioco && <input type="hidden" name="gioco" value={sp.gioco} />}
           {sp.tipo && <input type="hidden" name="tipo" value={sp.tipo} />}
           {sp.ordina && <input type="hidden" name="ordina" value={sp.ordina} />}
