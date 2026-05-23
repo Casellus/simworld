@@ -1,11 +1,60 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Input, Label } from "@/components/ui/input";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Eye, EyeOff } from "lucide-react";
+
+function EmailConfirmWaiting() {
+  const router = useRouter();
+  const [confirmed, setConfirmed] = useState(false);
+
+  useEffect(() => {
+    const supabase = createClient();
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((event) => {
+      if (event === "SIGNED_IN") {
+        setConfirmed(true);
+        setTimeout(() => router.push("/"), 1500);
+      }
+    });
+    return () => subscription.unsubscribe();
+  }, [router]);
+
+  if (confirmed) return (
+    <div className="text-center space-y-4 py-2">
+      <div className="flex items-center justify-center w-14 h-14 rounded-full bg-green-500/15 border border-green-500/40 mx-auto">
+        <svg className="w-7 h-7 text-green-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+          <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
+        </svg>
+      </div>
+      <h2 className="text-2xl font-extrabold text-white" style={{ fontFamily: "var(--font-heading)" }}>
+        Email confermata!
+      </h2>
+      <p className="text-sm text-white/70">Accesso in corso...</p>
+    </div>
+  );
+
+  return (
+    <div className="text-center space-y-4 py-2">
+      <div className="flex items-center justify-center w-14 h-14 rounded-full bg-[var(--color-primary)]/15 border border-[var(--color-primary)]/30 mx-auto">
+        <svg className="w-7 h-7 text-[var(--color-primary)]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+          <path strokeLinecap="round" strokeLinejoin="round" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+        </svg>
+      </div>
+      <h2 className="text-2xl font-extrabold text-white" style={{ fontFamily: "var(--font-heading)" }}>
+        Benvenuto in SimUniverse!
+      </h2>
+      <p className="text-sm text-white/70 leading-relaxed">
+        Grazie per esserti registrato.<br />
+        Clicca il link nell&apos;email per confermare il tuo account ed entrare in pista.
+      </p>
+      <p className="text-xs text-white/40 pt-1">Non trovi l&apos;email? Controlla la cartella spam.</p>
+    </div>
+  );
+}
 
 export function RegisterForm() {
   const [loading, setLoading] = useState(false);
@@ -52,23 +101,7 @@ export function RegisterForm() {
     setSuccess(true);
   }
 
-  if (success) return (
-    <div className="text-center space-y-4 py-2">
-      <div className="flex items-center justify-center w-14 h-14 rounded-full bg-[var(--color-primary)]/15 border border-[var(--color-primary)]/30 mx-auto">
-        <svg className="w-7 h-7 text-[var(--color-primary)]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-          <path strokeLinecap="round" strokeLinejoin="round" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
-        </svg>
-      </div>
-      <h2 className="text-2xl font-extrabold text-white" style={{ fontFamily: "var(--font-heading)" }}>
-        Benvenuto in SimUniverse!
-      </h2>
-      <p className="text-sm text-white/70 leading-relaxed">
-        Grazie per esserti registrato.<br />
-        Clicca il link nell&apos;email per confermare il tuo account ed entrare in pista.
-      </p>
-      <p className="text-xs text-white/40 pt-1">Non trovi l&apos;email? Controlla la cartella spam.</p>
-    </div>
-  );
+  if (success) return <EmailConfirmWaiting />;
 
   return (
     <div className="space-y-6">
