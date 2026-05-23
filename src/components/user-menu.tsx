@@ -31,7 +31,7 @@ export function UserMenu({ profile }: { profile: { username: string; display_nam
     <div className="relative" ref={ref}>
       <button
         onClick={() => setOpen((o) => !o)}
-        className="flex items-center gap-2 h-9 px-2 rounded hover:bg-[var(--color-bg-elev)] transition-colors"
+        className="flex items-center gap-2 h-9 px-2 rounded-lg hover:bg-white/[0.08] transition-colors"
       >
         <div className="h-7 w-7 rounded-full bg-[var(--color-primary)]/20 border border-[var(--color-primary)]/40 flex items-center justify-center overflow-hidden">
           {profile.avatar_url && !avatarError ? (

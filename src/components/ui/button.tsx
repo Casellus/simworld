@@ -14,7 +14,7 @@ const variantClasses: Record<Variant, string> = {
     "bg-[var(--color-primary)] text-white hover:bg-[var(--color-primary-hover)] border border-transparent",
   secondary:
     "bg-[var(--color-bg-elev-2)] text-[var(--color-fg)] hover:bg-[var(--color-border)] border border-[var(--color-border)]",
-  ghost: "bg-transparent text-[var(--color-fg)] hover:bg-[var(--color-bg-elev)] border border-transparent",
+  ghost: "bg-transparent text-[var(--color-fg)] hover:bg-white/[0.08] border border-transparent",
   danger: "bg-[var(--color-danger)] text-white hover:opacity-90 border border-transparent",
   outline:
     "bg-transparent text-[var(--color-fg)] border border-[var(--color-border)] hover:border-[var(--color-primary)] hover:text-[var(--color-primary)]",
