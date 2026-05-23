@@ -13,15 +13,31 @@ function EmailConfirmWaiting() {
   const [confirmed, setConfirmed] = useState(false);
 
   useEffect(() => {
+    let done = false;
     const supabase = createClient();
+
+    function handleConfirmed() {
+      if (done) return;
+      done = true;
+      sessionStorage.removeItem("pendingEmailConfirm");
+      setConfirmed(true);
+      setTimeout(() => router.push("/"), 1500);
+    }
+
     const { data: { subscription } } = supabase.auth.onAuthStateChange((event) => {
-      if (event === "SIGNED_IN") {
-        sessionStorage.removeItem("pendingEmailConfirm");
-        setConfirmed(true);
-        setTimeout(() => router.push("/"), 1500);
-      }
+      if (event === "SIGNED_IN" || event === "USER_UPDATED") handleConfirmed();
     });
-    return () => subscription.unsubscribe();
+
+    // Poll every 2s as fallback — server-side OTP verification doesn't fire onAuthStateChange
+    const interval = setInterval(async () => {
+      const { data: { session } } = await supabase.auth.getSession();
+      if (session) handleConfirmed();
+    }, 2000);
+
+    return () => {
+      subscription.unsubscribe();
+      clearInterval(interval);
+    };
   }, [router]);
 
   if (confirmed) return (
