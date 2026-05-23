@@ -112,7 +112,7 @@ export default async function AssettiPage({ searchParams }: { searchParams: SP }
       {/* Filtro gioco */}
       <Suspense>
         <div className="flex flex-wrap gap-2 mb-8">
-          <FilterChip baseHref="/assetti" paramKey="gioco" value={null} label="Tutti i giochi" />
+          <FilterChip baseHref="/assetti" paramKey="gioco" value={null} label={tipo === "simulatore" ? "Tutti i simulatori" : "Tutti i giochi"} />
           {GAMES.map((g) => (
             <FilterChip key={g.slug} baseHref="/assetti" paramKey="gioco" value={g.slug} label={g.short} />
           ))}
@@ -174,7 +174,7 @@ function GameGroups({ setups, tipo }: { setups: S[]; tipo: string }) {
             {tipo === "simulatore"
               ? <Cpu className="h-4 w-4 text-[var(--color-accent)]" />
               : <Car className="h-4 w-4 text-[var(--color-primary)]" />}
-            <h2 className="text-lg font-extrabold tracking-tight text-white">{name}</h2>
+            <h2 className="text-lg font-extrabold tracking-tight text-white">{tipo === "simulatore" ? (GAMES.find(g => g.slug === slug)?.short ?? name) : name}</h2>
             <span className="text-xs font-semibold text-[var(--color-primary)] bg-[var(--color-primary)]/10 border border-[var(--color-primary)]/20 px-2 py-0.5 rounded-full">{items.length}</span>
             <div className="flex-1 h-px bg-[var(--color-border-strong)]" />
           </div>
