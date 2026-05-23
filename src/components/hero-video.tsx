@@ -32,7 +32,7 @@ export function HeroVideo() {
       muted
       loop
       playsInline
-      preload="auto"
+      preload="none"
     />
   );
 }

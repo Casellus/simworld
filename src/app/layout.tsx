@@ -8,12 +8,12 @@ import { CookieBanner } from "@/components/cookie-banner";
 const montserrat = Montserrat({
   variable: "--font-heading",
   subsets: ["latin"],
-  weight: ["500", "600", "700", "800", "900"],
+  weight: ["700", "800"],
 });
 const openSans = Open_Sans({
   variable: "--font-body",
   subsets: ["latin"],
-  weight: ["400", "500", "600", "700"],
+  weight: ["400", "600"],
 });
 
 export const metadata: Metadata = {

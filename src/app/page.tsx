@@ -16,6 +16,7 @@ export default async function Home() {
     { data: upcomingEvents },
     { data: topSetups },
     { data: recentPosts },
+    { data: profileRaw },
   ] = await Promise.all([
     supabase
       .from("events")
@@ -34,16 +35,13 @@ export default async function Home() {
       .eq("active", true)
       .order("created_at", { ascending: false })
       .limit(6),
+    user
+      ? supabase.from("profiles").select("display_name, username").eq("id", user.id).maybeSingle()
+      : Promise.resolve({ data: null, error: null }),
   ]);
 
-  let profile: { display_name: string | null; username: string } | null = null;
-
-  if (user) {
-    const { data: pr } = await supabase.from("profiles").select("display_name, username").eq("id", user.id).maybeSingle();
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const prRow = (pr as any)?.data ?? pr;
-    profile = prRow ?? null;
-  }
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const profile: { display_name: string | null; username: string } | null = ((profileRaw as any)?.data ?? profileRaw) ?? null;
 
   const displayName = profile?.display_name || profile?.username || "Pilota";
 
