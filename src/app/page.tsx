@@ -27,7 +27,6 @@ export default async function Home() {
     supabase
       .from("setups")
       .select("id, title, car, track, downloads, rating_sum, photo_url, games(name, slug)")
-      .or("setup_type.eq.auto,setup_type.is.null")
       .order("downloads", { ascending: false })
       .limit(6),
     supabase
