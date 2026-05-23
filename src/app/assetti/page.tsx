@@ -39,9 +39,15 @@ export default async function AssettiPage({ searchParams }: { searchParams: SP }
   let q = supabase
     .from("setups")
     .select("id, title, car, track, conditions, category, setup_type, downloads, rating_sum, rating_count, photo_url, user_id, games(slug, name)")
-    .eq("setup_type", tipo)
     .order(col, { ascending: asc })
     .limit(50);
+
+  // NULL setup_type = assetto auto (retrocompatibilità con record precedenti)
+  if (tipo === "auto") {
+    q = q.or("setup_type.eq.auto,setup_type.is.null");
+  } else {
+    q = q.eq("setup_type", tipo);
+  }
 
   if (gameId) q = q.eq("game_id", gameId);
   if (sp.q) q = q.or(`title.ilike.%${sp.q}%,car.ilike.%${sp.q}%,track.ilike.%${sp.q}%`);
