@@ -2,17 +2,16 @@ import Link from "next/link";
 import { headers } from "next/headers";
 import { Logo } from "@/components/logo";
 import { getProfile } from "@/lib/auth";
-import { Button } from "@/components/ui/button";
 import { UserMenu } from "@/components/user-menu";
 import { NotificationBell } from "@/components/notification-bell";
 import { MobileHamburger } from "@/components/mobile-nav";
 import { Calendar, Users, Settings2, Search, BookOpen } from "lucide-react";
 import { NavLink } from "@/components/nav-link";
+import { NavAuthButtons, MobileNavAuthButton } from "@/components/nav-auth-buttons";
 
 export async function Header() {
   const pathname = (await headers()).get("x-pathname") ?? "";
   if (pathname === "/onboarding") return null;
-  const isAuthPage = pathname.startsWith("/auth/");
 
   const profile = await getProfile();
 
@@ -46,16 +45,9 @@ export async function Header() {
           {profile && <NotificationBell />}
           {profile ? (
             <UserMenu profile={profile} />
-          ) : !isAuthPage ? (
-            <>
-              <Link href="/auth/login">
-                <Button variant="ghost" size="sm">Accedi</Button>
-              </Link>
-              <Link href="/auth/register">
-                <Button size="sm">Registrati</Button>
-              </Link>
-            </>
-          ) : null}
+          ) : (
+            <NavAuthButtons />
+          )}
         </div>
 
         </div>
@@ -68,11 +60,9 @@ export async function Header() {
                 <NotificationBell />
                 <UserMenu profile={profile} />
               </>
-            ) : !isAuthPage ? (
-              <Link href="/auth/login">
-                <Button variant="ghost" size="sm">Accedi</Button>
-              </Link>
-            ) : null}
+            ) : (
+              <MobileNavAuthButton />
+            )}
           </div>
           <Link href="/" className="absolute left-1/2 -translate-x-1/2">
             <Logo size="sm" href={null} />
