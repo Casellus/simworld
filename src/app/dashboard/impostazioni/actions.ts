@@ -2,7 +2,7 @@
 
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
-import { createClient } from "@/lib/supabase/server";
+import { createClient, createAdminClient } from "@/lib/supabase/server";
 
 export async function updateProfile(formData: FormData) {
   const supabase = await createClient();
@@ -78,12 +78,14 @@ export async function deleteAccount() {
   const { data: { user } } = await supabase.auth.getUser();
   if (!user) return { error: "Non autorizzato" };
 
+  const admin = createAdminClient();
+
   // Delete profile data (cascades to related rows via DB FK)
   await supabase.from("profiles").delete().eq("id", user.id);
-  // Sign out before deleting the auth user
+  // Sign out the user first
   await supabase.auth.signOut();
-  // Delete auth user (requires service role — falls back to data-only deletion)
-  await supabase.auth.admin?.deleteUser(user.id).catch(() => null);
+  // Delete auth user via admin client (service role)
+  await admin.auth.admin.deleteUser(user.id);
 
   redirect("/");
 }
