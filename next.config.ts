@@ -21,6 +21,9 @@ const securityHeaders = [
   },
 ];
 
+// Imposta true per mettere il sito in manutenzione
+const COMING_SOON = true;
+
 const nextConfig: NextConfig = {
   images: {
     remotePatterns: [
@@ -31,6 +34,16 @@ const nextConfig: NextConfig = {
         search: "",
       },
     ],
+  },
+  async redirects() {
+    if (!COMING_SOON) return [];
+    return [
+      {
+        source: "/((?!coming-soon|_next|api|favicon\\.ico|.*\\.(?:svg|png|jpg|jpeg|gif|webp)$).*)",
+        destination: "/coming-soon",
+        permanent: false,
+      },
+    ];
   },
   async headers() {
     return [
