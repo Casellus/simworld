@@ -45,6 +45,10 @@ export default function ComingSoonPage() {
           75%  { transform:translateY(-14px) translateX(12px); }
           100% { transform:translateY(0) translateX(0); }
         }
+        .ig-btn:hover {
+          transform: scale(1.04);
+          box-shadow: 0 12px 40px rgba(131,58,180,.55) !important;
+        }
       `}</style>
 
       {/* ── Orbi fluttuanti ── */}
@@ -138,6 +142,7 @@ export default function ComingSoonPage() {
           href="https://www.instagram.com/simuniverse.it"
           target="_blank"
           rel="noopener noreferrer"
+          className="ig-btn"
           style={{
             display:"inline-flex", alignItems:"center", gap:12,
             background:"linear-gradient(135deg,#833ab4,#fd1d1d,#fcb045)",
@@ -145,14 +150,6 @@ export default function ComingSoonPage() {
             padding:"14px 28px", borderRadius:14,
             textDecoration:"none", boxShadow:"0 8px 32px rgba(131,58,180,.35)",
             transition:"transform .2s, box-shadow .2s",
-          }}
-          onMouseEnter={e => {
-            (e.currentTarget as HTMLElement).style.transform = "scale(1.04)";
-            (e.currentTarget as HTMLElement).style.boxShadow = "0 12px 40px rgba(131,58,180,.5)";
-          }}
-          onMouseLeave={e => {
-            (e.currentTarget as HTMLElement).style.transform = "scale(1)";
-            (e.currentTarget as HTMLElement).style.boxShadow = "0 8px 32px rgba(131,58,180,.35)";
           }}
         >
           <InstagramIcon/>
