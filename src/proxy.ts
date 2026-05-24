@@ -15,7 +15,6 @@ async function proxy(request: NextRequest) {
   return response;
 }
 
-export { proxy };
 export default proxy;
 
 export const config = {
