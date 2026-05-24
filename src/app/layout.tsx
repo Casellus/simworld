@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Montserrat, Open_Sans } from "next/font/google";
+import { headers } from "next/headers";
 import "./globals.css";
 import { Header } from "@/components/header";
 import { Footer } from "@/components/footer";
@@ -23,14 +24,18 @@ export const metadata: Metadata = {
   keywords: ["sim racing", "ACC", "iRacing", "LMU", "F1 25", "assetto corsa", "tornei", "esports"],
 };
 
-export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
+export default async function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
+  const h = await headers();
+  const pathname = h.get("x-pathname") ?? "";
+  const standalone = pathname === "/coming-soon";
+
   return (
     <html lang="it" className={`${montserrat.variable} ${openSans.variable} h-full antialiased`}>
       <body className="min-h-full flex flex-col">
-        <Header />
+        {!standalone && <Header />}
         <main className="flex-1">{children}</main>
-        <Footer />
-        <CookieBanner />
+        {!standalone && <Footer />}
+        {!standalone && <CookieBanner />}
       </body>
     </html>
   );
