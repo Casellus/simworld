@@ -1,6 +1,14 @@
-import { Instagram } from "lucide-react";
-
 export const metadata = { title: "Coming Soon · SimUniverse" };
+
+function InstagramIcon() {
+  return (
+    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <rect x="2" y="2" width="20" height="20" rx="5" ry="5"/>
+      <circle cx="12" cy="12" r="4"/>
+      <circle cx="17.5" cy="6.5" r="1.2" fill="currentColor" stroke="none"/>
+    </svg>
+  );
+}
 
 export default function ComingSoonPage() {
   return (
@@ -147,7 +155,7 @@ export default function ComingSoonPage() {
             (e.currentTarget as HTMLElement).style.boxShadow = "0 8px 32px rgba(131,58,180,.35)";
           }}
         >
-          <Instagram size={22}/>
+          <InstagramIcon/>
           Seguici su Instagram @simuniverse.it
         </a>
 

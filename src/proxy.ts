@@ -3,7 +3,7 @@ import { updateSession } from "@/lib/supabase/middleware";
 
 const COMING_SOON = true; // imposta false per riaprire il sito
 
-export async function middleware(request: NextRequest) {
+export async function proxy(request: NextRequest) {
   const { pathname } = request.nextUrl;
 
   if (COMING_SOON && pathname !== "/coming-soon" && !pathname.startsWith("/api/")) {
