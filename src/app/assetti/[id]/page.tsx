@@ -71,7 +71,7 @@ export default async function SetupDetailPage({ params }: { params: Promise<{ id
                 href={`/profilo/${author?.username}`}
                 className="text-[var(--color-fg)] font-medium hover:text-[var(--color-primary)]"
               >
-                {author?.display_name || author?.username}
+                {author?.username || author?.display_name}
               </Link>
               {" · "}
               {formatDate(setup.created_at)}

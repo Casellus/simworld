@@ -188,7 +188,7 @@ function GameGroups({ setups, tipo }: { setups: S[]; tipo: string }) {
 }
 
 function SetupCard({ s }: { s: S }) {
-  const author = s.profiles?.display_name || s.profiles?.username || "Anonimo";
+  const author = s.profiles?.username || s.profiles?.display_name || "Anonimo";
   const positivi = (s.rating_count + s.rating_sum) / 2;
   const stelle = s.rating_count > 0 ? (positivi / s.rating_count) * 5 : null;
   const rating = stelle !== null ? stelle.toFixed(1) : null;
