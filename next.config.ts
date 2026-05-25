@@ -21,9 +21,6 @@ const securityHeaders = [
   },
 ];
 
-// Imposta true per mettere il sito in manutenzione
-const COMING_SOON = false; // imposta true per manutenzione
-
 const nextConfig: NextConfig = {
   images: {
     remotePatterns: [
@@ -36,11 +33,10 @@ const nextConfig: NextConfig = {
     ],
   },
   async redirects() {
-    if (!COMING_SOON) return [];
     return [
       {
-        source: "/((?!coming-soon|_next|api|favicon\\.ico|.*\\.(?:svg|png|jpg|jpeg|gif|webp)$).*)",
-        destination: "/coming-soon",
+        source: "/coming-soon",
+        destination: "/",
         permanent: false,
       },
     ];

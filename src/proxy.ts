@@ -1,17 +1,9 @@
-import { type NextRequest, NextResponse } from "next/server";
+import { type NextRequest } from "next/server";
 import { updateSession } from "@/lib/supabase/middleware";
 
-const COMING_SOON = false; // imposta false per riaprire il sito
-
 export async function proxy(request: NextRequest) {
-  const { pathname } = request.nextUrl;
-
-  if (COMING_SOON && pathname !== "/coming-soon" && !pathname.startsWith("/api/")) {
-    return NextResponse.redirect(new URL("/coming-soon", request.url));
-  }
-
   const response = await updateSession(request);
-  response.headers.set("x-pathname", pathname);
+  response.headers.set("x-pathname", request.nextUrl.pathname);
   return response;
 }
 
