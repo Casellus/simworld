@@ -110,7 +110,7 @@ export default async function TeamPage({ searchParams }: { searchParams: SP }) {
                   )}
                   {/* Badge piloti */}
                   <div className="absolute top-3 right-3 flex items-center gap-1 bg-white/95 rounded-full px-2.5 py-1 shadow-md">
-                    <span className="text-sm leading-none">👥</span>
+                    <Users className="w-3.5 h-3.5 text-blue-500" />
                     <span className="text-xs font-bold text-gray-800 leading-none">{t.team_members?.[0]?.count ?? 0}</span>
                   </div>
                   {t.recruiting && (

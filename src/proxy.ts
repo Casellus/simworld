@@ -1,7 +1,7 @@
 import { type NextRequest, NextResponse } from "next/server";
 import { updateSession } from "@/lib/supabase/middleware";
 
-const COMING_SOON = true; // imposta false per riaprire il sito
+const COMING_SOON = false; // imposta false per riaprire il sito
 
 export async function proxy(request: NextRequest) {
   const { pathname } = request.nextUrl;

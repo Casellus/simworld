@@ -4,7 +4,7 @@ import { useState } from "react";
 import Link from "next/link";
 import { createClient } from "@/lib/supabase/client";
 import { formatDate } from "@/lib/utils";
-import { Bell } from "lucide-react";
+import { Bell, Check } from "lucide-react";
 
 type Notification = {
   id: string;
@@ -88,7 +88,7 @@ export function NotificationsPanel({ notifications: initial }: { notifications: 
                     onClick={() => markRead(n.id)}
                     className="text-xs text-[var(--color-fg-muted)] hover:text-[var(--color-fg)] shrink-0"
                   >
-                    ✓
+                    <Check className="w-3.5 h-3.5" />
                   </button>
                 )}
               </div>

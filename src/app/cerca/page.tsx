@@ -3,7 +3,7 @@ import { createClient, createAdminClient } from "@/lib/supabase/server";
 import { Card, CardBody } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { FilterChip } from "@/components/ui/filter-chip";
-import { Search, Plus, Mail, ExternalLink } from "lucide-react";
+import { Search, Plus, Mail, ExternalLink, Flag, User } from "lucide-react";
 import { GAMES } from "@/lib/constants";
 import { Suspense } from "react";
 import { PostActions } from "./post-actions";
@@ -139,7 +139,7 @@ export default async function CercaPage({ searchParams }: { searchParams: SP }) 
                         ? "bg-blue-500/20 text-blue-300 border border-blue-500/30"
                         : "bg-emerald-500/20 text-emerald-300 border border-emerald-500/30"
                     }`}>
-                      <span className="leading-none">{isPilota ? "🏁" : "🧑‍✈️"}</span>
+                      {isPilota ? <Flag className="w-3.5 h-3.5" /> : <User className="w-3.5 h-3.5" />}
                       {isPilota ? "Cerca pilota" : "Cerca team"}
                     </span>
                   </div>

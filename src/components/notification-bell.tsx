@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useRef, useEffect } from "react";
-import { Bell } from "lucide-react";
+import { Bell, Check } from "lucide-react";
 import { createClient } from "@/lib/supabase/client";
 import { formatDate } from "@/lib/utils";
 import Link from "next/link";
@@ -131,7 +131,7 @@ export function NotificationBell() {
                       <p className="text-xs text-[var(--color-fg-muted)] mt-0.5">{formatDate(n.created_at)}</p>
                     </div>
                     {!n.read && (
-                      <button onClick={() => markRead(n.id)} className="text-xs text-[var(--color-fg-muted)] hover:text-[var(--color-fg)] shrink-0 mt-0.5">✓</button>
+                      <button onClick={() => markRead(n.id)} className="text-[var(--color-fg-muted)] hover:text-[var(--color-fg)] shrink-0 mt-0.5"><Check className="w-3.5 h-3.5" /></button>
                     )}
                   </div>
                 </li>

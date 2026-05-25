@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/card";
 import { createClient } from "@/lib/supabase/server";
 import { formatDate } from "@/lib/utils";
-import { Calendar, Settings2, ArrowRight, LayoutDashboard, ChevronRight } from "lucide-react";
+import { Calendar, Settings2, ArrowRight, LayoutDashboard, ChevronRight, Trophy, Car, Gamepad2, Handshake, Award, Zap, Flame, Flag, BookOpen } from "lucide-react";
 
 export default async function Home() {
   const supabase = await createClient();
@@ -174,12 +174,12 @@ export default async function Home() {
                 </p>
               </div>
               <div className="grid gap-5 md:grid-cols-3">
-                <FeatureBlock emoji="🏆" title="Organizza eventi" desc="Tornei, campionati, gare endurance. Crea, gestisci iscrizioni e raduna piloti in pochi clic." />
-                <FeatureBlock emoji="🏎️" title="Costruisci il tuo team" desc="Logo, lineup, descrizione. Recluta nuovi piloti tramite la bacheca pubblica." />
-                <FeatureBlock emoji="⚙️" title="Condividi assetti" desc="Setup per ogni auto e tracciato. Vota, scarica, contribuisci alla libreria della community." />
-                <FeatureBlock emoji="🎮" title="Tutti i sim principali" desc="ACC, iRacing, LMU, Assetto Corsa, AC EVO, F1 25. Un solo profilo, tutti i tuoi sim." />
-                <FeatureBlock emoji="🤝" title="Trova compagni" desc="Cerca piloti del tuo livello o team aperti al reclutamento. Niente più gare in solitaria." />
-                <FeatureBlock emoji={<svg viewBox="0 0 3 2" className="h-10 w-14 rounded-sm" aria-label="Bandiera italiana"><rect width="1" height="2" fill="#009246"/><rect x="1" width="1" height="2" fill="#fff"/><rect x="2" width="1" height="2" fill="#ce2b37"/></svg>} title="100% italiano" desc="Una community costruita da piloti italiani, per piloti italiani. Lingua, fuso orario, mentalità." />
+                <FeatureBlock emoji={<Trophy className="w-10 h-10 text-yellow-400" />} title="Organizza eventi" desc="Tornei, campionati, gare endurance. Crea, gestisci iscrizioni e raduna piloti in pochi clic." />
+                <FeatureBlock emoji={<Car className="w-10 h-10 text-blue-400" />} title="Costruisci il tuo team" desc="Logo, lineup, descrizione. Recluta nuovi piloti tramite la bacheca pubblica." />
+                <FeatureBlock emoji={<Settings2 className="w-10 h-10 text-slate-300" />} title="Condividi assetti" desc="Setup per ogni auto e tracciato. Vota, scarica, contribuisci alla libreria della community." />
+                <FeatureBlock emoji={<Gamepad2 className="w-10 h-10 text-purple-400" />} title="Tutti i sim principali" desc="ACC, iRacing, LMU, Assetto Corsa, AC EVO, F1 25. Un solo profilo, tutti i tuoi sim." />
+                <FeatureBlock emoji={<Handshake className="w-10 h-10 text-green-400" />} title="Trova compagni" desc="Cerca piloti del tuo livello o team aperti al reclutamento. Niente più gare in solitaria." />
+                <FeatureBlock emoji={<BookOpen className="w-10 h-10 text-cyan-400" />} title="Guide & Tutorial" desc="Tecniche di guida, setup spiegati passo per passo, configurazione hardware. Impara dai piloti più esperti." />
               </div>
             </div>
           </section>
@@ -218,10 +218,10 @@ export default async function Home() {
                   </p>
                 </div>
                 <div className="grid gap-4 sm:grid-cols-2">
-                  <AudienceBlock emoji="🥉" title="Rookie" desc="Trova team paziente, primi tornei, guide per iniziare." />
-                  <AudienceBlock emoji="⚡" title="Amatori" desc="Gare settimanali, assetti condivisi, community attiva." />
-                  <AudienceBlock emoji="🏆" title="Competitivi" desc="Campionati seri, lineup di team, sfide ad alto livello." />
-                  <AudienceBlock emoji="🔥" title="Pro" desc="Esports, endurance, eventi premium e visibilità." />
+                  <AudienceBlock emoji={<Award className="w-8 h-8 text-amber-600" />} title="Principianti" desc="Trova team paziente, primi tornei, guide per iniziare." />
+                  <AudienceBlock emoji={<Zap className="w-8 h-8 text-yellow-400" />} title="Amatori" desc="Gare settimanali, assetti condivisi, community attiva." />
+                  <AudienceBlock emoji={<Trophy className="w-8 h-8 text-yellow-400" />} title="Competitivi" desc="Campionati seri, lineup di team, sfide ad alto livello." />
+                  <AudienceBlock emoji={<Flame className="w-8 h-8 text-orange-500" />} title="Pro" desc="Esports, endurance, eventi premium e visibilità." />
                 </div>
               </div>
             </div>
@@ -237,13 +237,13 @@ export default async function Home() {
                 <span className="text-accent-glow">scendere in pista?</span>
               </h2>
               <p className="text-base sm:text-lg text-[var(--color-fg-muted)] max-w-xl mx-auto mb-10 leading-relaxed">
-                Unisciti gratis a SimUniverse. Crea il tuo profilo, trova compagni di gara
+                Unisciti a SimUniverse. Crea il tuo profilo, trova compagni di gara
                 e inizia a correre con la community italiana del sim racing.
               </p>
               <div className="flex flex-col sm:flex-row gap-3 justify-center items-center">
                 <Link href="/auth/register">
                   <Button size="lg" className="px-8 py-4 text-base w-full sm:w-auto">
-                    Registrati gratis <ArrowRight className="h-5 w-5" />
+                    Registrati <ArrowRight className="h-5 w-5" />
                   </Button>
                 </Link>
                 <Link href="/auth/login">
@@ -414,7 +414,7 @@ function StepBlock({ num, title, desc }: { num: string; title: string; desc: str
   );
 }
 
-function AudienceBlock({ emoji, title, desc }: { emoji: string; title: string; desc: string }) {
+function AudienceBlock({ emoji, title, desc }: { emoji: React.ReactNode; title: string; desc: string }) {
   return (
     <div className="group relative p-5 rounded-2xl border border-[var(--color-border)] bg-[var(--color-bg-elev)] hover:border-[var(--color-primary)]/60 transition-all duration-200 overflow-hidden">
       <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none"

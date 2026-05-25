@@ -108,7 +108,7 @@ export default async function EventiPage({ searchParams }: { searchParams: SP })
                     <div className="h-full w-full bg-gradient-to-br from-[#0d1b3e] via-[#1a1a2e] to-[#050507]" />
                   )}
                   <div className="absolute top-3 right-3 flex items-center gap-1 bg-white/95 rounded-full px-2.5 py-1 shadow-md">
-                    <span className="text-sm leading-none">📅</span>
+                    <Calendar className="w-3.5 h-3.5 text-blue-500" />
                     <span className="text-xs font-bold text-gray-800 leading-none">{formatDate(e.start_at)}</span>
                   </div>
                 </div>

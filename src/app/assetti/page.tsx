@@ -5,7 +5,7 @@ import { Card, CardBody } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { FilterChip } from "@/components/ui/filter-chip";
 import { GAMES } from "@/lib/constants";
-import { Settings2, Plus, Car, Cpu } from "lucide-react";
+import { Settings2, Plus, Car, Cpu, Star } from "lucide-react";
 import { one } from "@/lib/types";
 import { Suspense } from "react";
 import { AssettiSort } from "./assetti-sort";
@@ -204,7 +204,7 @@ function SetupCard({ s }: { s: S }) {
           )}
           {/* Badge stelle */}
           <div className="absolute top-3 right-3 flex items-center gap-1 bg-white/95 rounded-full px-2.5 py-1 shadow-md">
-            <span className="text-yellow-400 text-sm leading-none">★</span>
+            <Star className="w-3.5 h-3.5 fill-yellow-400 text-yellow-400" />
             <span className="text-xs font-bold text-gray-800 leading-none">{rating ?? "–"}</span>
           </div>
         </div>

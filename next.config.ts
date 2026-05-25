@@ -22,7 +22,7 @@ const securityHeaders = [
 ];
 
 // Imposta true per mettere il sito in manutenzione
-const COMING_SOON = true;
+const COMING_SOON = false; // imposta true per manutenzione
 
 const nextConfig: NextConfig = {
   images: {
