@@ -5,6 +5,7 @@ import Link from "next/link";
 import { Badge } from "@/components/ui/card";
 import { Settings2, Trophy, MapPin, Cpu, Calendar, Gamepad2, MessageCircle } from "lucide-react";
 import { formatDate } from "@/lib/utils";
+import { codeToFlag, COUNTRIES } from "@/components/ui/country-select";
 
 type Game = { name: string } | null;
 type Setup = { id: string; title: string; car: string; track: string; games: Game };
@@ -65,7 +66,13 @@ export function ProfileTabs({ profile, setups, events, userGames }: Props) {
             <h2 className="text-lg font-bold mb-5">Informazioni</h2>
             <div className="grid gap-x-10 gap-y-5 sm:grid-cols-2">
               <InfoRow icon={Calendar} title={`Membro dal ${formatDate(profile.created_at)}`} sub="Pilota SimUniverse" />
-              {profile.country && <InfoRow icon={MapPin} title={profile.country} sub="Paese" />}
+              {profile.country && (
+                <InfoRow
+                  icon={MapPin}
+                  title={`${codeToFlag(profile.country)} ${COUNTRIES.find(c => c.code === profile.country)?.name ?? profile.country}`}
+                  sub="Paese"
+                />
+              )}
               {profile.hardware && <InfoRow icon={Cpu} title="Hardware" sub={profile.hardware} />}
               {profile.discord_id && <InfoRow icon={MessageCircle} title={profile.discord_id} sub="Discord" />}
               {profile.steam_id && <InfoRow icon={Gamepad2} title={profile.steam_id} sub="Steam ID" />}

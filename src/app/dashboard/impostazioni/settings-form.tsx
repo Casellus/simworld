@@ -6,6 +6,7 @@ import { createClient } from "@/lib/supabase/client";
 import { updateProfile, deleteAccount } from "./actions";
 import { Button } from "@/components/ui/button";
 import { Input, Label, Textarea, Select } from "@/components/ui/input";
+import { CountrySelect } from "@/components/ui/country-select";
 import { GAMES, SKILL_LEVELS } from "@/lib/constants";
 import { User as UserIcon, Upload, Trash2, Image as ImageIcon } from "lucide-react";
 
@@ -224,8 +225,8 @@ export function SettingsForm({ profile, userGames }: { profile: Profile; userGam
       </div>
 
       <div>
-        <Label htmlFor="country">Paese</Label>
-        <Input id="country" name="country" defaultValue={profile.country || "IT"} maxLength={3} className="max-w-xs" />
+        <Label>Paese</Label>
+        <CountrySelect defaultValue={profile.country || "IT"} name="country" />
       </div>
 
       <div>
