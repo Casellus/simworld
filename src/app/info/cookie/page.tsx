@@ -10,7 +10,7 @@ export default function CookiePage() {
     <article className="prose-info">
       <h1>Cookie Policy</h1>
       <p className="meta">
-        Versione 1.0 — Ultimo aggiornamento: 17 maggio 2025 &nbsp;·&nbsp;
+        Versione 1.1 — Ultimo aggiornamento: 27 maggio 2025 &nbsp;·&nbsp;
         Ai sensi dell'art. 122 del D.Lgs. 196/2003 e delle Linee Guida del Garante
       </p>
 

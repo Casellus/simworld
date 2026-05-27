@@ -10,7 +10,7 @@ export default function PrivacyPage() {
     <article className="prose-info">
       <h1>Privacy Policy</h1>
       <p className="meta">
-        Versione 1.0 — Ultimo aggiornamento: 17 maggio 2025 &nbsp;·&nbsp;
+        Versione 1.1 — Ultimo aggiornamento: 27 maggio 2025 &nbsp;·&nbsp;
         Ai sensi del Regolamento UE 2016/679 (GDPR)
       </p>
 
@@ -44,7 +44,7 @@ export default function PrivacyPage() {
           <tr>
             <td><strong>Dati di account</strong></td>
             <td>Indirizzo e-mail, nome utente, password (crittografata), foto profilo opzionale</td>
-            <td>Registrazione diretta o OAuth (Discord, Google)</td>
+            <td>Registrazione diretta o OAuth (Discord)</td>
           </tr>
           <tr>
             <td><strong>Dati di profilo</strong></td>
@@ -121,7 +121,7 @@ export default function PrivacyPage() {
         <li><strong>Dati di account:</strong> per tutta la durata dell'iscrizione, poi cancellati entro 30 giorni dalla richiesta.</li>
         <li><strong>Contenuti pubblicati:</strong> visibili fino alla cancellazione dell'account o del singolo contenuto.</li>
         <li><strong>Log di accesso:</strong> massimo 12 mesi, salvo obblighi di legge diversi.</li>
-        <li><strong>Dati di fatturazione (se applicabile):</strong> 10 anni ai sensi della normativa fiscale.</li>
+        <li><strong>Dati di fatturazione:</strong> non applicabile — il servizio è attualmente gratuito e non vengono raccolti dati di pagamento.</li>
       </ul>
 
       {/* 7 */}

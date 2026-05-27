@@ -10,7 +10,7 @@ export default function TerminiPage() {
     <article className="prose-info">
       <h1>Termini di Servizio</h1>
       <p className="meta">
-        Versione 1.0 — Ultimo aggiornamento: 17 maggio 2025 &nbsp;·&nbsp;
+        Versione 1.1 — Ultimo aggiornamento: 27 maggio 2025 &nbsp;·&nbsp;
         Leggere attentamente prima di utilizzare la piattaforma
       </p>
 
@@ -55,7 +55,7 @@ export default function TerminiPage() {
         <li>Devi fornire informazioni accurate e aggiornate durante la registrazione.</li>
         <li>Sei responsabile della riservatezza delle tue credenziali di accesso.</li>
         <li>Ogni persona fisica può creare un solo account principale.</li>
-        <li>La registrazione tramite account Discord o Google è soggetta anche alle rispettive politiche.</li>
+        <li>La registrazione tramite account Discord è soggetta anche alle politiche di Discord Inc.</li>
       </ul>
 
       {/* 4 */}
@@ -152,7 +152,16 @@ export default function TerminiPage() {
       </p>
 
       {/* 11 */}
-      <h2>11. Contatti</h2>
+      <h2>11. Marchi di terze parti</h2>
+      <p>
+        I nomi dei simulatori e dei videogiochi citati sulla Piattaforma (tra cui Assetto Corsa Competizione,
+        iRacing, Le Mans Ultimate, Assetto Corsa, Assetto Corsa EVO, F1 25) sono marchi registrati dei
+        rispettivi titolari. SimUniverse non è affiliata, sponsorizzata né approvata da tali società.
+        I marchi vengono citati esclusivamente a fini descrittivi e informativi.
+      </p>
+
+      {/* 12 */}
+      <h2>12. Contatti</h2>
       <p>
         Per domande sui presenti Termini:<br />
         <a href="mailto:simuniverseit@gmail.com">simuniverseit@gmail.com</a>
