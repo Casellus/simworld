@@ -1,6 +1,7 @@
 import Link from "next/link";
 import Image from "next/image";
 import { createClient } from "@/lib/supabase/server";
+import { getGameIdBySlug } from "@/lib/queries";
 import { Card, CardBody } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { FilterChip } from "@/components/ui/filter-chip";
@@ -21,11 +22,7 @@ export default async function AssettiPage({ searchParams }: { searchParams: SP }
   const ordina = sp.ordina ?? "recenti";
   const supabase = await createClient();
 
-  let gameId: string | null = null;
-  if (sp.gioco) {
-    const { data: g } = await supabase.from("games").select("id").eq("slug", sp.gioco).single();
-    gameId = g?.id ?? null;
-  }
+  const gameId = sp.gioco ? await getGameIdBySlug(sp.gioco) : null;
 
   const orderMap: Record<string, { col: string; asc: boolean }> = {
     recenti:  { col: "created_at", asc: false },
