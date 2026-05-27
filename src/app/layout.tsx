@@ -33,7 +33,7 @@ export default async function RootLayout({ children }: Readonly<{ children: Reac
     <html lang="it" className={`${montserrat.variable} ${openSans.variable} h-full antialiased`}>
       <body className="min-h-full flex flex-col">
         {!standalone && <Header />}
-        <main className="flex-1">{children}</main>
+        <main className={`flex-1${!standalone ? " pt-[72px] md:pt-[80px]" : ""}`}>{children}</main>
         {!standalone && <Footer />}
         {!standalone && <CookieBanner />}
       </body>

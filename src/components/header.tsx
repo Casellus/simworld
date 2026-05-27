@@ -24,7 +24,7 @@ export async function Header() {
   ];
 
   return (
-    <header className="sticky top-0 z-50">
+    <header className="fixed top-0 left-0 right-0 z-50">
       <div className="mx-auto max-w-7xl px-4 sm:px-6">
         <div className="hidden md:flex h-14 items-center bg-[#0d0d12] border border-[var(--color-border-strong)] rounded-2xl px-5 my-3 shadow-[0_4px_32px_rgba(0,0,0,0.5)]">
 
