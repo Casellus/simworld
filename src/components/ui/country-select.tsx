@@ -56,10 +56,18 @@ export const COUNTRIES: { code: string; name: string }[] = [
   { code: "VE", name: "Venezuela" },
 ];
 
-export function codeToFlag(code: string) {
-  return code
-    .toUpperCase()
-    .replace(/./g, (c) => String.fromCodePoint(c.charCodeAt(0) + 127397));
+export function FlagImg({ code, size = 20 }: { code: string; size?: number }) {
+  return (
+    // eslint-disable-next-line @next/next/no-img-element
+    <img
+      src={`https://flagcdn.com/w${size}/${code.toLowerCase()}.png`}
+      width={size}
+      height={Math.round(size * 0.75)}
+      alt={code}
+      className="rounded-sm object-cover shrink-0"
+      style={{ width: size, height: Math.round(size * 0.75) }}
+    />
+  );
 }
 
 export function CountrySelect({ defaultValue = "IT", name = "country" }: { defaultValue?: string; name?: string }) {
@@ -92,7 +100,7 @@ export function CountrySelect({ defaultValue = "IT", name = "country" }: { defau
         onClick={() => { setOpen((o) => !o); setQuery(""); }}
         className="flex items-center gap-2 w-full rounded-lg border border-[var(--color-border)] bg-[var(--color-bg-elev)] px-3 py-2 text-sm text-[var(--color-fg)] hover:border-[var(--color-primary)] focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)]/40 transition-colors"
       >
-        <span className="text-xl leading-none">{codeToFlag(selected.code)}</span>
+        <FlagImg code={selected.code} size={20} />
         <span className="flex-1 text-left">{selected.name}</span>
         <ChevronDown className={`w-4 h-4 text-[var(--color-fg-muted)] transition-transform ${open ? "rotate-180" : ""}`} />
       </button>
@@ -120,7 +128,7 @@ export function CountrySelect({ defaultValue = "IT", name = "country" }: { defau
                   onClick={() => { setValue(c.code); setOpen(false); }}
                   className={`flex items-center gap-2.5 w-full px-3 py-2 text-sm hover:bg-[var(--color-primary)]/10 transition-colors ${value === c.code ? "bg-[var(--color-primary)]/15 text-[var(--color-primary)]" : "text-[var(--color-fg)]"}`}
                 >
-                  <span className="text-lg leading-none">{codeToFlag(c.code)}</span>
+                  <FlagImg code={c.code} size={20} />
                   <span>{c.name}</span>
                   <span className="ml-auto text-xs text-[var(--color-fg-muted)]">{c.code}</span>
                 </button>

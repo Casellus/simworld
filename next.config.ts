@@ -30,6 +30,10 @@ const nextConfig: NextConfig = {
         pathname: "/storage/v1/object/public/**",
         search: "",
       },
+      {
+        protocol: "https",
+        hostname: "flagcdn.com",
+      },
     ],
   },
   async redirects() {

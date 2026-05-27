@@ -5,7 +5,7 @@ import Link from "next/link";
 import { Badge } from "@/components/ui/card";
 import { Settings2, Trophy, MapPin, Cpu, Calendar, Gamepad2, MessageCircle } from "lucide-react";
 import { formatDate } from "@/lib/utils";
-import { codeToFlag, COUNTRIES } from "@/components/ui/country-select";
+import { FlagImg, COUNTRIES } from "@/components/ui/country-select";
 
 type Game = { name: string } | null;
 type Setup = { id: string; title: string; car: string; track: string; games: Game };
@@ -69,7 +69,12 @@ export function ProfileTabs({ profile, setups, events, userGames }: Props) {
               {profile.country && (
                 <InfoRow
                   icon={MapPin}
-                  title={`${codeToFlag(profile.country)} ${COUNTRIES.find(c => c.code === profile.country)?.name ?? profile.country}`}
+                  title={
+                    <span className="flex items-center gap-1.5">
+                      <FlagImg code={profile.country} size={16} />
+                      {COUNTRIES.find(c => c.code === profile.country)?.name ?? profile.country}
+                    </span>
+                  }
                   sub="Paese"
                 />
               )}
@@ -157,7 +162,7 @@ export function ProfileTabs({ profile, setups, events, userGames }: Props) {
   );
 }
 
-function InfoRow({ icon: Icon, title, sub }: { icon: React.ComponentType<{ className?: string }>; title: string; sub: string }) {
+function InfoRow({ icon: Icon, title, sub }: { icon: React.ComponentType<{ className?: string }>; title: React.ReactNode; sub: string }) {
   return (
     <div className="flex items-start gap-3">
       <div className="h-10 w-10 rounded-full bg-[var(--color-primary)]/10 border border-[var(--color-primary)]/20 flex items-center justify-center shrink-0">
