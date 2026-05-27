@@ -20,7 +20,7 @@ export default async function DashboardPage() {
       .eq("host_user_id", profile.id)
       .order("start_at", { ascending: false })
       .limit(5),
-    supabase.from("teams").select("id, slug, name, recruiting").eq("owner_id", profile.id),
+    supabase.from("teams").select("id, slug, name, recruiting").eq("owner_id", profile.id).limit(5),
     supabase
       .from("setups")
       .select("id, title, car, track, downloads")
@@ -31,6 +31,7 @@ export default async function DashboardPage() {
       .from("recruitment_posts")
       .select("id, title, post_type, active, created_at")
       .eq("user_id", profile.id)
+      .eq("active", true)
       .order("created_at", { ascending: false })
       .limit(5),
     supabase
@@ -139,7 +140,7 @@ export default async function DashboardPage() {
           icon={Users}
           createHref="/cerca/nuovo"
           createLabel="Nuovo annuncio"
-          empty="Nessun annuncio."
+          empty="Nessun annuncio attivo."
         >
           {myPosts?.map((p) => (
             <Card key={p.id}>
@@ -188,7 +189,7 @@ function Section({
         </Link>
       </CardHeader>
       <CardBody>
-        {hasChildren ? <div className="space-y-2">{children}</div> : <p className="text-sm text-[var(--color-fg-muted)]">{empty}</p>}
+        {hasChildren ? <div className="space-y-2 max-h-[300px] overflow-y-auto pr-1">{children}</div> : <p className="text-sm text-[var(--color-fg-muted)]">{empty}</p>}
       </CardBody>
     </Card>
   );
