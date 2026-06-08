@@ -48,14 +48,20 @@ Emoji medaglie/corona standard — visibili su tutti i dispositivi (incluso Wind
 | Azione | XP | File aggancio |
 |--------|-----|---------------|
 | Carica assetto | +50 | `assetti/actions.ts` (createSetup) |
-| Ricevi voto positivo / like su assetto | +5 | `assetti/actions.ts` (voteSetup, value=1) |
+| Metti like (voto +1) su assetto | +5 a chi vota | `assetti/actions.ts` (voteSetup, value=1) |
+| Ricevi like sul tuo assetto | +5 all'autore | `assetti/actions.ts` (voteSetup, value=1) |
 | Crea evento | +40 | `eventi/actions.ts` |
 | Iscriviti a evento | +15 | `eventi/actions.ts` |
 | Crea / entra in team | +30 | `team/actions.ts` |
 | Pubblica annuncio bacheca | +20 | `cerca/actions.ts` |
 | Scrivi guida | +60 | guide actions |
 
-Nota: il "like" assegna XP all'**autore** dell'assetto votato, non a chi vota.
+Nota: un like (voto +1) assegna +5 XP **sia a chi vota sia all'autore** dell'assetto.
+
+**Anti-farming:** l'XP a chi vota si conta una sola volta per coppia (utente, assetto).
+Togliere e rimettere il like non genera nuovo XP. Si traccia con una colonna
+`xp_awarded` boolean su `setup_votes` (o tabella ledger): XP dato solo al primo voto +1.
+Stessa regola per l'autore — XP all'autore solo al primo +1 di quel votante su quell'assetto.
 
 ## 4. Logica Server — `src/lib/xp.ts`
 
