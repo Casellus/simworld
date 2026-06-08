@@ -5,6 +5,8 @@ export const GAMES = [
   { slug: "ac", name: "Assetto Corsa", short: "AC" },
   { slug: "ac-evo", name: "Assetto Corsa EVO", short: "AC EVO" },
   { slug: "f1-25", name: "F1 25", short: "F1 25" },
+  { slug: "ac-rally", name: "Assetto Corsa Rally", short: "AC Rally" },
+  { slug: "ea-wrc", name: "EA Sports WRC", short: "EA WRC" },
 ] as const;
 
 export const EVENT_TYPES = [
