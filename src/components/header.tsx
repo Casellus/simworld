@@ -4,6 +4,7 @@ import { Logo } from "@/components/logo";
 import { getProfile } from "@/lib/auth";
 import { UserMenu } from "@/components/user-menu";
 import { NotificationBell } from "@/components/notification-bell";
+import { RankBadge } from "@/components/rank-badge";
 import { MobileHamburger } from "@/components/mobile-nav";
 import { Calendar, Users, Settings2, Search, BookOpen } from "lucide-react";
 import { NavLink } from "@/components/nav-link";
@@ -43,6 +44,7 @@ export async function Header() {
         {/* RIGHT ACTIONS */}
         <div className="flex items-center gap-2 shrink-0 flex-1 justify-end">
           {profile && <NotificationBell />}
+          {profile && <RankBadge rank={profile.current_rank} />}
           {profile ? (
             <UserMenu profile={profile} />
           ) : (
@@ -58,6 +60,7 @@ export async function Header() {
             {profile ? (
               <>
                 <NotificationBell />
+                <RankBadge rank={profile.current_rank} />
                 <UserMenu profile={profile} />
               </>
             ) : (
