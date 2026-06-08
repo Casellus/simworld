@@ -10,7 +10,7 @@ const nav = [
   { href: "/eventi", label: "Eventi" },
   { href: "/team", label: "Team" },
   { href: "/assetti", label: "Assetti" },
-  { href: "/cerca", label: "Cerca" },
+  { href: "/cerca", label: "Community" },
   { href: "/guide", label: "Guide" },
 ];
 
