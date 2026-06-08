@@ -4,7 +4,7 @@ import { redirect } from "next/navigation";
 import { revalidatePath } from "next/cache";
 import { createClient } from "@/lib/supabase/server";
 import { slugify } from "@/lib/utils";
-import { awardXp } from "@/lib/xp";
+import { awardXp, revokeXp } from "@/lib/xp";
 
 export async function createEvent(formData: FormData): Promise<void> {
   const supabase = await createClient();
@@ -114,6 +114,8 @@ export async function deleteEvent(eventId: string): Promise<{ error?: string }> 
   const { error } = await supabase.from("events").delete().eq("id", eventId);
   if (error) return { error: error.message };
 
+  await revokeXp(event.host_user_id, "event_create", eventId);
+
   revalidatePath("/eventi");
   revalidatePath("/");
   return {};
@@ -150,6 +152,7 @@ export async function leaveEvent(eventId: string) {
     .eq("event_id", eventId)
     .eq("user_id", user.id);
   if (error) return { error: error.message };
+  await revokeXp(user.id, "event_join", eventId);
   revalidatePath("/eventi");
   revalidatePath("/eventi/[slug]", "page");
   return { ok: true };

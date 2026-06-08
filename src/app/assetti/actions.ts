@@ -3,7 +3,7 @@
 import { redirect } from "next/navigation";
 import { revalidatePath } from "next/cache";
 import { createClient, createAdminClient } from "@/lib/supabase/server";
-import { awardXp } from "@/lib/xp";
+import { awardXp, revokeXp } from "@/lib/xp";
 
 const ALLOWED_EXT = ["json", "sto", "svm", "ini", "svm", "rcd", "txt", "xml", "zip"];
 export async function createSetupRecord(formData: FormData): Promise<{ error?: string; id?: string }> {
@@ -203,6 +203,8 @@ export async function deleteSetup(setupId: string): Promise<{ error?: string }> 
   const { error } = await supabase.from("setups").delete().eq("id", setupId);
   if (error) return { error: error.message };
 
+  await revokeXp(setup.user_id, "setup_create", setupId);
+
   revalidatePath("/assetti");
   revalidatePath("/");
   return {};
@@ -217,11 +219,31 @@ export async function voteSetup(setupId: string, value: 1 | -1 | 0) {
 
   if (value === 0) {
     await supabase.from("setup_votes").delete().eq("setup_id", setupId).eq("user_id", user.id);
+    await revokeXp(user.id, "like_given", `${setupId}:${user.id}`);
+    const { data: setupRow } = await supabase
+      .from("setups")
+      .select("user_id")
+      .eq("id", setupId)
+      .single();
+    if (setupRow?.user_id && setupRow.user_id !== user.id) {
+      await revokeXp(setupRow.user_id, "like_received", `${setupId}:${user.id}`);
+    }
   } else {
     await supabase.from("setup_votes").upsert(
       { setup_id: setupId, user_id: user.id, value },
       { onConflict: "setup_id,user_id" }
     );
+    if (value === -1) {
+      await revokeXp(user.id, "like_given", `${setupId}:${user.id}`);
+      const { data: setupRow } = await supabase
+        .from("setups")
+        .select("user_id")
+        .eq("id", setupId)
+        .single();
+      if (setupRow?.user_id && setupRow.user_id !== user.id) {
+        await revokeXp(setupRow.user_id, "like_received", `${setupId}:${user.id}`);
+      }
+    }
   }
 
   if (value === 1) {

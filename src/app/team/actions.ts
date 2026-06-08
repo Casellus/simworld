@@ -5,7 +5,7 @@ import { revalidatePath } from "next/cache";
 import { createClient, createAdminClient } from "@/lib/supabase/server";
 import { slugify } from "@/lib/utils";
 import { sendApplicationAccepted, sendApplicationRejected } from "@/lib/email";
-import { awardXp } from "@/lib/xp";
+import { awardXp, revokeXp } from "@/lib/xp";
 
 export async function createTeam(formData: FormData): Promise<void> {
   const supabase = await createClient();
@@ -109,6 +109,8 @@ export async function deleteTeam(teamId: string): Promise<{ error?: string }> {
 
   const { error } = await supabase.from("teams").delete().eq("id", teamId);
   if (error) return { error: error.message };
+
+  await revokeXp(team.owner_id, "team_create", teamId);
 
   revalidatePath("/team");
   revalidatePath("/");
@@ -256,6 +258,8 @@ export async function kickMember(teamId: string, userId: string) {
   const { error } = await supabase.from("team_members").delete().eq("team_id", teamId).eq("user_id", userId);
   if (error) return { error: error.message };
 
+  await revokeXp(userId, "team_join", teamId);
+
   revalidatePath(`/team`);
   return { ok: true };
 }
@@ -268,6 +272,7 @@ export async function leaveTeam(teamId: string) {
   if (!user) return { error: "Non autorizzato" };
   const { error } = await supabase.from("team_members").delete().eq("team_id", teamId).eq("user_id", user.id);
   if (error) return { error: error.message };
+  await revokeXp(user.id, "team_join", teamId);
   revalidatePath(`/team`);
   return { ok: true };
 }
