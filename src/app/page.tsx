@@ -265,20 +265,16 @@ export default async function Home() {
 
 /* ── COMPONENTS ── */
 
-// Sponsor/partner: aggiungi qui. Per loghi immagine, sostituisci `name` con <Image src=... />.
-const SPONSORS: { name: string; href?: string }[] = [
-  { name: "Sponsor 1" },
-  { name: "Sponsor 2" },
-  { name: "Sponsor 3" },
-  { name: "Sponsor 4" },
-  { name: "Sponsor 5" },
-  { name: "Sponsor 6" },
+// Sponsor/partner: aggiungi qui. `src` = file in public/sponsors/, `width`/`height` = ratio del logo.
+const SPONSORS: { name: string; src: string; width: number; height: number; href?: string }[] = [
+  { name: "IGP", src: "/sponsors/igp.png", width: 1176, height: 429, href: "https://www.igpclan.it" },
 ];
 
 function SponsorMarquee() {
   if (SPONSORS.length === 0) return null;
-  // duplica la lista per loop continuo
-  const items = [...SPONSORS, ...SPONSORS];
+  // con pochi sponsor ripeti la lista finché riempie la riga, poi duplica per loop continuo
+  const min = SPONSORS.length < 4 ? Array.from({ length: Math.ceil(4 / SPONSORS.length) }, () => SPONSORS).flat() : SPONSORS;
+  const items = [...min, ...min];
   return (
     <section className="border-t border-[var(--color-border)]">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 py-8">
@@ -289,12 +285,17 @@ function SponsorMarquee() {
           <div className="sponsor-track">
             {items.map((s, i) => {
               const content = (
-                <span className="text-xl font-extrabold text-white whitespace-nowrap" style={{ fontFamily: "var(--font-heading)" }}>
-                  {s.name}
-                </span>
+                <Image
+                  src={s.src}
+                  alt={s.name}
+                  width={s.width}
+                  height={s.height}
+                  className="h-10 w-auto object-contain"
+                  style={{ height: "2.5rem", width: "auto" }}
+                />
               );
               return (
-                <div key={i} className="sponsor-item" aria-hidden={i >= SPONSORS.length}>
+                <div key={i} className="sponsor-item" aria-hidden={i >= min.length}>
                   {s.href ? (
                     <a href={s.href} target="_blank" rel="noopener noreferrer">{content}</a>
                   ) : content}
