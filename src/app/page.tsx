@@ -98,13 +98,11 @@ export default async function Home() {
                   </div>
                 </>
               )}
+              <SponsorMarqueeInline />
             </div>
         </div>
 
       </section>
-
-      {/* ── SPONSOR MARQUEE ── */}
-      <SponsorMarquee />
 
       {user ? (
         <>
@@ -270,42 +268,39 @@ const SPONSORS: { name: string; src: string; width: number; height: number; href
   { name: "IGP", src: "/sponsors/igp.png", width: 1176, height: 429, href: "https://www.igpclan.it" },
 ];
 
-function SponsorMarquee() {
+function SponsorMarqueeInline() {
   if (SPONSORS.length === 0) return null;
-  // con pochi sponsor ripeti la lista finché riempie la riga, poi duplica per loop continuo
   const min = SPONSORS.length < 4 ? Array.from({ length: Math.ceil(4 / SPONSORS.length) }, () => SPONSORS).flat() : SPONSORS;
   const items = [...min, ...min];
   return (
-    <section className="border-t border-[var(--color-border)]">
-      <div className="mx-auto max-w-7xl px-4 sm:px-6 py-8">
-        <p className="text-center text-[11px] font-semibold tracking-widest uppercase text-[var(--color-fg-muted)] mb-6">
-          I nostri partner
-        </p>
-        <div className="sponsor-marquee">
-          <div className="sponsor-track">
-            {items.map((s, i) => {
-              const content = (
-                <Image
-                  src={s.src}
-                  alt={s.name}
-                  width={s.width}
-                  height={s.height}
-                  className="h-10 w-auto object-contain"
-                  style={{ height: "2.5rem", width: "auto" }}
-                />
-              );
-              return (
-                <div key={i} className="sponsor-item" aria-hidden={i >= min.length}>
-                  {s.href ? (
-                    <a href={s.href} target="_blank" rel="noopener noreferrer">{content}</a>
-                  ) : content}
-                </div>
-              );
-            })}
-          </div>
+    <div className="mt-12 w-full max-w-xl mx-auto">
+      <p className="text-center text-[10px] font-semibold tracking-widest uppercase text-white/40 mb-4">
+        I nostri partner
+      </p>
+      <div className="sponsor-marquee">
+        <div className="sponsor-track">
+          {items.map((s, i) => {
+            const content = (
+              <Image
+                src={s.src}
+                alt={s.name}
+                width={s.width}
+                height={s.height}
+                className="h-8 w-auto object-contain"
+                style={{ height: "2rem", width: "auto" }}
+              />
+            );
+            return (
+              <div key={i} className="sponsor-item" aria-hidden={i >= min.length}>
+                {s.href ? (
+                  <a href={s.href} target="_blank" rel="noopener noreferrer">{content}</a>
+                ) : content}
+              </div>
+            );
+          })}
         </div>
       </div>
-    </section>
+    </div>
   );
 }
 
