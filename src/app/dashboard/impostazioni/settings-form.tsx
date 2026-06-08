@@ -225,11 +225,6 @@ export function SettingsForm({ profile, userGames }: { profile: Profile; userGam
       </div>
 
       <div>
-        <Label>Paese</Label>
-        <CountrySelect defaultValue={profile.country || "IT"} name="country" />
-      </div>
-
-      <div>
         <Label htmlFor="hardware">Hardware</Label>
         <Textarea
           id="hardware"
