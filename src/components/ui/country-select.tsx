@@ -57,16 +57,15 @@ export const COUNTRIES: { code: string; name: string }[] = [
 ];
 
 export function FlagImg({ code, size = 20 }: { code: string; size?: number }) {
+  const emoji = code
+    .toUpperCase()
+    .split("")
+    .map((c) => String.fromCodePoint(0x1f1e6 + c.charCodeAt(0) - 65))
+    .join("");
   return (
-    // eslint-disable-next-line @next/next/no-img-element
-    <img
-      src={`https://flagcdn.com/w${size}/${code.toLowerCase()}.png`}
-      width={size}
-      height={Math.round(size * 0.75)}
-      alt={code}
-      className="rounded-sm object-cover shrink-0"
-      style={{ width: size, height: Math.round(size * 0.75) }}
-    />
+    <span style={{ fontSize: size }} aria-label={code} role="img">
+      {emoji}
+    </span>
   );
 }
 
