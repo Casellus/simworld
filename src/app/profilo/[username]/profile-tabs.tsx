@@ -71,7 +71,7 @@ export function ProfileTabs({ profile, setups, events, userGames }: Props) {
                   icon={MapPin}
                   title={
                     <span className="flex items-center gap-1.5">
-                      <FlagImg code={profile.country} size={16} />
+                      <FlagImg code={profile.country} size={24} />
                       {COUNTRIES.find(c => c.code === profile.country)?.name ?? profile.country}
                     </span>
                   }
