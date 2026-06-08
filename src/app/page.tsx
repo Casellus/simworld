@@ -274,7 +274,7 @@ function SponsorMarqueeInline() {
   const items = [...min, ...min];
   return (
     <div className="mt-12 w-full max-w-xl mx-auto">
-      <p className="text-center text-[10px] font-semibold tracking-widest uppercase text-white/40 mb-4">
+      <p className="text-center text-xs font-semibold tracking-widest uppercase text-white/60 mb-4">
         I nostri partner
       </p>
       <div className="sponsor-marquee">
