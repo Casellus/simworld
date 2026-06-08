@@ -68,9 +68,9 @@ Emoji medaglie/corona standard — visibili su tutti i dispositivi (incluso Wind
 | Ricevi like sul tuo assetto | +5 all'autore | `assetti/actions.ts` (voteSetup, value=1) |
 | Crea evento | +40 | `eventi/actions.ts` |
 | Iscriviti a evento | +15 | `eventi/actions.ts` |
-| Crea / entra in team | +30 | `team/actions.ts` |
+| Crea team | +30 | `team/actions.ts` (createTeam) |
+| Entra in team (candidatura accettata) | +20 | `team/actions.ts` (updateApplication accepted) |
 | Pubblica annuncio bacheca | +20 | `cerca/actions.ts` |
-| Scrivi guida | +60 | guide actions |
 
 Nota: un like (voto +1) assegna +5 XP **sia a chi vota sia all'autore** dell'assetto.
 
