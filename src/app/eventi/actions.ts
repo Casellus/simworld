@@ -83,18 +83,24 @@ export async function updateEvent(eventId: string, formData: FormData): Promise<
 
   if (!title || !start_at || !event_type) return { error: "Campi obbligatori mancanti." };
 
+  // banner_url: presente solo se cambiato (nuovo upload o rimozione). Assente = invariato.
+  const updateData: Record<string, unknown> = {
+    title,
+    event_type,
+    track: track || null,
+    car_class: car_class || null,
+    start_at,
+    max_participants,
+    format: format || null,
+    description: description || null,
+  };
+  if (formData.has("banner_url")) {
+    updateData.banner_url = String(formData.get("banner_url") || "") || null;
+  }
+
   const { error } = await supabase
     .from("events")
-    .update({
-      title,
-      event_type,
-      track: track || null,
-      car_class: car_class || null,
-      start_at,
-      max_participants,
-      format: format || null,
-      description: description || null,
-    })
+    .update(updateData)
     .eq("id", eventId);
 
   if (error) return { error: error.message };

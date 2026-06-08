@@ -1,12 +1,13 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useRouter, useParams } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Input, Label, Select, Textarea } from "@/components/ui/input";
 import { Card, CardBody } from "@/components/ui/card";
 import { EVENT_TYPES } from "@/lib/constants";
+import { Image as ImageIcon } from "lucide-react";
 import { updateEvent } from "../../actions";
 
 type Event = {
@@ -20,6 +21,7 @@ type Event = {
   max_participants: number | null;
   format: string | null;
   description: string | null;
+  banner_url: string | null;
 };
 
 export default function ModificaEventoPage() {
@@ -29,6 +31,9 @@ export default function ModificaEventoPage() {
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
   const [fetching, setFetching] = useState(true);
+  const fileRef = useRef<HTMLInputElement>(null);
+  const [preview, setPreview] = useState<string | null>(null);
+  const [removed, setRemoved] = useState(false);
 
   useEffect(() => {
     async function load() {
@@ -38,17 +43,27 @@ export default function ModificaEventoPage() {
 
       const { data } = await supabase
         .from("events")
-        .select("id, host_user_id, title, event_type, track, car_class, start_at, max_participants, format, description")
+        .select("id, host_user_id, title, event_type, track, car_class, start_at, max_participants, format, description, banner_url")
         .eq("slug", params.slug)
         .single();
 
       if (!data || data.host_user_id !== user.id) { router.push("/eventi"); return; }
 
       setEvent(data);
+      setPreview(data.banner_url);
       setFetching(false);
     }
     load();
   }, [params.slug, router]);
+
+  function handleFile(e: React.ChangeEvent<HTMLInputElement>) {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    if (file.size > 5 * 1024 * 1024) { setError("Immagine max 5 MB."); e.target.value = ""; return; }
+    setPreview(URL.createObjectURL(file));
+    setRemoved(false);
+    setError(null);
+  }
 
   async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
@@ -56,6 +71,24 @@ export default function ModificaEventoPage() {
     setLoading(true);
     setError(null);
     const fd = new FormData(e.currentTarget);
+
+    // gestione banner: nuovo upload, rimozione, o invariato
+    const supabase = createClient();
+    const { data: { user } } = await supabase.auth.getUser();
+    const bannerFile = fileRef.current?.files?.[0];
+
+    if (bannerFile && user) {
+      const ext = bannerFile.name.split(".").pop();
+      const path = `${user.id}/${params.slug}-${Date.now()}.${ext}`;
+      const { error: upErr } = await supabase.storage.from("event-banners").upload(path, bannerFile, { upsert: true });
+      if (upErr) { setError("Errore upload banner: " + upErr.message); setLoading(false); return; }
+      const { data: urlData } = supabase.storage.from("event-banners").getPublicUrl(path);
+      fd.set("banner_url", urlData.publicUrl);
+    } else if (removed) {
+      fd.set("banner_url", "");
+    }
+    // se nessuna delle due → non setto banner_url, updateEvent lascia invariato
+
     const res = await updateEvent(event.id, fd);
     if (res.error) { setError(res.error); setLoading(false); return; }
     router.push(`/eventi/${params.slug}`);
@@ -73,6 +106,41 @@ export default function ModificaEventoPage() {
       <Card>
         <CardBody>
           <form onSubmit={handleSubmit} className="space-y-5">
+            {/* BANNER */}
+            <div>
+              <Label>Banner evento (opzionale, max 5 MB)</Label>
+              <div
+                onClick={() => fileRef.current?.click()}
+                className="mt-2 w-full h-40 rounded-lg border-2 border-dashed border-[var(--color-border)] flex items-center justify-center cursor-pointer hover:border-[var(--color-primary)] transition-colors overflow-hidden"
+              >
+                {preview ? (
+                  // eslint-disable-next-line @next/next/no-img-element
+                  <img src={preview} alt="banner preview" className="h-full w-full object-cover" />
+                ) : (
+                  <div className="text-center text-[var(--color-fg-muted)]">
+                    <ImageIcon className="h-8 w-8 mx-auto mb-2" />
+                    <span className="text-sm">Clicca per aggiungere un banner</span>
+                  </div>
+                )}
+              </div>
+              {preview && (
+                <Button
+                  type="button"
+                  variant="ghost"
+                  size="sm"
+                  className="mt-1"
+                  onClick={() => {
+                    setPreview(null);
+                    setRemoved(true);
+                    if (fileRef.current) fileRef.current.value = "";
+                  }}
+                >
+                  Rimuovi
+                </Button>
+              )}
+              <input ref={fileRef} type="file" accept="image/*" className="hidden" onChange={handleFile} />
+            </div>
+
             <div>
               <Label htmlFor="title">Titolo *</Label>
               <Input id="title" name="title" required defaultValue={event.title} />
