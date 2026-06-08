@@ -103,6 +103,9 @@ export default async function Home() {
 
       </section>
 
+      {/* ── SPONSOR MARQUEE ── */}
+      <SponsorMarquee />
+
       {user ? (
         <>
           {/* ── FEATURED CAROUSEL: EVENTI ── */}
@@ -261,6 +264,49 @@ export default async function Home() {
 }
 
 /* ── COMPONENTS ── */
+
+// Sponsor/partner: aggiungi qui. Per loghi immagine, sostituisci `name` con <Image src=... />.
+const SPONSORS: { name: string; href?: string }[] = [
+  { name: "Sponsor 1" },
+  { name: "Sponsor 2" },
+  { name: "Sponsor 3" },
+  { name: "Sponsor 4" },
+  { name: "Sponsor 5" },
+  { name: "Sponsor 6" },
+];
+
+function SponsorMarquee() {
+  if (SPONSORS.length === 0) return null;
+  // duplica la lista per loop continuo
+  const items = [...SPONSORS, ...SPONSORS];
+  return (
+    <section className="border-t border-[var(--color-border)]">
+      <div className="mx-auto max-w-7xl px-4 sm:px-6 py-8">
+        <p className="text-center text-[11px] font-semibold tracking-widest uppercase text-[var(--color-fg-muted)] mb-6">
+          I nostri partner
+        </p>
+        <div className="sponsor-marquee">
+          <div className="sponsor-track">
+            {items.map((s, i) => {
+              const content = (
+                <span className="text-xl font-extrabold text-white whitespace-nowrap" style={{ fontFamily: "var(--font-heading)" }}>
+                  {s.name}
+                </span>
+              );
+              return (
+                <div key={i} className="sponsor-item" aria-hidden={i >= SPONSORS.length}>
+                  {s.href ? (
+                    <a href={s.href} target="_blank" rel="noopener noreferrer">{content}</a>
+                  ) : content}
+                </div>
+              );
+            })}
+          </div>
+        </div>
+      </div>
+    </section>
+  );
+}
 
 function Section({ eyebrow, title, link, children }: { eyebrow: string; title: string; link: { href: string; label: string }; children: React.ReactNode }) {
   return (
