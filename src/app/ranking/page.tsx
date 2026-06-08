@@ -1,5 +1,4 @@
 import Link from "next/link";
-import Image from "next/image";
 import { createClient } from "@/lib/supabase/server";
 import { rankEmoji } from "@/lib/xp";
 
@@ -69,7 +68,8 @@ export default async function RankingPage() {
                 </div>
                 <div className="h-9 w-9 shrink-0 rounded-full bg-[var(--color-primary)]/20 border border-[var(--color-primary)]/40 overflow-hidden flex items-center justify-center">
                   {r.avatar_url ? (
-                    <Image src={r.avatar_url} alt="" width={36} height={36} className="h-full w-full object-cover" />
+                    // eslint-disable-next-line @next/next/no-img-element
+                    <img src={r.avatar_url} alt="" referrerPolicy="no-referrer" className="h-full w-full object-cover" />
                   ) : (
                     <span className="text-sm font-bold text-[var(--color-primary)]">{name.charAt(0).toUpperCase()}</span>
                   )}
