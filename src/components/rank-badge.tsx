@@ -55,7 +55,7 @@ export function RankBadge({ rank, xp }: { rank: string | null | undefined; xp: n
       </button>
 
       {open && (
-        <div className="absolute right-0 mt-2 w-72 rounded-2xl border border-[var(--color-border)] bg-[var(--color-bg-elev)] shadow-xl z-50 overflow-hidden">
+        <div className="fixed left-1/2 -translate-x-1/2 top-20 w-[calc(100vw-2rem)] max-w-72 sm:absolute sm:left-auto sm:translate-x-0 sm:right-0 sm:top-auto sm:mt-2 sm:w-72 rounded-2xl border border-[var(--color-border)] bg-[var(--color-bg-elev)] shadow-xl z-50 overflow-hidden">
           {/* Tuo stato */}
           <div className="p-4 border-b border-[var(--color-border)]">
             <div className="flex items-center gap-2 mb-2">
