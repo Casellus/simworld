@@ -2,6 +2,7 @@ import React from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { HeroVideo } from "@/components/hero-video";
+import { RankingTop3 } from "@/components/ranking-top3";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/card";
 import { createClient } from "@/lib/supabase/server";
@@ -103,6 +104,9 @@ export default async function Home() {
         </div>
 
       </section>
+
+      {/* ── TOP 3 PILOTI DEL MESE ── */}
+      <RankingTop3 />
 
       {user ? (
         <>

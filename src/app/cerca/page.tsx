@@ -8,7 +8,6 @@ import { GAMES } from "@/lib/constants";
 import { Suspense } from "react";
 import { PostActions } from "./post-actions";
 import { SortSelect } from "@/components/ui/sort-select";
-import { RankingMarquee } from "@/components/ranking-marquee";
 
 export const metadata = { title: "Community · SimUniverse" };
 export const revalidate = 30;
@@ -66,8 +65,6 @@ export default async function CercaPage({ searchParams }: { searchParams: SP }) 
 
   return (
     <div className="mx-auto max-w-7xl px-4 sm:px-6 py-10">
-      <RankingMarquee />
-
       <div className="flex flex-wrap items-center justify-between gap-4 mb-8">
         <div>
           <h1 className="text-3xl md:text-4xl font-extrabold tracking-tight">Community</h1>
