@@ -286,8 +286,8 @@ function SponsorMarqueeInline() {
                 alt={s.name}
                 width={s.width}
                 height={s.height}
-                className="h-8 w-auto object-contain"
-                style={{ height: "2rem", width: "auto" }}
+                className="h-12 w-auto object-contain"
+                style={{ height: "3rem", width: "auto" }}
               />
             );
             return (
