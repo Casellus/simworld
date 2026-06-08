@@ -4,6 +4,7 @@ import { redirect } from "next/navigation";
 import { revalidatePath } from "next/cache";
 import { createClient } from "@/lib/supabase/server";
 import { slugify } from "@/lib/utils";
+import { awardXp } from "@/lib/xp";
 
 export async function createEvent(formData: FormData): Promise<void> {
   const supabase = await createClient();
@@ -52,10 +53,12 @@ export async function createEvent(formData: FormData): Promise<void> {
       max_participants,
       format: format || null,
     })
-    .select("slug")
+    .select("id, slug")
     .single();
 
   if (error) throw new Error(error.message);
+
+  await awardXp(user.id, "event_create", created.id);
 
   revalidatePath("/eventi");
   redirect(`/eventi/${created.slug}`);
@@ -128,6 +131,7 @@ export async function joinEvent(eventId: string) {
     user_id: user.id,
   });
   if (error) return { error: error.message };
+  await awardXp(user.id, "event_join", eventId);
   revalidatePath("/eventi");
   revalidatePath("/eventi/[slug]", "page");
   return { ok: true };

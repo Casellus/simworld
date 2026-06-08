@@ -3,6 +3,7 @@
 import { redirect } from "next/navigation";
 import { revalidatePath } from "next/cache";
 import { createClient, createAdminClient } from "@/lib/supabase/server";
+import { awardXp } from "@/lib/xp";
 
 const ALLOWED_EXT = ["json", "sto", "svm", "ini", "svm", "rcd", "txt", "xml", "zip"];
 export async function createSetupRecord(formData: FormData): Promise<{ error?: string; id?: string }> {
@@ -36,6 +37,8 @@ export async function createSetupRecord(formData: FormData): Promise<{ error?: s
 
     if (dbErr) return { error: dbErr.message };
     if (!created?.id) return { error: "Inserimento non riuscito." };
+
+    await awardXp(user.id, "setup_create", created.id);
 
     revalidatePath("/assetti");
     revalidatePath("/");
@@ -87,6 +90,8 @@ export async function uploadSetupFull(formData: FormData): Promise<{ error?: str
 
     if (dbErr) return { error: dbErr.message };
     if (!created?.id) return { error: "Inserimento non riuscito." };
+
+    await awardXp(user.id, "setup_create", created.id);
 
     revalidatePath("/assetti");
     revalidatePath("/");
@@ -217,6 +222,18 @@ export async function voteSetup(setupId: string, value: 1 | -1 | 0) {
       { setup_id: setupId, user_id: user.id, value },
       { onConflict: "setup_id,user_id" }
     );
+  }
+
+  if (value === 1) {
+    await awardXp(user.id, "like_given", `${setupId}:${user.id}`);
+    const { data: setupRow } = await supabase
+      .from("setups")
+      .select("user_id")
+      .eq("id", setupId)
+      .single();
+    if (setupRow?.user_id && setupRow.user_id !== user.id) {
+      await awardXp(setupRow.user_id, "like_received", `${setupId}:${user.id}`);
+    }
   }
 
   const { data: votes } = await supabase.from("setup_votes").select("value").eq("setup_id", setupId);

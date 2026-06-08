@@ -5,6 +5,7 @@ import { revalidatePath } from "next/cache";
 import { createClient, createAdminClient } from "@/lib/supabase/server";
 import { slugify } from "@/lib/utils";
 import { sendApplicationAccepted, sendApplicationRejected } from "@/lib/email";
+import { awardXp } from "@/lib/xp";
 
 export async function createTeam(formData: FormData): Promise<void> {
   const supabase = await createClient();
@@ -50,6 +51,8 @@ export async function createTeam(formData: FormData): Promise<void> {
       await supabase.from("team_games").insert(games.map((g) => ({ team_id: team.id, game_id: g.id })));
     }
   }
+
+  await awardXp(user.id, "team_create", team.id);
 
   revalidatePath("/team");
   redirect(`/team/${team.slug}`);
@@ -195,6 +198,8 @@ export async function updateApplication(applicationId: string, status: "accepted
       { team_id: app.team_id, user_id: app.user_id, role: "pilota" },
       { onConflict: "team_id,user_id" }
     );
+
+    await awardXp(app.user_id, "team_join", app.team_id);
 
     // notify applicant
     await supabase.from("notifications").insert({

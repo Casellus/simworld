@@ -3,6 +3,7 @@
 import { redirect } from "next/navigation";
 import { revalidatePath } from "next/cache";
 import { createClient } from "@/lib/supabase/server";
+import { awardXp } from "@/lib/xp";
 
 export async function createRecruitmentPost(formData: FormData): Promise<void> {
   const supabase = await createClient();
@@ -37,7 +38,7 @@ export async function createRecruitmentPost(formData: FormData): Promise<void> {
     team_id = t.id;
   }
 
-  const { error } = await supabase.from("recruitment_posts").insert({
+  const { data: createdPost, error } = await supabase.from("recruitment_posts").insert({
     post_type,
     user_id: user.id,
     team_id,
@@ -45,8 +46,12 @@ export async function createRecruitmentPost(formData: FormData): Promise<void> {
     title,
     description,
     contact: contact || null,
-  });
+  }).select("id").single();
   if (error) throw new Error(error.message);
+
+  if (createdPost?.id) {
+    await awardXp(user.id, "post_create", createdPost.id);
+  }
 
   revalidatePath("/cerca");
   redirect("/cerca");

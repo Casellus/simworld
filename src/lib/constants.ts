@@ -38,3 +38,16 @@ export const TEAM_ROLES = [
   { value: "pilota", label: "Pilota" },
   { value: "riserva", label: "Riserva" },
 ] as const;
+
+export const XP_VALUES = {
+  setup_create: 50,
+  like_given: 5,
+  like_received: 5,
+  event_create: 40,
+  event_join: 15,
+  team_create: 30,
+  team_join: 20,
+  post_create: 20,
+} as const;
+
+export type XpAction = keyof typeof XP_VALUES;
