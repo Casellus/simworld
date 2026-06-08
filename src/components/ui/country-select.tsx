@@ -63,9 +63,23 @@ export function FlagImg({ code, size = 20 }: { code: string; size?: number }) {
     .map((c) => String.fromCodePoint(0x1f1e6 + c.charCodeAt(0) - 65))
     .join("");
   return (
-    <span style={{ fontSize: size }} aria-label={code} role="img">
-      {emoji}
-    </span>
+    // eslint-disable-next-line @next/next/no-img-element
+    <img
+      src={`https://flagcdn.com/w40/${code.toLowerCase()}.png`}
+      width={size}
+      height={Math.round(size * 0.75)}
+      alt={emoji}
+      className="rounded-sm object-cover shrink-0"
+      style={{ width: size, height: Math.round(size * 0.75) }}
+      onError={(e) => {
+        const el = e.currentTarget;
+        el.style.display = "none";
+        const span = document.createElement("span");
+        span.textContent = emoji;
+        span.style.fontSize = `${size}px`;
+        el.parentNode?.insertBefore(span, el);
+      }}
+    />
   );
 }
 
