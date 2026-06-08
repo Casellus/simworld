@@ -1,26 +1,9 @@
 import "server-only";
-import { revalidatePath } from "next/cache";
 import { createAdminClient } from "@/lib/supabase/server";
 import { XP_VALUES, type XpAction } from "@/lib/constants";
 
-export const RANKS = [
-  { rank: "Bronzo", minXp: 0, emoji: "🥉" },
-  { rank: "Argento", minXp: 500, emoji: "🥈" },
-  { rank: "Oro", minXp: 1200, emoji: "🥇" },
-  { rank: "Leggenda", minXp: 2500, emoji: "👑" },
-] as const;
-
-export function calcRank(xp: number): string {
-  let result: string = RANKS[0].rank;
-  for (const r of RANKS) {
-    if (xp >= r.minXp) result = r.rank;
-  }
-  return result;
-}
-
-export function rankEmoji(rank: string | null | undefined): string {
-  return RANKS.find((r) => r.rank === rank)?.emoji ?? "🥉";
-}
+// re-export pure helpers so existing server imports of "@/lib/xp" keep working
+export { RANKS, calcRank, rankEmoji } from "@/lib/xp-shared";
 
 /**
  * Assegna XP a un utente in modo idempotente.
@@ -42,9 +25,7 @@ export async function awardXp(
     });
     if (error) {
       console.error("awardXp failed:", action, refId, error.message);
-      return;
     }
-    revalidatePath("/ranking");
   } catch (e) {
     console.error("awardXp threw:", e);
   }

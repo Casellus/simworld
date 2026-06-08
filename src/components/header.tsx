@@ -44,7 +44,7 @@ export async function Header() {
         {/* RIGHT ACTIONS */}
         <div className="flex items-center gap-2 shrink-0 flex-1 justify-end">
           {profile && <NotificationBell />}
-          {profile && <RankBadge rank={profile.current_rank} />}
+          {profile && <RankBadge rank={profile.current_rank} xp={profile.monthly_xp} />}
           {profile ? (
             <UserMenu profile={profile} />
           ) : (
@@ -60,7 +60,7 @@ export async function Header() {
             {profile ? (
               <>
                 <NotificationBell />
-                <RankBadge rank={profile.current_rank} />
+                <RankBadge rank={profile.current_rank} xp={profile.monthly_xp} />
                 <UserMenu profile={profile} />
               </>
             ) : (
