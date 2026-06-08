@@ -66,6 +66,8 @@ export default async function CercaPage({ searchParams }: { searchParams: SP }) 
 
   return (
     <div className="mx-auto max-w-7xl px-4 sm:px-6 py-10">
+      <RankingMarquee />
+
       <div className="flex flex-wrap items-center justify-between gap-4 mb-8">
         <div>
           <h1 className="text-3xl md:text-4xl font-extrabold tracking-tight">Community</h1>
@@ -75,8 +77,6 @@ export default async function CercaPage({ searchParams }: { searchParams: SP }) 
           <Button><Plus className="h-4 w-4" /> Pubblica annuncio</Button>
         </Link>
       </div>
-
-      <RankingMarquee />
 
       <div className="flex flex-col sm:flex-row gap-2 mb-6">
         <form action="/cerca" method="get" className="flex flex-1 gap-2 min-w-0">

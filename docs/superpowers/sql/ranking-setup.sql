@@ -86,6 +86,40 @@ begin
 end;
 $$;
 
+-- 5b. revoke_xp: annulla un'assegnazione (azione cancellata) — toglie XP, blocca a 0
+create or replace function public.revoke_xp(
+  p_user_id uuid,
+  p_action_type text,
+  p_ref_id text
+)
+returns void
+language plpgsql
+security definer
+set search_path = public
+as $$
+declare
+  v_amount integer;
+  v_new_xp integer;
+begin
+  -- rimuove la riga del ledger e recupera l'amount assegnato
+  delete from public.xp_events
+  where user_id = p_user_id and action_type = p_action_type and ref_id = p_ref_id
+  returning amount into v_amount;
+
+  -- se non c'era nessuna assegnazione → niente da togliere
+  if v_amount is null then
+    return;
+  end if;
+
+  -- sottrae XP, mai sotto 0, ricalcola rank
+  update public.profiles
+  set monthly_xp = greatest(0, monthly_xp - v_amount),
+      current_rank = public.calc_rank(greatest(0, monthly_xp - v_amount))
+  where id = p_user_id
+  returning monthly_xp into v_new_xp;
+end;
+$$;
+
 -- 6. Reset mensile: archivia + azzera
 create or replace function public.monthly_ranking_reset()
 returns void

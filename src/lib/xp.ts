@@ -30,3 +30,28 @@ export async function awardXp(
     console.error("awardXp threw:", e);
   }
 }
+
+/**
+ * Annulla un'assegnazione XP quando l'azione viene cancellata/annullata.
+ * Toglie l'XP (mai sotto 0) e ricalcola il rank. Idempotente: se non c'è
+ * nessuna assegnazione per quel (user, action, ref) non fa nulla. Non lancia.
+ */
+export async function revokeXp(
+  userId: string,
+  action: XpAction,
+  refId: string,
+): Promise<void> {
+  try {
+    const admin = createAdminClient();
+    const { error } = await admin.rpc("revoke_xp", {
+      p_user_id: userId,
+      p_action_type: action,
+      p_ref_id: refId,
+    });
+    if (error) {
+      console.error("revokeXp failed:", action, refId, error.message);
+    }
+  } catch (e) {
+    console.error("revokeXp threw:", e);
+  }
+}
