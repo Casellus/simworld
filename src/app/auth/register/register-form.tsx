@@ -93,7 +93,23 @@ function EmailConfirmWaiting() {
   );
 
   return (
-    <div className="text-center space-y-4 py-2">
+    <div className="text-center space-y-4 py-2 relative">
+      <button
+        onClick={async () => {
+          const supabase = createClient();
+          await supabase.auth.signOut();
+          sessionStorage.removeItem("pendingEmailConfirm");
+          sessionStorage.removeItem("pendingUserId");
+          window.location.reload();
+        }}
+        className="absolute -top-2 left-0 flex items-center gap-1.5 text-xs text-white/50 hover:text-white transition-colors"
+        aria-label="Torna indietro"
+      >
+        <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+          <path strokeLinecap="round" strokeLinejoin="round" d="M15 19l-7-7 7-7" />
+        </svg>
+        Indietro
+      </button>
       <div className="flex items-center justify-center w-14 h-14 rounded-full bg-[var(--color-primary)]/15 border border-[var(--color-primary)]/30 mx-auto">
         <svg className="w-7 h-7 text-[var(--color-primary)]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
           <path strokeLinecap="round" strokeLinejoin="round" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />

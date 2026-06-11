@@ -173,6 +173,20 @@ export function OnboardingForm() {
       <Button type="submit" size="lg" className="w-full" disabled={saving || uploading}>
         {saving ? "Salvataggio..." : <><ArrowRight className="h-4 w-4" /> Inizia</>}
       </Button>
+
+      <div className="text-center pt-2">
+        <button
+          type="button"
+          className="text-xs text-[var(--color-fg-muted)] hover:text-[var(--color-fg)] underline underline-offset-2"
+          onClick={async () => {
+            const supabase = createClient();
+            await supabase.auth.signOut();
+            router.push("/auth/login");
+          }}
+        >
+          Esci dall&apos;account
+        </button>
+      </div>
     </form>
   );
 }
