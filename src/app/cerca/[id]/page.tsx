@@ -26,8 +26,7 @@ export default async function AnnuncioDetailPage({ params }: { params: Promise<{
 
   const game = one<{ name: string; slug: string }>(post.games);
   const team = one<{ name: string; slug: string }>(post.teams);
-  const ADMIN_ID = "10ef7871-d655-4568-8ec1-7b8e358a093d";
-  const isOwner = !!user && (user.id === post.user_id || user.id === ADMIN_ID);
+  const isOwner = !!user && user.id === post.user_id;
 
   return (
     <div className="mx-auto max-w-3xl px-4 sm:px-6 py-10">
