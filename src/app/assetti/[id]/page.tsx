@@ -2,6 +2,7 @@ import { notFound } from "next/navigation";
 import Link from "next/link";
 import Image from "next/image";
 import { createClient } from "@/lib/supabase/server";
+import { getUserId } from "@/lib/auth";
 import { Card, CardBody, CardHeader, Badge } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { ThumbsUp, ThumbsDown, Car, MapPin, User as UserIcon, Pencil, Cpu } from "lucide-react";
@@ -33,17 +34,15 @@ export default async function SetupDetailPage({ params }: { params: Promise<{ id
     .maybeSingle();
   const author = authorProfile;
 
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
+  const userId = await getUserId();
 
   let myVote = 0;
-  if (user) {
+  if (userId) {
     const { data } = await supabase
       .from("setup_votes")
       .select("value")
       .eq("setup_id", id)
-      .eq("user_id", user.id)
+      .eq("user_id", userId)
       .maybeSingle();
     myVote = data?.value || 0;
   }
@@ -77,7 +76,7 @@ export default async function SetupDetailPage({ params }: { params: Promise<{ id
               {formatDate(setup.created_at)}
             </p>
           </div>
-          {user && user.id === setup.user_id && (
+          {userId && userId === setup.user_id && (
             <div className="flex gap-2 shrink-0">
               <Link href={`/assetti/${setup.id}/modifica`}>
                 <Button variant="secondary" size="sm">
@@ -118,7 +117,7 @@ export default async function SetupDetailPage({ params }: { params: Promise<{ id
                 <h2 className="text-sm font-bold">Note</h2>
               </CardHeader>
               <CardBody className="relative">
-                {user ? (
+                {userId ? (
                   <p className="whitespace-pre-wrap text-sm">{setup.notes}</p>
                 ) : (
                   <>
@@ -156,7 +155,7 @@ export default async function SetupDetailPage({ params }: { params: Promise<{ id
               </div>
               <div className="pt-3 border-t border-[var(--color-border)] space-y-2">
                 {setup.file_url && <DownloadButton setupId={setup.id} fileUrl={setup.file_url} />}
-                <VoteButtons setupId={setup.id} myVote={myVote} isLogged={!!user} />
+                <VoteButtons setupId={setup.id} myVote={myVote} isLogged={!!userId} />
               </div>
             </CardBody>
           </Card>

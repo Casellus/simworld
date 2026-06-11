@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { createClient, createAdminClient } from "@/lib/supabase/server";
+import { getUserId } from "@/lib/auth";
 import { Card, CardBody } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { FilterChip } from "@/components/ui/filter-chip";
@@ -50,7 +51,7 @@ export default async function CercaPage({ searchParams }: { searchParams: SP }) 
   if (sp.q) q = q.ilike("title", `%${sp.q}%`);
 
   const { data: posts } = await q;
-  const { data: { user } } = await supabase.auth.getUser();
+  const userId = await getUserId();
 
   const userIds = [...new Set((posts ?? []).map((p) => p.user_id).filter(Boolean))];
   const profileMap: Record<string, { display_name: string | null; username: string | null; avatar_url: string | null }> = {};
@@ -110,7 +111,7 @@ export default async function CercaPage({ searchParams }: { searchParams: SP }) 
       {posts && posts.length > 0 ? (
         <div className="stagger grid gap-4 md:grid-cols-2 lg:grid-cols-3">
           {posts.map((p) => {
-            const isOwner = user && p.user_id === user.id;
+            const isOwner = userId && p.user_id === userId;
             const contactIsUrl = p.contact ? /^https?:\/\//i.test(p.contact.trim()) : false;
             const isPilota = p.post_type === "cerca_pilota";
             const profile = p.user_id ? profileMap[p.user_id] : null;

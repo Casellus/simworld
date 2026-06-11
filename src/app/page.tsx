@@ -6,12 +6,13 @@ import { RankingTop3 } from "@/components/ranking-top3";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/card";
 import { createClient } from "@/lib/supabase/server";
+import { getUserId } from "@/lib/auth";
 import { formatDate } from "@/lib/utils";
 import { Calendar, Settings2, ArrowRight, LayoutDashboard, ChevronRight, Trophy, Car, Gamepad2, Handshake, Award, Zap, Flame, Flag, BookOpen } from "lucide-react";
 
 export default async function Home() {
   const supabase = await createClient();
-  const { data: { user } } = await supabase.auth.getUser();
+  const userId = await getUserId();
 
   const [
     { data: upcomingEvents },
@@ -36,8 +37,8 @@ export default async function Home() {
       .eq("active", true)
       .order("created_at", { ascending: false })
       .limit(6),
-    user
-      ? supabase.from("profiles").select("display_name, username").eq("id", user.id).maybeSingle()
+    userId
+      ? supabase.from("profiles").select("display_name, username").eq("id", userId).maybeSingle()
       : Promise.resolve({ data: null, error: null }),
   ]);
 
@@ -54,7 +55,7 @@ export default async function Home() {
         <div className="hero-video-overlay" />
         <div className="relative z-10 mx-auto max-w-7xl px-4 sm:px-6 w-full" style={{ paddingTop: "calc(56px + 1.5rem)" }}>
             <div className="flex flex-col items-center text-center">
-              {user ? (
+              {userId ? (
                 <>
                   <h1 className="hero-title text-3xl sm:text-5xl md:text-7xl lg:text-8xl font-extrabold leading-[0.95] tracking-tight" style={{ fontFamily: "var(--font-heading)" }}>
                     Ciao,<br />
@@ -108,7 +109,7 @@ export default async function Home() {
       {/* ── TOP 3 PILOTI DEL MESE ── */}
       <RankingTop3 />
 
-      {user ? (
+      {userId ? (
         <>
           {/* ── FEATURED CAROUSEL: EVENTI ── */}
           <Section

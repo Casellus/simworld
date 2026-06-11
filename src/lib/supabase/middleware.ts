@@ -26,6 +26,8 @@ export async function updateSession(request: NextRequest) {
     }
   );
 
-  await supabase.auth.getUser();
+  // getClaims() verifies the JWT locally (no network round-trip to Supabase),
+  // while still refreshing the session cookie when needed. Much faster than getUser().
+  await supabase.auth.getClaims();
   return response;
 }

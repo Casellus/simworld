@@ -1,6 +1,7 @@
 import { notFound } from "next/navigation";
 import Link from "next/link";
 import { createClient } from "@/lib/supabase/server";
+import { getUserId } from "@/lib/auth";
 import { Button } from "@/components/ui/button";
 import { Pencil } from "lucide-react";
 import { one } from "@/lib/types";
@@ -19,7 +20,7 @@ export default async function ProfiloPage({ params }: { params: Promise<{ userna
 
   if (!profile) notFound();
 
-  const [{ data: setups }, { data: eventParticipants }, { data: userGames }, { data: { user } }] = await Promise.all([
+  const [{ data: setups }, { data: eventParticipants }, { data: userGames }, viewerId] = await Promise.all([
     supabase
       .from("setups")
       .select("id, title, car, track, games(name)")
@@ -35,11 +36,11 @@ export default async function ProfiloPage({ params }: { params: Promise<{ userna
       .from("user_games")
       .select("skill_level, games(name, slug)")
       .eq("user_id", profile.id),
-    supabase.auth.getUser(),
+    getUserId(),
   ]);
 
   const displayName = profile.display_name || profile.username;
-  const isOwner = user?.id === profile.id;
+  const isOwner = viewerId === profile.id;
 
   const events = (eventParticipants ?? [])
     .map((ep) => one<{ slug: string; title: string; event_type: string; start_at: string }>(ep.events))

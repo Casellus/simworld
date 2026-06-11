@@ -6,6 +6,7 @@ import { formatDate } from "@/lib/utils";
 import { Mail, ExternalLink, User as UserIcon } from "lucide-react";
 import { PostActions } from "../post-actions";
 import { one } from "@/lib/types";
+import { getUserId } from "@/lib/auth";
 
 export default async function AnnuncioDetailPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
@@ -19,14 +20,14 @@ export default async function AnnuncioDetailPage({ params }: { params: Promise<{
 
   if (!post) notFound();
 
-  const [{ data: author }, { data: { user } }] = await Promise.all([
+  const [{ data: author }, userId] = await Promise.all([
     supabase.from("profiles").select("username, display_name").eq("id", post.user_id).maybeSingle(),
-    supabase.auth.getUser(),
+    getUserId(),
   ]);
 
   const game = one<{ name: string; slug: string }>(post.games);
   const team = one<{ name: string; slug: string }>(post.teams);
-  const isOwner = !!user && user.id === post.user_id;
+  const isOwner = !!userId && userId === post.user_id;
 
   return (
     <div className="mx-auto max-w-3xl px-4 sm:px-6 py-10">

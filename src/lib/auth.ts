@@ -12,11 +12,19 @@ export const getUser = cache(async () => {
   return user;
 });
 
-export const getProfile = cache(async () => {
-  const user = await getUser();
-  if (!user) return null;
+// Returns the authenticated user id by verifying the JWT locally (getClaims),
+// avoiding a network round-trip to the Supabase auth server on every page render.
+export const getUserId = cache(async () => {
   const supabase = await createClient();
-  const { data } = await supabase.from("profiles").select("*").eq("id", user.id).single();
+  const { data } = await supabase.auth.getClaims();
+  return (data?.claims?.sub as string | undefined) ?? null;
+});
+
+export const getProfile = cache(async () => {
+  const userId = await getUserId();
+  if (!userId) return null;
+  const supabase = await createClient();
+  const { data } = await supabase.from("profiles").select("*").eq("id", userId).single();
   return data;
 });
 
