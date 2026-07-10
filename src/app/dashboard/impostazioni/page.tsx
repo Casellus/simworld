@@ -1,4 +1,4 @@
-import { requireProfile } from "@/lib/auth";
+import { requireProfile, getMyContacts } from "@/lib/auth";
 import { createClient } from "@/lib/supabase/server";
 import { Card, CardBody } from "@/components/ui/card";
 import { SettingsForm } from "./settings-form";
@@ -9,10 +9,10 @@ export const metadata = { title: "Impostazioni · SimUniverse" };
 export default async function ImpostazioniPage() {
   const profile = await requireProfile();
   const supabase = await createClient();
-  const { data: userGames } = await supabase
-    .from("user_games")
-    .select("skill_level, games(slug)")
-    .eq("user_id", profile.id);
+  const [{ data: userGames }, contacts] = await Promise.all([
+    supabase.from("user_games").select("skill_level, games(slug)").eq("user_id", profile.id),
+    getMyContacts(),
+  ]);
 
   return (
     <div className="mx-auto max-w-2xl px-4 sm:px-6 py-10">
@@ -20,7 +20,7 @@ export default async function ImpostazioniPage() {
       <Card>
         <CardBody>
           <SettingsForm
-            profile={profile}
+            profile={{ ...profile, ...contacts }}
             userGames={(userGames || []).map((ug) => ({
               slug: one<{ slug: string }>(ug.games)?.slug ?? "",
               skill: ug.skill_level ?? "intermedio",
