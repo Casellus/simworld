@@ -8,6 +8,7 @@ import { Button } from "@/components/ui/button";
 import { Input, Label, Textarea, Select } from "@/components/ui/input";
 import { GAMES, SKILL_LEVELS } from "@/lib/constants";
 import { User as UserIcon, Upload, ArrowRight } from "lucide-react";
+import { IMAGE_ACCEPT, validateImageFile, safeImageExt } from "@/lib/upload";
 
 export function OnboardingForm() {
   const router = useRouter();
@@ -31,6 +32,8 @@ export function OnboardingForm() {
   async function handleAvatarChange(e: React.ChangeEvent<HTMLInputElement>) {
     const file = e.target.files?.[0];
     if (!file) return;
+    const imgErr = validateImageFile(file);
+    if (imgErr) { setError(imgErr); e.target.value = ""; return; }
     if (file.size > 2 * 1024 * 1024) {
       setError("Avatar max 2 MB.");
       e.target.value = "";
@@ -44,10 +47,10 @@ export function OnboardingForm() {
     const { data: { user } } = await supabase.auth.getUser();
     if (!user) { setError("Non autorizzato."); setUploading(false); return; }
 
-    const ext = file.name.split(".").pop();
+    const ext = safeImageExt(file.name);
     const path = `${user.id}/avatar.${ext}`;
-    const { error: upErr } = await supabase.storage.from("avatars").upload(path, file, { upsert: true });
-    if (upErr) { setError("Errore upload: " + upErr.message); setUploading(false); return; }
+    const { error: upErr } = await supabase.storage.from("avatars").upload(path, file, { upsert: true, contentType: file.type });
+    if (upErr) { setError("Errore durante il caricamento."); setUploading(false); return; }
 
     const { data: urlData } = supabase.storage.from("avatars").getPublicUrl(path);
     setAvatarUrl(`${urlData.publicUrl}?v=${Date.now()}`);
@@ -102,7 +105,7 @@ export function OnboardingForm() {
               </Button>
             )}
           </div>
-          <input ref={fileRef} type="file" accept="image/*" className="hidden" onChange={handleAvatarChange} />
+          <input ref={fileRef} type="file" accept={IMAGE_ACCEPT} className="hidden" onChange={handleAvatarChange} />
         </div>
       </div>
 

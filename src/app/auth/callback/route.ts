@@ -1,12 +1,22 @@
 import { NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
 
+// Only allow same-origin relative paths as redirect targets.
+// Rejects absolute URLs, protocol-relative (//evil.com) and backslash tricks.
+function safeNext(raw: string | null): string {
+  const value = raw ?? "/";
+  if (!value.startsWith("/")) return "/";
+  if (value.startsWith("//") || value.startsWith("/\\")) return "/";
+  if (value.includes("://")) return "/";
+  return value;
+}
+
 export async function GET(request: Request) {
   const { searchParams, origin } = new URL(request.url);
   const code = searchParams.get("code");
   const token_hash = searchParams.get("token_hash");
   const type = searchParams.get("type");
-  const next = searchParams.get("next") ?? "/";
+  const next = safeNext(searchParams.get("next"));
 
   const supabase = await createClient();
 

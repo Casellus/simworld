@@ -9,6 +9,7 @@ import { Input, Label, Textarea, Select } from "@/components/ui/input";
 import { CountrySelect } from "@/components/ui/country-select";
 import { GAMES, SKILL_LEVELS } from "@/lib/constants";
 import { User as UserIcon, Upload, Trash2, Image as ImageIcon } from "lucide-react";
+import { IMAGE_ACCEPT, validateImageFile, safeImageExt } from "@/lib/upload";
 
 type Profile = {
   username: string | null;
@@ -55,6 +56,8 @@ export function SettingsForm({ profile, userGames }: { profile: Profile; userGam
   async function handleAvatarChange(e: React.ChangeEvent<HTMLInputElement>) {
     const file = e.target.files?.[0];
     if (!file) return;
+    const imgErr = validateImageFile(file);
+    if (imgErr) { setError(imgErr); e.target.value = ""; return; }
     if (file.size > 2 * 1024 * 1024) {
       setError("Avatar max 2 MB.");
       e.target.value = "";
@@ -68,10 +71,10 @@ export function SettingsForm({ profile, userGames }: { profile: Profile; userGam
     const { data: { user } } = await supabase.auth.getUser();
     if (!user) { setError("Non autorizzato."); setUploading(false); return; }
 
-    const ext = file.name.split(".").pop();
+    const ext = safeImageExt(file.name);
     const path = `${user.id}/avatar.${ext}`;
-    const { error: upErr } = await supabase.storage.from("avatars").upload(path, file, { upsert: true });
-    if (upErr) { setError("Errore upload: " + upErr.message); setUploading(false); return; }
+    const { error: upErr } = await supabase.storage.from("avatars").upload(path, file, { upsert: true, contentType: file.type });
+    if (upErr) { setError("Errore durante il caricamento."); setUploading(false); return; }
 
     const { data: urlData } = supabase.storage.from("avatars").getPublicUrl(path);
     setAvatarUrl(`${urlData.publicUrl}?v=${Date.now()}`);
@@ -81,6 +84,8 @@ export function SettingsForm({ profile, userGames }: { profile: Profile; userGam
   async function handleCoverChange(e: React.ChangeEvent<HTMLInputElement>) {
     const file = e.target.files?.[0];
     if (!file) return;
+    const imgErr = validateImageFile(file);
+    if (imgErr) { setError(imgErr); e.target.value = ""; return; }
     if (file.size > 4 * 1024 * 1024) {
       setError("Copertina max 4 MB.");
       e.target.value = "";
@@ -94,10 +99,10 @@ export function SettingsForm({ profile, userGames }: { profile: Profile; userGam
     const { data: { user } } = await supabase.auth.getUser();
     if (!user) { setError("Non autorizzato."); setUploadingCover(false); return; }
 
-    const ext = file.name.split(".").pop();
+    const ext = safeImageExt(file.name);
     const path = `${user.id}/cover.${ext}`;
-    const { error: upErr } = await supabase.storage.from("avatars").upload(path, file, { upsert: true });
-    if (upErr) { setError("Errore upload copertina: " + upErr.message); setUploadingCover(false); return; }
+    const { error: upErr } = await supabase.storage.from("avatars").upload(path, file, { upsert: true, contentType: file.type });
+    if (upErr) { setError("Errore durante il caricamento della copertina."); setUploadingCover(false); return; }
 
     const { data: urlData } = supabase.storage.from("avatars").getPublicUrl(path);
     setCoverUrl(`${urlData.publicUrl}?v=${Date.now()}`);
@@ -159,7 +164,7 @@ export function SettingsForm({ profile, userGames }: { profile: Profile; userGam
             </div>
           )}
         </div>
-        <input ref={coverRef} type="file" accept="image/*" className="hidden" onChange={handleCoverChange} />
+        <input ref={coverRef} type="file" accept={IMAGE_ACCEPT} className="hidden" onChange={handleCoverChange} />
       </div>
 
       {/* AVATAR */}
@@ -192,7 +197,7 @@ export function SettingsForm({ profile, userGames }: { profile: Profile; userGam
               </Button>
             )}
           </div>
-          <input ref={fileRef} type="file" accept="image/*" className="hidden" onChange={handleAvatarChange} />
+          <input ref={fileRef} type="file" accept={IMAGE_ACCEPT} className="hidden" onChange={handleAvatarChange} />
         </div>
       </div>
 

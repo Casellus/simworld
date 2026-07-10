@@ -4,24 +4,26 @@ import { redirect } from "next/navigation";
 import { revalidatePath } from "next/cache";
 import { createClient, createAdminClient } from "@/lib/supabase/server";
 import { awardXp, revokeXp } from "@/lib/xp";
+import { text, textOrNull, oneOf, storageUrlOrNull, LIMITS, GENERIC_ERROR } from "@/lib/validation";
 
-const ALLOWED_EXT = ["json", "sto", "svm", "ini", "svm", "rcd", "txt", "xml", "zip"];
+const ALLOWED_EXT = ["json", "sto", "svm", "ini", "rcd", "txt", "xml", "zip"];
+const SETUP_TYPES = ["auto", "simulatore"] as const;
 export async function createSetupRecord(formData: FormData): Promise<{ error?: string; id?: string }> {
   try {
     const supabase = await createClient();
     const { data: { user } } = await supabase.auth.getUser();
     if (!user) return { error: "Non autorizzato" };
 
-    const setup_type = (formData.get("setup_type") as string || "auto").trim() as "auto" | "simulatore";
-    const title      = (formData.get("title") as string || "").trim();
+    const setup_type = oneOf(String(formData.get("setup_type") || "auto"), SETUP_TYPES) ?? "auto";
+    const title      = text(formData.get("title"), LIMITS.title);
     const game_slug  = formData.get("game") as string;
-    const car        = (formData.get("car") as string || "").trim() || null;
-    const track      = (formData.get("track") as string || "").trim() || null;
-    const conditions = (formData.get("conditions") as string || "").trim() || null;
-    const category   = (formData.get("category") as string || "").trim() || null;
-    const notes      = (formData.get("notes") as string || "").trim() || null;
-    const file_url   = (formData.get("file_url") as string || "") || null;
-    const photo_url  = (formData.get("photo_url") as string || "") || null;
+    const car        = textOrNull(formData.get("car"), LIMITS.short);
+    const track      = textOrNull(formData.get("track"), LIMITS.short);
+    const conditions = textOrNull(formData.get("conditions"), LIMITS.short);
+    const category   = textOrNull(formData.get("category"), LIMITS.short);
+    const notes      = textOrNull(formData.get("notes"), LIMITS.notes);
+    const file_url   = storageUrlOrNull(formData.get("file_url"));
+    const photo_url  = storageUrlOrNull(formData.get("photo_url"));
 
     if (!title || !game_slug) return { error: "Campi obbligatori mancanti." };
     if (setup_type === "auto" && (!car || !track)) return { error: "Auto e tracciato sono obbligatori." };
@@ -35,7 +37,10 @@ export async function createSetupRecord(formData: FormData): Promise<{ error?: s
       .select("id")
       .single();
 
-    if (dbErr) return { error: dbErr.message };
+    if (dbErr) {
+      console.error("createSetupRecord failed:", dbErr.message);
+      return { error: GENERIC_ERROR };
+    }
     if (!created?.id) return { error: "Inserimento non riuscito." };
 
     await awardXp(user.id, "setup_create", created.id);
@@ -44,8 +49,8 @@ export async function createSetupRecord(formData: FormData): Promise<{ error?: s
     revalidatePath("/");
     return { id: created.id };
   } catch (e) {
-    const msg = e instanceof Error ? e.message : "Errore sconosciuto";
-    return { error: `Errore server: ${msg}` };
+    console.error("createSetupRecord threw:", e);
+    return { error: GENERIC_ERROR };
   }
 }
 
@@ -55,12 +60,12 @@ export async function uploadSetupFull(formData: FormData): Promise<{ error?: str
     const { data: { user } } = await supabase.auth.getUser();
     if (!user) return { error: "Non autorizzato" };
 
-    const title = (formData.get("title") as string || "").trim();
+    const title = text(formData.get("title"), LIMITS.title);
     const game_slug = formData.get("game") as string;
-    const car = (formData.get("car") as string || "").trim();
-    const track = (formData.get("track") as string || "").trim();
-    const conditions = (formData.get("conditions") as string || "").trim() || null;
-    const notes = (formData.get("notes") as string || "").trim() || null;
+    const car = text(formData.get("car"), LIMITS.short);
+    const track = text(formData.get("track"), LIMITS.short);
+    const conditions = textOrNull(formData.get("conditions"), LIMITS.short);
+    const notes = textOrNull(formData.get("notes"), LIMITS.notes);
     const setupFile = formData.get("file") as File | null;
 
     if (!title || !game_slug || !car || !track) return { error: "Campi obbligatori mancanti." };
@@ -88,7 +93,10 @@ export async function uploadSetupFull(formData: FormData): Promise<{ error?: str
       .select("id")
       .single();
 
-    if (dbErr) return { error: dbErr.message };
+    if (dbErr) {
+      console.error("uploadSetupFull failed:", dbErr.message);
+      return { error: GENERIC_ERROR };
+    }
     if (!created?.id) return { error: "Inserimento non riuscito." };
 
     await awardXp(user.id, "setup_create", created.id);
@@ -97,8 +105,8 @@ export async function uploadSetupFull(formData: FormData): Promise<{ error?: str
     revalidatePath("/");
     return { id: created.id };
   } catch (e) {
-    const msg = e instanceof Error ? e.message : "Errore sconosciuto";
-    return { error: `Errore server: ${msg}` };
+    console.error("uploadSetupFull threw:", e);
+    return { error: GENERIC_ERROR };
   }
 }
 
@@ -109,12 +117,12 @@ export async function uploadSetup(formData: FormData): Promise<void> {
   } = await supabase.auth.getUser();
   if (!user) throw new Error("Non autorizzato");
 
-  const title = String(formData.get("title") || "").trim();
+  const title = text(formData.get("title"), LIMITS.title);
   const game_slug = String(formData.get("game") || "");
-  const car = String(formData.get("car") || "").trim();
-  const track = String(formData.get("track") || "").trim();
-  const conditions = String(formData.get("conditions") || "").trim();
-  const notes = String(formData.get("notes") || "").trim();
+  const car = text(formData.get("car"), LIMITS.short);
+  const track = text(formData.get("track"), LIMITS.short);
+  const conditions = textOrNull(formData.get("conditions"), LIMITS.short);
+  const notes = textOrNull(formData.get("notes"), LIMITS.notes);
   const file = formData.get("file") as File | null;
 
   if (!title || !game_slug || !car || !track) throw new Error("Campi obbligatori mancanti.");
@@ -133,7 +141,10 @@ export async function uploadSetup(formData: FormData): Promise<void> {
       contentType: file.type || "application/octet-stream",
       upsert: false,
     });
-    if (upErr) throw new Error(`Upload fallito: ${upErr.message}`);
+    if (upErr) {
+      console.error("uploadSetup storage failed:", upErr.message);
+      throw new Error("Caricamento file non riuscito. Riprova.");
+    }
     const { data: pub } = supabase.storage.from("setups").getPublicUrl(path);
     file_url = pub.publicUrl;
   }
@@ -170,23 +181,26 @@ export async function updateSetup(setupId: string, formData: FormData): Promise<
   const { data: existing } = await supabase.from("setups").select("setup_type").eq("id", setupId).single();
   const setup_type = existing?.setup_type ?? "auto";
 
-  const title      = String(formData.get("title") || "").trim();
-  const car        = String(formData.get("car") || "").trim() || null;
-  const track      = String(formData.get("track") || "").trim() || null;
-  const conditions = String(formData.get("conditions") || "").trim() || null;
-  const category   = String(formData.get("category") || "").trim() || null;
-  const notes      = String(formData.get("notes") || "").trim() || null;
-  const photo_url  = String(formData.get("photo_url") || "").trim() || null;
+  const title      = text(formData.get("title"), LIMITS.title);
+  const car        = textOrNull(formData.get("car"), LIMITS.short);
+  const track      = textOrNull(formData.get("track"), LIMITS.short);
+  const conditions = textOrNull(formData.get("conditions"), LIMITS.short);
+  const category   = textOrNull(formData.get("category"), LIMITS.short);
+  const notes      = textOrNull(formData.get("notes"), LIMITS.notes);
+  const photo_url  = storageUrlOrNull(formData.get("photo_url"));
 
   if (!title) return { error: "Il titolo è obbligatorio." };
   if (setup_type === "auto" && (!car || !track)) return { error: "Auto e tracciato sono obbligatori." };
 
   const { error } = await supabase
     .from("setups")
-    .update({ title, car, track, conditions, category, notes: notes || null, photo_url })
+    .update({ title, car, track, conditions, category, notes, photo_url })
     .eq("id", setupId);
 
-  if (error) return { error: error.message };
+  if (error) {
+    console.error("updateSetup failed:", error.message);
+    return { error: GENERIC_ERROR };
+  }
   revalidatePath(`/assetti/${setupId}`);
   revalidatePath("/assetti");
   return {};
@@ -197,11 +211,22 @@ export async function deleteSetup(setupId: string): Promise<{ error?: string }> 
   const { data: { user } } = await supabase.auth.getUser();
   if (!user) return { error: "Non autorizzato" };
 
-  const { data: setup } = await supabase.from("setups").select("id, user_id").eq("id", setupId).single();
+  const { data: setup } = await supabase.from("setups").select("id, user_id, file_url").eq("id", setupId).single();
   if (!setup || setup.user_id !== user.id) return { error: "Non autorizzato" };
 
   const { error } = await supabase.from("setups").delete().eq("id", setupId);
-  if (error) return { error: error.message };
+  if (error) {
+    console.error("deleteSetup failed:", error.message);
+    return { error: GENERIC_ERROR };
+  }
+
+  // Best-effort: remove the orphaned storage object so deleted setups don't
+  // leave files behind forever. Uses admin client (bucket may be private).
+  const path = storagePathFromUrl(setup.file_url, "setups");
+  if (path && process.env.SUPABASE_SECRET_KEY) {
+    const admin = createAdminClient();
+    await admin.storage.from("setups").remove([path]).catch(() => {});
+  }
 
   await revokeXp(setup.user_id, "setup_create", setupId);
 
@@ -210,7 +235,22 @@ export async function deleteSetup(setupId: string): Promise<{ error?: string }> 
   return {};
 }
 
+// Extracts the storage object path from a Supabase public/sign URL for a bucket.
+// e.g. https://x.supabase.co/storage/v1/object/public/setups/uid/file.zip -> uid/file.zip
+function storagePathFromUrl(url: string | null | undefined, bucket: string): string | null {
+  if (!url) return null;
+  const marker = `/${bucket}/`;
+  const idx = url.indexOf(marker);
+  if (idx === -1) return null;
+  const path = url.slice(idx + marker.length).split("?")[0];
+  return path ? decodeURIComponent(path) : null;
+}
+
 export async function voteSetup(setupId: string, value: 1 | -1 | 0) {
+  // Runtime guard: the TS union is compile-time only; a direct call could
+  // pass any number. Reject anything outside {1, 0, -1}.
+  if (![1, 0, -1].includes(value)) return { error: "Voto non valido" };
+
   const supabase = await createClient();
   const {
     data: { user },
@@ -268,6 +308,15 @@ export async function voteSetup(setupId: string, value: 1 | -1 | 0) {
 
 export async function incrementDownload(setupId: string) {
   const supabase = await createClient();
-  const { data: s } = await supabase.from("setups").select("downloads").eq("id", setupId).single();
-  if (s) await supabase.from("setups").update({ downloads: (s.downloads || 0) + 1 }).eq("id", setupId);
+  const { data: { user } } = await supabase.auth.getUser();
+  if (!user) return { error: "Non autorizzato" };
+
+  // Atomic server-side increment (no read-modify-write race). Defined in
+  // supabase/security_migration.sql as increment_download(uuid).
+  const { error } = await supabase.rpc("increment_download", { p_setup_id: setupId });
+  if (error) {
+    console.error("incrementDownload failed:", error.message);
+    return { error: GENERIC_ERROR };
+  }
+  return { ok: true };
 }

@@ -1,11 +1,12 @@
 import Link from "next/link";
-import { createClient, createAdminClient } from "@/lib/supabase/server";
+import { createClient } from "@/lib/supabase/server";
 import { getUserId } from "@/lib/auth";
 import { Card, CardBody } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { FilterChip } from "@/components/ui/filter-chip";
 import { Search, Plus, Mail, ExternalLink, Flag, User } from "lucide-react";
 import { GAMES } from "@/lib/constants";
+import { likePattern } from "@/lib/validation";
 import { Suspense } from "react";
 import { PostActions } from "./post-actions";
 import { SortSelect } from "@/components/ui/sort-select";
@@ -48,7 +49,7 @@ export default async function CercaPage({ searchParams }: { searchParams: SP }) 
 
   if (sp.tipo) q = q.eq("post_type", sp.tipo);
   if (gameId) q = q.eq("game_id", gameId);
-  if (sp.q) q = q.ilike("title", `%${sp.q}%`);
+  if (sp.q) q = q.ilike("title", likePattern(sp.q));
 
   const { data: posts } = await q;
   const userId = await getUserId();
@@ -56,8 +57,8 @@ export default async function CercaPage({ searchParams }: { searchParams: SP }) 
   const userIds = [...new Set((posts ?? []).map((p) => p.user_id).filter(Boolean))];
   const profileMap: Record<string, { display_name: string | null; username: string | null; avatar_url: string | null }> = {};
   if (userIds.length > 0) {
-    const admin = createAdminClient();
-    const { data: profiles } = await admin
+    // Standard client — profiles are world-readable via RLS, no service role needed.
+    const { data: profiles } = await supabase
       .from("profiles")
       .select("id, display_name, username, avatar_url")
       .in("id", userIds);

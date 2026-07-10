@@ -9,6 +9,7 @@ import { Card, CardBody } from "@/components/ui/card";
 import { GAMES, SIM_CATEGORIES } from "@/lib/constants";
 import { updateSetup } from "../../actions";
 import { ImageIcon, Upload, Car, Cpu } from "lucide-react";
+import { IMAGE_ACCEPT, validateImageFile, safeImageExt } from "@/lib/upload";
 
 type Setup = {
   id: string;
@@ -65,6 +66,8 @@ export default function ModificaAssettoPage() {
   async function handlePhotoChange(e: React.ChangeEvent<HTMLInputElement>) {
     const file = e.target.files?.[0];
     if (!file) return;
+    const imgErr = validateImageFile(file);
+    if (imgErr) { setError(imgErr); e.target.value = ""; return; }
     if (file.size > 5 * 1024 * 1024) { setError("Foto max 5MB."); e.target.value = ""; return; }
     setError(null);
     setPhotoPreview(URL.createObjectURL(file));
@@ -74,10 +77,10 @@ export default function ModificaAssettoPage() {
     const { data: { user } } = await supabase.auth.getUser();
     if (!user) { setError("Non autorizzato."); setUploadingPhoto(false); return; }
 
-    const ext = file.name.split(".").pop();
+    const ext = safeImageExt(file.name);
     const path = `photos/${user.id}/${Date.now()}.${ext}`;
-    const { error: upErr } = await supabase.storage.from("setups").upload(path, file, { upsert: false });
-    if (upErr) { setError("Errore upload foto: " + upErr.message); setUploadingPhoto(false); return; }
+    const { error: upErr } = await supabase.storage.from("setups").upload(path, file, { upsert: false, contentType: file.type });
+    if (upErr) { setError("Errore durante il caricamento della foto."); setUploadingPhoto(false); return; }
 
     const { data: urlData } = supabase.storage.from("setups").getPublicUrl(path);
     setPhotoUrl(`${urlData.publicUrl}?v=${Date.now()}`);
@@ -186,7 +189,7 @@ export default function ModificaAssettoPage() {
                     </Button>
                   )}
                 </div>
-                <input ref={photoRef} type="file" accept="image/*" className="hidden" onChange={handlePhotoChange} />
+                <input ref={photoRef} type="file" accept={IMAGE_ACCEPT} className="hidden" onChange={handlePhotoChange} />
               </div>
             </div>
 

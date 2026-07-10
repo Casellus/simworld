@@ -8,6 +8,7 @@ import { FilterChip } from "@/components/ui/filter-chip";
 import { SortSelect } from "@/components/ui/sort-select";
 import { formatDate } from "@/lib/utils";
 import { GAMES, EVENT_TYPES } from "@/lib/constants";
+import { likePattern } from "@/lib/validation";
 import { Calendar, Plus } from "lucide-react";
 import { Suspense } from "react";
 
@@ -45,7 +46,7 @@ export default async function EventiPage({ searchParams }: { searchParams: SP })
 
   if (gameId) query = query.eq("game_id", gameId);
   if (sp.tipo) query = query.eq("event_type", sp.tipo);
-  if (sp.q) query = query.ilike("title", `%${sp.q}%`);
+  if (sp.q) query = query.ilike("title", likePattern(sp.q));
 
   const { data: events } = await query;
 

@@ -1,4 +1,5 @@
 import { Resend } from "resend";
+import { escapeHtml } from "@/lib/validation";
 
 const resend = new Resend(process.env.RESEND_API_KEY);
 const FROM = process.env.RESEND_FROM ?? "noreply@simuniverse.it";
@@ -15,10 +16,13 @@ export async function sendApplicationAccepted({
   teamName: string;
   teamSlug: string;
 }) {
+  const pilot = escapeHtml(pilotName);
+  const team = escapeHtml(teamName);
+  const slug = encodeURIComponent(teamSlug);
   await resend.emails.send({
     from: FROM,
     to,
-    subject: `✅ Sei stato accettato nel team ${teamName}!`,
+    subject: `✅ Sei stato accettato nel team ${team}!`,
     html: `
       <div style="font-family:sans-serif;max-width:600px;margin:0 auto;background:#0a0a0c;color:#f5f5f7;padding:32px;border-radius:8px">
         <div style="font-size:24px;font-weight:900;text-transform:uppercase;letter-spacing:2px;margin-bottom:24px">
@@ -28,13 +32,13 @@ export async function sendApplicationAccepted({
           Candidatura accettata! 🏁
         </h1>
         <p style="color:#8a8a92;margin-bottom:16px">
-          Ciao <strong style="color:#f5f5f7">${pilotName}</strong>,
+          Ciao <strong style="color:#f5f5f7">${pilot}</strong>,
         </p>
         <p style="color:#8a8a92;margin-bottom:24px">
-          La tua candidatura al team <strong style="color:#f5f5f7">${teamName}</strong> è stata <strong style="color:#00d26a">accettata</strong>!
+          La tua candidatura al team <strong style="color:#f5f5f7">${team}</strong> è stata <strong style="color:#00d26a">accettata</strong>!
           Sei ora ufficialmente parte del team.
         </p>
-        <a href="${SITE}/team/${teamSlug}"
+        <a href="${SITE}/team/${slug}"
            style="display:inline-block;background:#e10600;color:white;padding:12px 24px;border-radius:6px;font-weight:700;text-transform:uppercase;letter-spacing:1px;text-decoration:none">
           Vai al team →
         </a>
@@ -55,10 +59,12 @@ export async function sendApplicationRejected({
   pilotName: string;
   teamName: string;
 }) {
+  const pilot = escapeHtml(pilotName);
+  const team = escapeHtml(teamName);
   await resend.emails.send({
     from: FROM,
     to,
-    subject: `Aggiornamento candidatura — team ${teamName}`,
+    subject: `Aggiornamento candidatura — team ${team}`,
     html: `
       <div style="font-family:sans-serif;max-width:600px;margin:0 auto;background:#0a0a0c;color:#f5f5f7;padding:32px;border-radius:8px">
         <div style="font-size:24px;font-weight:900;text-transform:uppercase;letter-spacing:2px;margin-bottom:24px">
@@ -68,10 +74,10 @@ export async function sendApplicationRejected({
           Candidatura non accettata
         </h1>
         <p style="color:#8a8a92;margin-bottom:16px">
-          Ciao <strong style="color:#f5f5f7">${pilotName}</strong>,
+          Ciao <strong style="color:#f5f5f7">${pilot}</strong>,
         </p>
         <p style="color:#8a8a92;margin-bottom:24px">
-          Purtroppo la tua candidatura al team <strong style="color:#f5f5f7">${teamName}</strong> non è andata a buon fine questa volta.
+          Purtroppo la tua candidatura al team <strong style="color:#f5f5f7">${team}</strong> non è andata a buon fine questa volta.
           Non arrenderti — ci sono altri team che cercano piloti!
         </p>
         <a href="${SITE}/cerca?tipo=cerca_pilota"

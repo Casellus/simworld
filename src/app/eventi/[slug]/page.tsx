@@ -7,6 +7,7 @@ import { formatDate } from "@/lib/utils";
 import { Calendar, MapPin, Users, Car, Settings2, Pencil } from "lucide-react";
 import { JoinButton } from "./join-button";
 import { EventDeleteButton } from "./delete-button";
+import { one } from "@/lib/types";
 
 export default async function EventDetailPage({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params;
@@ -14,11 +15,14 @@ export default async function EventDetailPage({ params }: { params: Promise<{ sl
 
   const { data: event } = await supabase
     .from("events")
-    .select("*, games(name, slug), profiles:host_user_id(username, display_name)")
+    .select("id, slug, title, description, host_user_id, host_team_id, game_id, event_type, format, track, car_class, start_at, end_at, max_participants, registration_open, banner_url, created_at, games(name, slug), profiles:host_user_id(username, display_name)")
     .eq("slug", slug)
     .single();
 
   if (!event) notFound();
+
+  const game = one<{ name: string; slug: string }>(event.games);
+  const host = one<{ username: string; display_name: string | null }>(event.profiles);
 
   const { data: participants } = await supabase
     .from("event_participants")
@@ -57,14 +61,14 @@ export default async function EventDetailPage({ params }: { params: Promise<{ sl
           <div>
             <div className="flex items-center gap-2 flex-wrap mb-3">
               <Badge variant="primary">{event.event_type}</Badge>
-              {event.games?.name && <Badge>{event.games.name}</Badge>}
+              {game?.name && <Badge>{game.name}</Badge>}
             </div>
             <div className="flex flex-wrap items-start justify-between gap-4">
               <div>
                 <h1 className="text-3xl md:text-4xl font-extrabold tracking-tight">{event.title}</h1>
                 <p className="text-sm text-[var(--color-fg-muted)] mt-2">
                   Organizzato da{" "}
-                  <span className="text-[var(--color-fg)] font-medium">{event.profiles?.display_name || event.profiles?.username || "—"}</span>
+                  <span className="text-[var(--color-fg)] font-medium">{host?.display_name || host?.username || "—"}</span>
                 </p>
               </div>
               {user && user.id === event.host_user_id && (

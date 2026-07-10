@@ -14,7 +14,7 @@ export default async function ProfiloPage({ params }: { params: Promise<{ userna
 
   const { data: profile } = await supabase
     .from("profiles")
-    .select("*")
+    .select("id, username, display_name, country, bio, avatar_url, cover_url, hardware, discord_id, steam_id, created_at")
     .eq("username", username)
     .single();
 
@@ -102,7 +102,15 @@ export default async function ProfiloPage({ params }: { params: Promise<{ userna
 
       {/* TABS — fuori dalla card header */}
       <ProfileTabs
-        profile={profile}
+        profile={{
+          country: profile.country,
+          hardware: profile.hardware,
+          // Contact handles are private: only expose them to the profile owner.
+          discord_id: isOwner ? profile.discord_id : null,
+          steam_id: isOwner ? profile.steam_id : null,
+          bio: profile.bio,
+          created_at: profile.created_at,
+        }}
         setups={setupsClean}
         events={events}
         userGames={userGamesClean}

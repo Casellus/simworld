@@ -10,6 +10,7 @@ import { Card, CardBody } from "@/components/ui/card";
 import { GAMES } from "@/lib/constants";
 import { Flag, Upload } from "lucide-react";
 import { slugify } from "@/lib/utils";
+import { IMAGE_ACCEPT, validateImageFile, safeImageExt } from "@/lib/upload";
 
 export default function NuovoTeamPage() {
   const router = useRouter();
@@ -70,10 +71,12 @@ export default function NuovoTeamPage() {
     let logo_url: string | null = null;
     const logoFile = fileRef.current?.files?.[0];
     if (logoFile) {
-      const ext = logoFile.name.split(".").pop();
+      const imgErr = validateImageFile(logoFile);
+      if (imgErr) { setError(imgErr); setLoading(false); return; }
+      const ext = safeImageExt(logoFile.name);
       const path = `${user.id}/${slug}.${ext}`;
-      const { error: upErr } = await supabase.storage.from("Team-assets").upload(path, logoFile, { upsert: true });
-      if (upErr) { setError("Errore upload logo: " + upErr.message); setLoading(false); return; }
+      const { error: upErr } = await supabase.storage.from("Team-assets").upload(path, logoFile, { upsert: true, contentType: logoFile.type });
+      if (upErr) { setError("Errore durante il caricamento del logo."); setLoading(false); return; }
       const { data: urlData } = supabase.storage.from("Team-assets").getPublicUrl(path);
       logo_url = urlData.publicUrl;
     }
@@ -129,7 +132,7 @@ export default function NuovoTeamPage() {
                 <input
                   ref={fileRef}
                   type="file"
-                  accept="image/*"
+                  accept={IMAGE_ACCEPT}
                   className="hidden"
                   onChange={handleFile}
                 />

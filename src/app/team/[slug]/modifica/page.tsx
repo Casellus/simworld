@@ -8,6 +8,7 @@ import { Input, Label, Textarea } from "@/components/ui/input";
 import { Card, CardBody } from "@/components/ui/card";
 import { GAMES } from "@/lib/constants";
 import { Flag, Upload } from "lucide-react";
+import { IMAGE_ACCEPT, validateImageFile, safeImageExt } from "@/lib/upload";
 
 type Team = {
   id: string;
@@ -101,10 +102,12 @@ export default function ModificaTeamPage() {
       logo_url = null;
     } else if (fileRef.current?.files?.[0]) {
       const logoFile = fileRef.current.files[0];
-      const ext = logoFile.name.split(".").pop();
+      const imgErr = validateImageFile(logoFile);
+      if (imgErr) { setError(imgErr); setLoading(false); return; }
+      const ext = safeImageExt(logoFile.name);
       const path = `${team.owner_id}/${team.slug}.${ext}`;
-      const { error: upErr } = await supabase.storage.from("Team-assets").upload(path, logoFile, { upsert: true });
-      if (upErr) { setError("Errore upload logo: " + upErr.message); setLoading(false); return; }
+      const { error: upErr } = await supabase.storage.from("Team-assets").upload(path, logoFile, { upsert: true, contentType: logoFile.type });
+      if (upErr) { setError("Errore durante il caricamento del logo."); setLoading(false); return; }
       const { data: urlData } = supabase.storage.from("Team-assets").getPublicUrl(path);
       logo_url = urlData.publicUrl;
     }
@@ -170,7 +173,7 @@ export default function ModificaTeamPage() {
                     </Button>
                   )}
                 </div>
-                <input ref={fileRef} type="file" accept="image/*" className="hidden" onChange={handleFile} />
+                <input ref={fileRef} type="file" accept={IMAGE_ACCEPT} className="hidden" onChange={handleFile} />
               </div>
             </div>
 

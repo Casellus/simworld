@@ -4,6 +4,9 @@ import { redirect } from "next/navigation";
 import { revalidatePath } from "next/cache";
 import { createClient } from "@/lib/supabase/server";
 import { awardXp, revokeXp } from "@/lib/xp";
+import { text, textOrNull, oneOf, LIMITS, GENERIC_ERROR } from "@/lib/validation";
+
+const POST_TYPES = ["cerca_team", "cerca_pilota"] as const;
 
 export async function createRecruitmentPost(formData: FormData): Promise<void> {
   const supabase = await createClient();
@@ -12,10 +15,10 @@ export async function createRecruitmentPost(formData: FormData): Promise<void> {
   } = await supabase.auth.getUser();
   if (!user) throw new Error("Non autorizzato");
 
-  const post_type = String(formData.get("post_type") || "");
-  const title = String(formData.get("title") || "").trim();
-  const description = String(formData.get("description") || "").trim();
-  const contact = String(formData.get("contact") || "").trim();
+  const post_type = oneOf(String(formData.get("post_type") || ""), POST_TYPES);
+  const title = text(formData.get("title"), LIMITS.title);
+  const description = text(formData.get("description"), LIMITS.description);
+  const contact = textOrNull(formData.get("contact"), LIMITS.contact);
   const game_slug = String(formData.get("game") || "");
   const team_slug = String(formData.get("team_slug") || "");
 
@@ -45,9 +48,12 @@ export async function createRecruitmentPost(formData: FormData): Promise<void> {
     game_id,
     title,
     description,
-    contact: contact || null,
+    contact,
   }).select("id").single();
-  if (error) throw new Error(error.message);
+  if (error) {
+    console.error("createRecruitmentPost failed:", error.message);
+    throw new Error(GENERIC_ERROR);
+  }
 
   if (createdPost?.id) {
     await awardXp(user.id, "post_create", createdPost.id);
@@ -65,9 +71,9 @@ export async function updateRecruitmentPost(postId: string, formData: FormData):
   const { data: post } = await supabase.from("recruitment_posts").select("user_id").eq("id", postId).single();
   if (!post || post.user_id !== user.id) throw new Error("Non autorizzato");
 
-  const title = String(formData.get("title") || "").trim();
-  const description = String(formData.get("description") || "").trim();
-  const contact = String(formData.get("contact") || "").trim();
+  const title = text(formData.get("title"), LIMITS.title);
+  const description = text(formData.get("description"), LIMITS.description);
+  const contact = textOrNull(formData.get("contact"), LIMITS.contact);
   const game_slug = String(formData.get("game") || "");
 
   if (!title || !description) throw new Error("Campi obbligatori mancanti.");
@@ -81,10 +87,13 @@ export async function updateRecruitmentPost(postId: string, formData: FormData):
   const { error } = await supabase.from("recruitment_posts").update({
     title,
     description,
-    contact: contact || null,
+    contact,
     game_id,
   }).eq("id", postId);
-  if (error) throw new Error(error.message);
+  if (error) {
+    console.error("updateRecruitmentPost failed:", error.message);
+    throw new Error(GENERIC_ERROR);
+  }
 
   revalidatePath("/cerca");
   redirect("/cerca");
@@ -103,7 +112,10 @@ export async function deleteRecruitmentPost(postId: string): Promise<{ error?: s
   if (!isOwner) return { error: "Non autorizzato" };
 
   const { error } = await supabase.from("recruitment_posts").delete().eq("id", postId);
-  if (error) return { error: error.message };
+  if (error) {
+    console.error("deleteRecruitmentPost failed:", error.message);
+    return { error: GENERIC_ERROR };
+  }
 
   await revokeXp(post.user_id, "post_create", postId);
 
@@ -118,8 +130,23 @@ export async function closeRecruitmentPost(postId: string) {
     data: { user },
   } = await supabase.auth.getUser();
   if (!user) return { error: "Non autorizzato" };
+
+  // Ownership check: only the post author or the owning team's owner may close it.
+  const { data: post } = await supabase
+    .from("recruitment_posts")
+    .select("id, user_id, team_id, teams(owner_id)")
+    .eq("id", postId)
+    .single();
+  if (!post) return { error: "Post non trovato" };
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const isOwner = post.user_id === user.id || (post as any).teams?.owner_id === user.id;
+  if (!isOwner) return { error: "Non autorizzato" };
+
   const { error } = await supabase.from("recruitment_posts").update({ active: false }).eq("id", postId);
-  if (error) return { error: error.message };
+  if (error) {
+    console.error("closeRecruitmentPost failed:", error.message);
+    return { error: GENERIC_ERROR };
+  }
   revalidatePath("/cerca");
   return { ok: true };
 }
