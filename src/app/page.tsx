@@ -62,7 +62,7 @@ export default async function Home() {
                     <span className="text-accent-glow">{displayName}.</span>
                   </h1>
                   <p className="hero-sub mt-6 text-lg md:text-xl text-[var(--color-fg-muted)] max-w-xl">
-                    Carica un assetto, organizza una gara o trova nuovi compagni di squadra.
+                    Carica un assetto, organizza una gara o trova nuovi compagni di squadra.  
                   </p>
                   <div className="hero-cta mt-10 flex flex-wrap justify-center gap-4">
                     <Link href="/dashboard">
