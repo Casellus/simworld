@@ -1,7 +1,7 @@
 import { notFound } from "next/navigation";
 import Link from "next/link";
 import { createClient } from "@/lib/supabase/server";
-import { getUserId } from "@/lib/auth";
+import { getUserId, getMyContacts } from "@/lib/auth";
 import { Button } from "@/components/ui/button";
 import { Pencil } from "lucide-react";
 import { one } from "@/lib/types";
@@ -12,9 +12,12 @@ export default async function ProfiloPage({ params }: { params: Promise<{ userna
   const { username } = await params;
   const supabase = await createClient();
 
+  // discord_id/steam_id non sono qui: il ruolo del client non ha la SELECT su
+  // quelle colonne (security_migration_2.sql). Se chi guarda e' il proprietario
+  // li recuperiamo sotto, via la funzione my_contacts().
   const { data: profile } = await supabase
     .from("profiles")
-    .select("*")
+    .select("id, username, display_name, country, bio, avatar_url, cover_url, hardware, created_at")
     .eq("username", username)
     .single();
 
@@ -41,6 +44,11 @@ export default async function ProfiloPage({ params }: { params: Promise<{ userna
 
   const displayName = profile.display_name || profile.username;
   const isOwner = viewerId === profile.id;
+
+  // Solo il proprietario vede i propri contatti.
+  const contacts = isOwner
+    ? await getMyContacts()
+    : { discord_id: null, steam_id: null };
 
   const events = (eventParticipants ?? [])
     .map((ep) => one<{ slug: string; title: string; event_type: string; start_at: string }>(ep.events))
@@ -102,7 +110,16 @@ export default async function ProfiloPage({ params }: { params: Promise<{ userna
 
       {/* TABS — fuori dalla card header */}
       <ProfileTabs
-        profile={profile}
+        profile={{
+          country: profile.country,
+          hardware: profile.hardware,
+          // Vuoti se chi guarda non e' il proprietario: non arrivano nemmeno
+          // dal database, non solo dalla UI.
+          discord_id: contacts.discord_id,
+          steam_id: contacts.steam_id,
+          bio: profile.bio,
+          created_at: profile.created_at,
+        }}
         setups={setupsClean}
         events={events}
         userGames={userGamesClean}

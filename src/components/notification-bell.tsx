@@ -23,32 +23,53 @@ export function NotificationBell() {
 
   const unread = notifications.filter((n) => !n.read).length;
 
+  // Only allow same-origin relative links as notification targets, so a crafted
+  // link value can't become a javascript:/data: URL.
+  function safeLink(link: string | null): string | null {
+    if (!link) return null;
+    if (!link.startsWith("/") || link.startsWith("//")) return null;
+    return link;
+  }
+
   useEffect(() => {
     const supabase = createClient();
+    let channel: ReturnType<typeof supabase.channel> | null = null;
 
-    supabase
-      .from("notifications")
-      .select("id, title, body, link, read, created_at")
-      .order("created_at", { ascending: false })
-      .limit(20)
-      .then(({ data }) => {
-        setNotifications(data ?? []);
-        setLoaded(true);
-      });
+    (async () => {
+      // Scope everything to the current user. RLS already restricts rows, but the
+      // realtime channel MUST also carry a user_id filter so a client never
+      // subscribes to other users' notification inserts.
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) { setLoaded(true); return; }
 
-    const channel = supabase
-      .channel(`notifications-realtime-${Math.random()}`)
-      .on(
-        "postgres_changes",
-        { event: "INSERT", schema: "public", table: "notifications" },
-        (payload) => {
-          const n = payload.new as Notification;
-          setNotifications((prev) => [n, ...prev].slice(0, 20));
-        }
-      )
-      .subscribe();
+      const { data } = await supabase
+        .from("notifications")
+        .select("id, title, body, link, read, created_at")
+        .eq("user_id", user.id)
+        .order("created_at", { ascending: false })
+        .limit(20);
+      setNotifications(data ?? []);
+      setLoaded(true);
 
-    return () => { supabase.removeChannel(channel); };
+      channel = supabase
+        .channel(`notifications-realtime-${user.id}`)
+        .on(
+          "postgres_changes",
+          {
+            event: "INSERT",
+            schema: "public",
+            table: "notifications",
+            filter: `user_id=eq.${user.id}`,
+          },
+          (payload) => {
+            const n = payload.new as Notification;
+            setNotifications((prev) => [n, ...prev].slice(0, 20));
+          }
+        )
+        .subscribe();
+    })();
+
+    return () => { if (channel) supabase.removeChannel(channel); };
   }, []);
 
   useEffect(() => {
@@ -116,9 +137,9 @@ export function NotificationBell() {
                   <div className="flex items-start gap-2">
                     {!n.read && <span className="mt-1.5 h-1.5 w-1.5 rounded-full bg-[var(--color-primary)] shrink-0" />}
                     <div className="flex-1 min-w-0">
-                      {n.link ? (
+                      {safeLink(n.link) ? (
                         <Link
-                          href={n.link}
+                          href={safeLink(n.link)!}
                           className="font-medium hover:text-[var(--color-primary)] block truncate"
                           onClick={() => { if (!n.read) markRead(n.id); setOpen(false); }}
                         >

@@ -3,6 +3,7 @@
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { createClient, createAdminClient } from "@/lib/supabase/server";
+import { text, LIMITS, storageUrlOrNull, GENERIC_ERROR } from "@/lib/validation";
 
 export async function updateProfile(formData: FormData) {
   const supabase = await createClient();
@@ -11,15 +12,15 @@ export async function updateProfile(formData: FormData) {
   } = await supabase.auth.getUser();
   if (!user) return { error: "Non autorizzato" };
 
-  const username = String(formData.get("username") || "").trim().toLowerCase().replace(/[^a-z0-9_]/g, "");
-  const display_name = String(formData.get("display_name") || "").trim();
-  const bio = String(formData.get("bio") || "").trim();
-  const country = String(formData.get("country") || "IT").trim();
-  const hardware = String(formData.get("hardware") || "").trim();
-  const discord_id = String(formData.get("discord_id") || "").trim();
-  const steam_id = String(formData.get("steam_id") || "").trim();
-  const avatar_url = String(formData.get("avatar_url") || "").trim();
-  const cover_url = String(formData.get("cover_url") || "").trim();
+  const username = String(formData.get("username") || "").trim().toLowerCase().replace(/[^a-z0-9_]/g, "").slice(0, LIMITS.username);
+  const display_name = text(formData.get("display_name"), LIMITS.name);
+  const bio = text(formData.get("bio"), LIMITS.bio);
+  const country = String(formData.get("country") || "IT").trim().slice(0, 2).toUpperCase() || "IT";
+  const hardware = text(formData.get("hardware"), LIMITS.hardware);
+  const discord_id = text(formData.get("discord_id"), LIMITS.handle);
+  const steam_id = text(formData.get("steam_id"), LIMITS.handle);
+  const avatar_url = storageUrlOrNull(formData.get("avatar_url"));
+  const cover_url = storageUrlOrNull(formData.get("cover_url"));
 
   if (username && username.length < 3) return { error: "Username deve avere almeno 3 caratteri." };
 
@@ -43,16 +44,26 @@ export async function updateProfile(formData: FormData) {
       hardware: hardware || null,
       discord_id: discord_id || null,
       steam_id: steam_id || null,
-      avatar_url: avatar_url || null,
-      cover_url: cover_url || null,
+      avatar_url,
+      cover_url,
       updated_at: new Date().toISOString(),
     })
     .eq("id", user.id);
 
-  if (error) return { error: error.message };
+  if (error) {
+    console.error("updateProfile failed:", error.message);
+    return { error: GENERIC_ERROR };
+  }
 
   const gameSlugs = formData.getAll("games").map(String);
-  const skills = JSON.parse(String(formData.get("skills") || "{}")) as Record<string, string>;
+  // Guard JSON.parse — malformed input must not crash the action.
+  let skills: Record<string, string> = {};
+  try {
+    const parsed = JSON.parse(String(formData.get("skills") || "{}"));
+    if (parsed && typeof parsed === "object") skills = parsed as Record<string, string>;
+  } catch {
+    skills = {};
+  }
 
   await supabase.from("user_games").delete().eq("user_id", user.id);
   if (gameSlugs.length > 0) {

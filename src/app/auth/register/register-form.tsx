@@ -50,32 +50,16 @@ function EmailConfirmWaiting() {
     const { data: { session } } = await supabase.auth.getSession();
     if (session) {
       sessionStorage.removeItem("pendingEmailConfirm");
-      sessionStorage.removeItem("pendingUserId");
       setConfirmed(true);
       setTimeout(() => router.push("/"), 1500);
       return;
     }
 
-    // No session — query server to check if email is confirmed in DB (cross-device)
-    const userId = sessionStorage.getItem("pendingUserId");
-    if (userId) {
-      const res = await fetch("/api/check-email-confirmed", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ userId }),
-      });
-      const { confirmed: isConfirmed } = await res.json();
-      if (isConfirmed) {
-        sessionStorage.removeItem("pendingEmailConfirm");
-        sessionStorage.removeItem("pendingUserId");
-        router.push("/auth/login?message=email_confirmed");
-        return;
-      }
-    }
-
-    setChecking(false);
-    setNotYetConfirmed(true);
-    setTimeout(() => setNotYetConfirmed(false), 3000);
+    // No local session — this was likely confirmed on another device.
+    // Send the user to login; sign-in only succeeds once the email is confirmed,
+    // so login is the authoritative confirmation check (no enumeration oracle).
+    sessionStorage.removeItem("pendingEmailConfirm");
+    router.push("/auth/login?message=email_confirmed");
   }
 
   if (confirmed) return (
@@ -154,7 +138,7 @@ export function RegisterForm() {
     }
 
     const supabase = createClient();
-    const { data, error } = await supabase.auth.signUp({
+    const { error } = await supabase.auth.signUp({
       email,
       password,
       options: {
@@ -164,11 +148,17 @@ export function RegisterForm() {
     });
     setLoading(false);
     if (error) {
+      // "User already registered" would tell an attacker which emails exist.
+      // Show the same confirmation screen as a fresh signup instead.
+      if (/already registered|already exists/i.test(error.message)) {
+        sessionStorage.setItem("pendingEmailConfirm", "1");
+        setSuccess(true);
+        return;
+      }
       setError(error.message);
       return;
     }
     sessionStorage.setItem("pendingEmailConfirm", "1");
-    if (data.user?.id) sessionStorage.setItem("pendingUserId", data.user.id);
     setSuccess(true);
   }
 
@@ -209,7 +199,7 @@ export function RegisterForm() {
               name="password"
               type={showPassword ? "text" : "password"}
               required
-              minLength={6}
+              minLength={8}
               autoComplete="new-password"
               className="auth-input pr-11"
             />

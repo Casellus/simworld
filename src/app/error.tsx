@@ -10,7 +10,9 @@ export default function GlobalError({
   reset: () => void;
 }) {
   useEffect(() => {
-    console.error(error);
+    // Next.js already strips the message in production (only `digest` survives),
+    // but don't log to the browser console there either.
+    if (process.env.NODE_ENV !== "production") console.error(error);
   }, [error]);
 
   return (

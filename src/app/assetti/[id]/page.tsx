@@ -19,7 +19,7 @@ export default async function SetupDetailPage({ params }: { params: Promise<{ id
 
   const { data: setup } = await supabase
     .from("setups")
-    .select("*, games(name), setup_type, category")
+    .select("id, user_id, title, car, track, conditions, notes, file_url, photo_url, rating_sum, rating_count, downloads, created_at, setup_type, category, games(name)")
     .eq("id", id)
     .single();
 
@@ -120,18 +120,18 @@ export default async function SetupDetailPage({ params }: { params: Promise<{ id
                 {userId ? (
                   <p className="whitespace-pre-wrap text-sm">{setup.notes}</p>
                 ) : (
-                  <>
-                    <p className="whitespace-pre-wrap text-sm select-none blur-sm pointer-events-none" aria-hidden>
-                      {setup.notes}
-                    </p>
-                    <div className="absolute inset-0 flex flex-col items-center justify-center bg-[var(--color-bg-elev)]/70 backdrop-blur-[2px] rounded-b-xl gap-3">
+                  // Notes must NOT be sent to the client for anonymous visitors —
+                  // rendering them (even blurred) leaks them in the HTML source.
+                  // Show a locked placeholder with fixed height instead.
+                  <div className="relative min-h-24">
+                    <div className="absolute inset-0 flex flex-col items-center justify-center bg-[var(--color-bg-elev)]/70 rounded-b-xl gap-3">
                       <p className="text-sm font-semibold text-[var(--color-fg)]">Accedi per leggere le note</p>
                       <div className="flex gap-2">
                         <Link href="/auth/login"><Button size="sm">Accedi</Button></Link>
                         <Link href="/auth/register"><Button size="sm" variant="outline">Registrati</Button></Link>
                       </div>
                     </div>
-                  </>
+                  </div>
                 )}
               </CardBody>
             </Card>

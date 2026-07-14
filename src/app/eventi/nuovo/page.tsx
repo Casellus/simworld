@@ -9,6 +9,7 @@ import { Card, CardBody } from "@/components/ui/card";
 import { GAMES, EVENT_TYPES } from "@/lib/constants";
 import { Image as ImageIcon } from "lucide-react";
 import { slugify } from "@/lib/utils";
+import { IMAGE_ACCEPT, validateImageFile, safeImageExt } from "@/lib/upload";
 
 export default function NuovoEventoPage() {
   const router = useRouter();
@@ -70,10 +71,12 @@ export default function NuovoEventoPage() {
     let banner_url: string | null = null;
     const bannerFile = fileRef.current?.files?.[0];
     if (bannerFile) {
-      const ext = bannerFile.name.split(".").pop();
+      const imgErr = validateImageFile(bannerFile);
+      if (imgErr) { setError(imgErr); setLoading(false); return; }
+      const ext = safeImageExt(bannerFile.name);
       const path = `${user.id}/${slug}.${ext}`;
-      const { error: upErr } = await supabase.storage.from("event-banners").upload(path, bannerFile, { upsert: true });
-      if (upErr) { setError("Errore upload banner: " + upErr.message); setLoading(false); return; }
+      const { error: upErr } = await supabase.storage.from("event-banners").upload(path, bannerFile, { upsert: true, contentType: bannerFile.type });
+      if (upErr) { setError("Errore durante il caricamento del banner."); setLoading(false); return; }
       const { data: urlData } = supabase.storage.from("event-banners").getPublicUrl(path);
       banner_url = urlData.publicUrl;
     }
@@ -129,7 +132,7 @@ export default function NuovoEventoPage() {
                   Rimuovi
                 </Button>
               )}
-              <input ref={fileRef} type="file" accept="image/*" className="hidden" onChange={handleFile} />
+              <input ref={fileRef} type="file" accept={IMAGE_ACCEPT} className="hidden" onChange={handleFile} />
             </div>
 
             <div>

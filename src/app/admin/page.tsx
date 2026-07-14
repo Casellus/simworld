@@ -1,5 +1,6 @@
 import { redirect } from "next/navigation";
-import { createClient, createAdminClient } from "@/lib/supabase/server";
+import { createClient } from "@/lib/supabase/server";
+import { requireAdmin } from "@/lib/admin";
 import { Card, CardBody, CardHeader } from "@/components/ui/card";
 import { AdminDeleteButton } from "./delete-button";
 import { adminDeleteSetup, adminDeleteEvent, adminDeleteTeam, adminDeletePost } from "./actions";
@@ -7,16 +8,11 @@ import { formatDate } from "@/lib/utils";
 
 export const metadata = { title: "Admin · SimUniverse" };
 
-const ADMIN_EMAIL = "samuelcasella06@gmail.com";
-
 export default async function AdminPage() {
-  const supabase = await createClient();
-  const { data: { user } } = await supabase.auth.getUser();
-  if (!user) redirect("/auth/login");
+  const admin = await requireAdmin();
+  if (!admin) redirect("/");
 
-  const adminClient = createAdminClient();
-  const { data: authData } = await adminClient.auth.admin.getUserById(user.id);
-  if (authData?.user?.email !== ADMIN_EMAIL) redirect("/");
+  const supabase = await createClient();
 
   const [
     { data: setups },

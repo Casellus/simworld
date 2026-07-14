@@ -3,6 +3,7 @@ import { createClient } from "@/lib/supabase/server";
 import { Card, CardBody } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { SortSelect } from "@/components/ui/sort-select";
+import { likePattern } from "@/lib/validation";
 import { Plus, Users } from "lucide-react";
 import { Suspense } from "react";
 
@@ -34,7 +35,7 @@ export default async function TeamPage({ searchParams }: { searchParams: SP }) {
     .select("id, slug, name, description, recruiting, country, logo_url, team_members(count)")
     .order(col, { ascending: asc });
 
-  if (sp.q) dbq = dbq.ilike("name", `%${sp.q}%`);
+  if (sp.q) dbq = dbq.ilike("name", likePattern(sp.q));
   if (sp.recruiting === "1") dbq = dbq.eq("recruiting", true);
 
   const { data: teamsRaw } = await dbq;

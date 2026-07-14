@@ -90,7 +90,6 @@ export function LoginForm() {
               type={showPassword ? "text" : "password"}
               required
               autoComplete="current-password"
-              minLength={6}
               className="auth-input pr-11"
             />
             <button
