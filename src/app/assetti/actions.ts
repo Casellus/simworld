@@ -164,7 +164,10 @@ export async function uploadSetup(formData: FormData): Promise<void> {
     .select("id")
     .single();
 
-  if (error) throw new Error(error.message);
+  if (error) {
+    console.error("uploadSetup insert failed:", error.message);
+    throw new Error(GENERIC_ERROR);
+  }
 
   revalidatePath("/assetti");
   redirect(`/assetti/${created.id}`);

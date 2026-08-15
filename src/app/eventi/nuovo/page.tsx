@@ -93,7 +93,7 @@ export default function NuovoEventoPage() {
       .select("slug")
       .single();
 
-    if (evErr) { setError(evErr.message); setLoading(false); return; }
+    if (evErr) { setError("Creazione evento non riuscita. Riprova."); setLoading(false); return; }
 
     router.push(`/eventi/${created.slug}`);
   }

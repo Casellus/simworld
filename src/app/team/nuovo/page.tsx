@@ -87,7 +87,7 @@ export default function NuovoTeamPage() {
       .select("id, slug")
       .single();
 
-    if (teamErr) { setError(teamErr.message); setLoading(false); return; }
+    if (teamErr) { setError("Creazione team non riuscita. Riprova."); setLoading(false); return; }
 
     if (gameSlugs.length > 0) {
       const { data: games } = await supabase.from("games").select("id, slug").in("slug", gameSlugs);

@@ -117,7 +117,7 @@ export default function ModificaTeamPage() {
       .update({ name, description: description || null, recruiting, logo_url })
       .eq("id", team.id);
 
-    if (upErr2) { setError(upErr2.message); setLoading(false); return; }
+    if (upErr2) { setError("Aggiornamento non riuscito. Riprova."); setLoading(false); return; }
 
     await supabase.from("team_games").delete().eq("team_id", team.id);
     if (gameSlugs.length > 0) {

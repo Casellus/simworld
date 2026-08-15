@@ -226,7 +226,10 @@ export async function leaveEvent(eventId: string) {
     .delete()
     .eq("event_id", eventId)
     .eq("user_id", user.id);
-  if (error) return { error: error.message };
+  if (error) {
+    console.error("leaveEvent failed:", error.message);
+    return { error: GENERIC_ERROR };
+  }
   await revokeXp(user.id, "event_join", eventId);
   revalidatePath("/eventi");
   revalidatePath("/eventi/[slug]", "page");
