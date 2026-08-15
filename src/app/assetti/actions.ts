@@ -5,6 +5,7 @@ import { revalidatePath } from "next/cache";
 import { createClient, createAdminClient } from "@/lib/supabase/server";
 import { awardXp, revokeXp } from "@/lib/xp";
 import { text, textOrNull, oneOf, storageUrlOrNull, LIMITS, GENERIC_ERROR } from "@/lib/validation";
+import { rateLimit, RATE_LIMITED_MESSAGE } from "@/lib/rate-limit";
 
 const ALLOWED_EXT = ["json", "sto", "svm", "ini", "rcd", "txt", "xml", "zip"];
 const SETUP_TYPES = ["auto", "simulatore"] as const;
@@ -13,6 +14,7 @@ export async function createSetupRecord(formData: FormData): Promise<{ error?: s
     const supabase = await createClient();
     const { data: { user } } = await supabase.auth.getUser();
     if (!user) return { error: "Non autorizzato" };
+    if (!(await rateLimit("write", user.id))) return { error: RATE_LIMITED_MESSAGE };
 
     const setup_type = oneOf(String(formData.get("setup_type") || "auto"), SETUP_TYPES) ?? "auto";
     const title      = text(formData.get("title"), LIMITS.title);
@@ -59,6 +61,8 @@ export async function uploadSetupFull(formData: FormData): Promise<{ error?: str
     const supabase = await createClient();
     const { data: { user } } = await supabase.auth.getUser();
     if (!user) return { error: "Non autorizzato" };
+
+    if (!(await rateLimit("upload", user.id))) return { error: RATE_LIMITED_MESSAGE };
 
     const title = text(formData.get("title"), LIMITS.title);
     const game_slug = formData.get("game") as string;
@@ -313,6 +317,11 @@ export async function incrementDownload(setupId: string) {
   const supabase = await createClient();
   const { data: { user } } = await supabase.auth.getUser();
   if (!user) return { error: "Non autorizzato" };
+
+  // Rate limit per utente: impedisce di gonfiare il download count.
+  if (!(await rateLimit("download", user.id))) {
+    return { error: RATE_LIMITED_MESSAGE };
+  }
 
   // Atomic server-side increment (no read-modify-write race). Defined in
   // supabase/security_migration.sql as increment_download(uuid).

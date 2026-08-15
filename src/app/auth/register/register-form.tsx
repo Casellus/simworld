@@ -6,6 +6,7 @@ import { createClient } from "@/lib/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Input, Label } from "@/components/ui/input";
 import { Checkbox } from "@/components/ui/checkbox";
+import { checkRegisterAllowed } from "./actions";
 import { Eye, EyeOff } from "lucide-react";
 
 function EmailConfirmWaiting() {
@@ -136,6 +137,10 @@ export function RegisterForm() {
       setLoading(false);
       return;
     }
+
+    // Gate per IP (3/ora) prima del signUp, contro la creazione di massa.
+    const gate = await checkRegisterAllowed();
+    if (gate.error) { setError(gate.error); setLoading(false); return; }
 
     const supabase = createClient();
     const { error } = await supabase.auth.signUp({

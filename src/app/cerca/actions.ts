@@ -5,6 +5,7 @@ import { revalidatePath } from "next/cache";
 import { createClient } from "@/lib/supabase/server";
 import { awardXp, revokeXp } from "@/lib/xp";
 import { text, textOrNull, oneOf, LIMITS, GENERIC_ERROR } from "@/lib/validation";
+import { rateLimit, RATE_LIMITED_MESSAGE } from "@/lib/rate-limit";
 
 const POST_TYPES = ["cerca_team", "cerca_pilota"] as const;
 
@@ -14,6 +15,7 @@ export async function createRecruitmentPost(formData: FormData): Promise<void> {
     data: { user },
   } = await supabase.auth.getUser();
   if (!user) throw new Error("Non autorizzato");
+  if (!(await rateLimit("write", user.id))) throw new Error(RATE_LIMITED_MESSAGE);
 
   const post_type = oneOf(String(formData.get("post_type") || ""), POST_TYPES);
   const title = text(formData.get("title"), LIMITS.title);

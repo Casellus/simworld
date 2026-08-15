@@ -6,6 +6,7 @@ import { createClient } from "@/lib/supabase/server";
 import { slugify } from "@/lib/utils";
 import { awardXp, revokeXp } from "@/lib/xp";
 import { text, oneOf, LIMITS, GENERIC_ERROR } from "@/lib/validation";
+import { rateLimit, RATE_LIMITED_MESSAGE } from "@/lib/rate-limit";
 
 const EVENT_TYPE_VALUES = ["torneo", "amichevole", "campionato", "endurance", "sprint"] as const;
 
@@ -29,6 +30,7 @@ export async function createEvent(formData: FormData): Promise<void> {
     data: { user },
   } = await supabase.auth.getUser();
   if (!user) throw new Error("Non autorizzato");
+  if (!(await rateLimit("write", user.id))) throw new Error(RATE_LIMITED_MESSAGE);
 
   const title = text(formData.get("title"), LIMITS.title);
   const description = text(formData.get("description"), LIMITS.description);

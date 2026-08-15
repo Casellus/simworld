@@ -4,6 +4,7 @@ import { useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
 import { createClient } from "@/lib/supabase/client";
+import { loginWithPassword } from "./actions";
 import { Button } from "@/components/ui/button";
 import { Input, Label } from "@/components/ui/input";
 import { Eye, EyeOff } from "lucide-react";
@@ -21,14 +22,14 @@ export function LoginForm() {
     setError(null);
     setLoading(true);
     const fd = new FormData(e.currentTarget);
-    const supabase = createClient();
-    const { error } = await supabase.auth.signInWithPassword({
-      email: String(fd.get("email")),
-      password: String(fd.get("password")),
-    });
+    // Login via server action: rate limit per IP (5/min) prima di Supabase.
+    const { error } = await loginWithPassword(
+      String(fd.get("email")),
+      String(fd.get("password")),
+    );
     setLoading(false);
     if (error) {
-      setError(error.message);
+      setError(error);
       return;
     }
     router.push("/");

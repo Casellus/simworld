@@ -7,6 +7,7 @@ import { slugify } from "@/lib/utils";
 import { sendApplicationAccepted, sendApplicationRejected } from "@/lib/email";
 import { awardXp, revokeXp } from "@/lib/xp";
 import { text, textOrNull, LIMITS, GENERIC_ERROR } from "@/lib/validation";
+import { rateLimit, RATE_LIMITED_MESSAGE } from "@/lib/rate-limit";
 
 // Notifications have no client INSERT policy (see supabase/security_migration.sql):
 // a user must never be able to forge a notification for someone else. Writes go
@@ -29,6 +30,7 @@ export async function createTeam(formData: FormData): Promise<void> {
     data: { user },
   } = await supabase.auth.getUser();
   if (!user) throw new Error("Non autorizzato");
+  if (!(await rateLimit("write", user.id))) throw new Error(RATE_LIMITED_MESSAGE);
 
   const name = text(formData.get("name"), LIMITS.name);
   const description = textOrNull(formData.get("description"), LIMITS.description);
@@ -146,6 +148,7 @@ export async function joinTeam(teamId: string, message?: string) {
   const supabase = await createClient();
   const { data: { user } } = await supabase.auth.getUser();
   if (!user) return { error: "Non autorizzato" };
+  if (!(await rateLimit("write", user.id))) return { error: RATE_LIMITED_MESSAGE };
 
   // The team must exist and be actively recruiting.
   const { data: team } = await supabase

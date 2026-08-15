@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { createClient } from "@/lib/supabase/client";
+import { requestPasswordReset } from "./actions";
 import { Button } from "@/components/ui/button";
 import { Input, Label } from "@/components/ui/input";
 import { CheckCircle2 } from "lucide-react";
@@ -17,13 +17,15 @@ export function ForgotPasswordForm() {
     setLoading(true);
     const email = String(new FormData(e.currentTarget).get("email"));
 
-    const supabase = createClient();
-    // Always show the same confirmation regardless of whether the email exists,
-    // to avoid leaking which addresses are registered (user enumeration).
-    await supabase.auth.resetPasswordForEmail(email, {
-      redirectTo: `${window.location.origin}/auth/callback?next=/auth/reset-password`,
-    });
+    // Server action con rate limit per IP (3/min). L'esito e' sempre lo
+    // stesso a prescindere dall'esistenza dell'email (no enumeration),
+    // tranne quando si supera il limite.
+    const { error } = await requestPasswordReset(
+      email,
+      `${window.location.origin}/auth/callback?next=/auth/reset-password`,
+    );
     setLoading(false);
+    if (error) { setError(error); return; }
     setSent(true);
   }
 
