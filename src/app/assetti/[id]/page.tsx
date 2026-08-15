@@ -13,15 +13,41 @@ import { SetupDeleteButton } from "./delete-button";
 import { formatDate } from "@/lib/utils";
 import { one } from "@/lib/types";
 
+type SetupDetail = {
+  id: string;
+  user_id: string;
+  title: string;
+  car: string | null;
+  track: string | null;
+  conditions: string | null;
+  notes?: string | null; // presente solo per gli utenti autenticati
+  file_url: string | null;
+  photo_url: string | null;
+  rating_sum: number;
+  rating_count: number;
+  downloads: number;
+  created_at: string;
+  setup_type: string | null;
+  category: string | null;
+  games: { name: string } | { name: string }[] | null;
+};
+
 export default async function SetupDetailPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
   const supabase = await createClient();
 
+  // "notes" e' leggibile solo dagli utenti autenticati (il ruolo anon non ha
+  // piu' la SELECT su quella colonna — vedi security_migration_3.sql). Per gli
+  // anonimi la richiediamo del tutto assente, o la query fallirebbe con 42501.
+  const userId = await getUserId();
+  const baseCols = "id, user_id, title, car, track, conditions, file_url, photo_url, rating_sum, rating_count, downloads, created_at, setup_type, category, games(name)";
+  const cols = userId ? `${baseCols}, notes` : baseCols;
+
   const { data: setup } = await supabase
     .from("setups")
-    .select("id, user_id, title, car, track, conditions, notes, file_url, photo_url, rating_sum, rating_count, downloads, created_at, setup_type, category, games(name)")
+    .select(cols)
     .eq("id", id)
-    .single();
+    .single<SetupDetail>();
 
   if (!setup) notFound();
 
@@ -33,8 +59,6 @@ export default async function SetupDetailPage({ params }: { params: Promise<{ id
     .eq("id", setup.user_id)
     .maybeSingle();
   const author = authorProfile;
-
-  const userId = await getUserId();
 
   let myVote = 0;
   if (userId) {
@@ -103,8 +127,8 @@ export default async function SetupDetailPage({ params }: { params: Promise<{ id
                 )
               ) : (
                 <>
-                  <InfoRow icon={Car} label="Auto" value={setup.car} />
-                  <InfoRow icon={MapPin} label="Tracciato" value={setup.track} />
+                  <InfoRow icon={Car} label="Auto" value={setup.car ?? "—"} />
+                  <InfoRow icon={MapPin} label="Tracciato" value={setup.track ?? "—"} />
                   {setup.conditions && <InfoRow icon={UserIcon} label="Condizioni" value={setup.conditions} />}
                 </>
               )}
