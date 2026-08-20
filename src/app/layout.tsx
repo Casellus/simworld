@@ -1,20 +1,22 @@
 import type { Metadata } from "next";
-import { Montserrat, Open_Sans } from "next/font/google";
+import { Chakra_Petch, Inter } from "next/font/google";
 import { headers } from "next/headers";
 import "./globals.css";
 import { Header } from "@/components/header";
 import { Footer } from "@/components/footer";
 import { CookieBanner } from "@/components/cookie-banner";
 
-const montserrat = Montserrat({
+// Heading: Chakra Petch — tech-squadrato, look sim racing / telemetria.
+const chakraPetch = Chakra_Petch({
   variable: "--font-heading",
   subsets: ["latin"],
-  weight: ["700", "800"],
+  weight: ["600", "700"],
 });
-const openSans = Open_Sans({
+// Body: Inter — pulito e leggibile.
+const inter = Inter({
   variable: "--font-body",
   subsets: ["latin"],
-  weight: ["400", "600"],
+  weight: ["400", "500", "600", "700"],
 });
 
 export const metadata: Metadata = {
@@ -30,7 +32,7 @@ export default async function RootLayout({ children }: Readonly<{ children: Reac
   const standalone = pathname === "/coming-soon";
 
   return (
-    <html lang="it" className={`${montserrat.variable} ${openSans.variable} h-full antialiased`}>
+    <html lang="it" className={`${chakraPetch.variable} ${inter.variable} h-full antialiased`}>
       <body className="min-h-full flex flex-col">
         {!standalone && <Header />}
         <main className={`flex-1${!standalone ? " pt-[72px] md:pt-[80px]" : ""}`}>{children}</main>
