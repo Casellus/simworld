@@ -30,7 +30,17 @@ export function ResetPasswordForm() {
     const supabase = createClient();
     const { error } = await supabase.auth.updateUser({ password });
     setLoading(false);
-    if (error) { setError(error.message); return; }
+    if (error) {
+      const msg = error.message.toLowerCase();
+      if (msg.includes("password")) {
+        setError("La password deve avere almeno 8 caratteri.");
+      } else if (msg.includes("session") || msg.includes("token") || msg.includes("expired")) {
+        setError("Link scaduto o non valido. Richiedi un nuovo reset.");
+      } else {
+        setError("Operazione non riuscita. Riprova più tardi.");
+      }
+      return;
+    }
     router.push("/");
   }
 

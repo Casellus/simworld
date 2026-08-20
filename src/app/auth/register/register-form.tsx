@@ -160,7 +160,18 @@ export function RegisterForm() {
         setSuccess(true);
         return;
       }
-      setError(error.message);
+      // Messaggi noti mappati in italiano; il resto resta generico per non
+      // esporre dettagli di Supabase Auth.
+      const msg = error.message.toLowerCase();
+      if (msg.includes("password")) {
+        setError("La password non rispetta i requisiti (minimo 8 caratteri).");
+      } else if (msg.includes("email") && msg.includes("invalid")) {
+        setError("Indirizzo email non valido.");
+      } else if (msg.includes("rate") || msg.includes("limit")) {
+        setError("Troppi tentativi. Attendi qualche minuto e riprova.");
+      } else {
+        setError("Registrazione non riuscita. Riprova più tardi.");
+      }
       return;
     }
     sessionStorage.setItem("pendingEmailConfirm", "1");

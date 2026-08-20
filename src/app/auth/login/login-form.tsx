@@ -4,7 +4,7 @@ import { useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
 import { createClient } from "@/lib/supabase/client";
-import { loginWithPassword } from "./actions";
+import { checkLoginAllowed } from "./actions";
 import { Button } from "@/components/ui/button";
 import { Input, Label } from "@/components/ui/input";
 import { Eye, EyeOff } from "lucide-react";
@@ -22,14 +22,21 @@ export function LoginForm() {
     setError(null);
     setLoading(true);
     const fd = new FormData(e.currentTarget);
-    // Login via server action: rate limit per IP (5/min) prima di Supabase.
-    const { error } = await loginWithPassword(
-      String(fd.get("email")),
-      String(fd.get("password")),
-    );
+
+    // Rate limit per IP (5/min) prima del login. Il signIn resta client-side
+    // cosi' il browser client sincronizza la sessione (campanella, onAuthState).
+    const gate = await checkLoginAllowed();
+    if (gate.error) { setError(gate.error); setLoading(false); return; }
+
+    const supabase = createClient();
+    const { error } = await supabase.auth.signInWithPassword({
+      email: String(fd.get("email")),
+      password: String(fd.get("password")),
+    });
     setLoading(false);
     if (error) {
-      setError(error);
+      // Messaggio generico: non distingue email inesistente da password errata.
+      setError("Email o password non corretti.");
       return;
     }
     router.push("/");
