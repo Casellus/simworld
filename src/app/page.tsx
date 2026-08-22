@@ -219,8 +219,8 @@ export default async function Home() {
                     <span className="text-accent-glow">al veterano.</span>
                   </h2>
                   <p className="text-base sm:text-lg text-[var(--color-fg-muted)] leading-relaxed">
-                    Non serve essere un alien. SimUniverse è aperto a chiunque ami il sim racing:
-                    da chi ha appena acceso il volante per la prima volta a chi macina ore di endurance ogni weekend.
+                    Non serve essere un professionista. SimUniverse è aperto a chiunque ami il sim racing:
+                    da chi ha appena acceso il volante per la prima volta a chi è già esperto nel settore.
                   </p>
                 </div>
                 <div className="grid gap-4 sm:grid-cols-2">
