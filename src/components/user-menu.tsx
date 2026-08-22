@@ -4,7 +4,7 @@ import Link from "next/link";
 import { useState, useRef, useEffect } from "react";
 import { createClient } from "@/lib/supabase/client";
 import { useRouter } from "next/navigation";
-import { User, LogOut, LayoutDashboard, Settings } from "lucide-react";
+import { User, LogOut, LayoutDashboard, Trophy } from "lucide-react";
 
 export function UserMenu({ profile }: { profile: { username: string; display_name: string | null; avatar_url: string | null } }) {
   const [open, setOpen] = useState(false);
@@ -67,11 +67,11 @@ export function UserMenu({ profile }: { profile: { username: string; display_nam
             <LayoutDashboard className="h-4 w-4" /> Dashboard
           </Link>
           <Link
-            href="/dashboard/impostazioni"
+            href="/classifica"
             onClick={() => setOpen(false)}
             className="flex items-center gap-2 px-3 py-2 text-sm hover:bg-[var(--color-bg-elev-2)]"
           >
-            <Settings className="h-4 w-4" /> Impostazioni
+            <Trophy className="h-4 w-4" /> Classifica
           </Link>
           <div className="border-t border-[var(--color-border)] my-1" />
           <button
