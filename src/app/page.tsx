@@ -215,7 +215,7 @@ export default async function Home() {
                 <div>
                   <p className="text-xs font-semibold tracking-widest uppercase text-[var(--color-accent)] mb-4">Per chi è</p>
                   <h2 className="text-3xl sm:text-4xl md:text-5xl font-extrabold tracking-tight mb-6" style={{ fontFamily: "var(--font-heading)" }}>
-                    Dal rookie<br />
+                    Dal principiante<br />
                     <span className="text-accent-glow">al veterano.</span>
                   </h2>
                   <p className="text-base sm:text-lg text-[var(--color-fg-muted)] leading-relaxed">
@@ -224,7 +224,7 @@ export default async function Home() {
                   </p>
                 </div>
                 <div className="grid gap-4 sm:grid-cols-2">
-                  <AudienceBlock emoji={<Award className="w-8 h-8 text-amber-600" />} title="Principianti" desc="Trova team paziente, primi tornei, guide per iniziare." />
+                  <AudienceBlock emoji={<Award className="w-8 h-8 text-amber-600" />} title="Principianti" desc="Trova team, primi tornei, guide per iniziare." />
                   <AudienceBlock emoji={<Zap className="w-8 h-8 text-yellow-400" />} title="Amatori" desc="Gare settimanali, assetti condivisi, community attiva." />
                   <AudienceBlock emoji={<Trophy className="w-8 h-8 text-yellow-400" />} title="Competitivi" desc="Campionati seri, lineup di team, sfide ad alto livello." />
                   <AudienceBlock emoji={<Flame className="w-8 h-8 text-orange-500" />} title="Pro" desc="Esports, endurance, eventi premium e visibilità." />
