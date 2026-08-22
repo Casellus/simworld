@@ -165,7 +165,7 @@ export default async function Home() {
       ) : (
         <>
           {/* ── CHI SIAMO ── */}
-          <section className="border-t border-[var(--color-border)]">
+          <section>
             <div className="mx-auto max-w-7xl px-4 sm:px-6 py-20 sm:py-28">
               <div className="text-center max-w-3xl mx-auto mb-16">
                 <p className="text-xs font-semibold tracking-widest uppercase text-[var(--color-accent)] mb-4">Chi siamo</p>
@@ -191,7 +191,7 @@ export default async function Home() {
           </section>
 
           {/* ── COME FUNZIONA ── */}
-          <section className="border-t border-[var(--color-border)]" style={{ background: "linear-gradient(180deg, transparent, rgba(46,125,255,0.04))" }}>
+          <section style={{ background: "linear-gradient(180deg, transparent, rgba(46,125,255,0.04))" }}>
             <div className="mx-auto max-w-7xl px-4 sm:px-6 py-20 sm:py-28">
               <div className="text-center max-w-2xl mx-auto mb-14">
                 <p className="text-xs font-semibold tracking-widest uppercase text-[var(--color-accent)] mb-4">Come funziona</p>
@@ -209,7 +209,7 @@ export default async function Home() {
           </section>
 
           {/* ── PER CHI ── */}
-          <section className="border-t border-[var(--color-border)]">
+          <section>
             <div className="mx-auto max-w-7xl px-4 sm:px-6 py-20 sm:py-28">
               <div className="grid gap-12 lg:grid-cols-2 items-center">
                 <div>
@@ -234,7 +234,7 @@ export default async function Home() {
           </section>
 
           {/* ── CTA FINALE ── */}
-          <section className="border-t border-[var(--color-border)] relative overflow-hidden">
+          <section className="relative overflow-hidden">
             <div className="absolute inset-0 -z-10" style={{ background: "radial-gradient(ellipse at center, rgba(46,125,255,0.15), transparent 70%)" }} />
             <div className="mx-auto max-w-4xl px-4 sm:px-6 py-24 sm:py-32 text-center">
               <p className="text-xs font-semibold tracking-widest uppercase text-[var(--color-accent)] mb-5">È il momento</p>
@@ -311,7 +311,7 @@ function SponsorMarqueeInline() {
 
 function Section({ eyebrow, title, link, children }: { eyebrow: string; title: string; link: { href: string; label: string }; children: React.ReactNode }) {
   return (
-    <section className="border-t border-[var(--color-border)]">
+    <section>
       <div className="mx-auto max-w-7xl px-4 sm:px-6 py-14">
         <div className="flex items-end justify-between gap-4 mb-8">
           <div>

@@ -76,7 +76,7 @@ export async function RankingTop3() {
   const third = top[2];
 
   return (
-    <section className="border-t border-[var(--color-border)]">
+    <section>
       <div className="mx-auto max-w-5xl px-4 sm:px-6 py-14">
         <div className="text-center mb-12">
           <p className="text-xs font-semibold tracking-widest uppercase text-[var(--color-accent)] mb-2">
