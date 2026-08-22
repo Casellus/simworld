@@ -116,13 +116,7 @@ export default async function ProfiloPage({ params }: { params: Promise<{ userna
               title={`Membro dal ${formatDate(profile.created_at)}`}
               sub="Pilota SimUniverse"
               icon={
-                <>
-                  <path d="M7 12h3v4h-3l0 -4" />
-                  <path d="M10 6h-6a1 1 0 0 0 -1 1v12a1 1 0 0 0 1 1h16a1 1 0 0 0 1 -1v-12a1 1 0 0 0 -1 -1h-6" />
-                  <path d="M10 4a1 1 0 0 1 1 -1h2a1 1 0 0 1 1 1v3a1 1 0 0 1 -1 1h-2a1 1 0 0 1 -1 -1l0 -3" />
-                  <path d="M14 16h2" />
-                  <path d="M14 12h4" />
-                </>
+                <path d="M16 2a1 1 0 0 1 .993 .883l.007 .117v1h1a3 3 0 0 1 2.995 2.824l.005 .176v12a3 3 0 0 1 -2.824 2.995l-.176 .005h-12a3 3 0 0 1 -2.995 -2.824l-.005 -.176v-12a3 3 0 0 1 2.824 -2.995l.176 -.005h1v-1a1 1 0 0 1 1.993 -.117l.007 .117v1h6v-1a1 1 0 0 1 1 -1m3 8h-14v8.625c0 .705 .386 1.286 .883 1.366l.117 .009h12c.513 0 .936 -.53 .993 -1.215l.007 -.16zm-9 4a1 1 0 0 1 1 1v2a1 1 0 0 1 -1 1h-2a1 1 0 0 1 -1 -1v-2a1 1 0 0 1 1 -1z" />
               }
             />
             {profile.hardware && (
@@ -131,13 +125,7 @@ export default async function ProfiloPage({ params }: { params: Promise<{ userna
                 title="Hardware"
                 sub={profile.hardware}
                 icon={
-                  <>
-                    <path d="M3 12a9 9 0 1 0 18 0a9 9 0 1 0 -18 0" />
-                    <path d="M10 12a2 2 0 1 0 4 0a2 2 0 1 0 -4 0" />
-                    <path d="M12 14l0 7" />
-                    <path d="M10 12l-6.75 -2" />
-                    <path d="M14 12l6.75 -2" />
-                  </>
+                  <path d="M17 3.34a10 10 0 1 1 -15 8.66l.005 -.324a10 10 0 0 1 14.995 -8.336m-13 8.66a8 8 0 0 0 7 7.937v-5.107a3 3 0 0 1 -1.898 -2.05l-5.07 -1.504q -.031 .36 -.032 .725m15.967 -.725l-5.069 1.503a3 3 0 0 1 -1.897 2.051v5.108a8 8 0 0 0 6.985 -8.422zm-11.967 -6.204a8 8 0 0 0 -3.536 4.244l4.812 1.426a3 3 0 0 1 5.448 0l4.812 -1.426a8 8 0 0 0 -11.536 -4.244" />
                 }
               />
             )}
@@ -201,15 +189,11 @@ function InfoRow({
 }) {
   const color = tone === "primary" ? "var(--color-primary)" : "var(--color-accent)";
   return (
-    <div className="flex items-start gap-3 mb-3.5 last:mb-0">
-      <div
-        className="h-9 w-9 rounded-[10px] flex items-center justify-center shrink-0"
-        style={{ background: `color-mix(in srgb, ${color} 12%, transparent)`, border: `1px solid color-mix(in srgb, ${color} 25%, transparent)` }}
-      >
-        <svg viewBox="0 0 24 24" className="h-[18px] w-[18px]" fill="none" stroke={color} strokeWidth={2} strokeLinecap="round" strokeLinejoin="round" aria-hidden>
-          {icon}
-        </svg>
-      </div>
+    <div className="flex items-start gap-3 mb-4 last:mb-0">
+      {/* Icona piena colorata, senza tile (opzione 2), ingrandita */}
+      <svg viewBox="0 0 24 24" className="h-7 w-7 shrink-0 mt-0.5" fill={color} aria-hidden>
+        {icon}
+      </svg>
       <div className="min-w-0">
         <div className="text-[13px] font-semibold text-[var(--color-fg)] break-words">{title}</div>
         <div className="text-[11.5px] text-[var(--color-fg-muted)] break-words">{sub}</div>
