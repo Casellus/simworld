@@ -119,7 +119,7 @@ export default async function ProfiloPage({ params }: { params: Promise<{ userna
           {profile.bio && (
             <div className="px-5 pt-5 mt-5 border-t border-[var(--color-border)]">
               <p className="text-[11px] font-bold uppercase tracking-widest text-[var(--color-fg-muted)] mb-2">Bio</p>
-              <p className="whitespace-pre-wrap text-sm text-[var(--color-fg-muted)] leading-relaxed">{profile.bio}</p>
+              <p className="whitespace-pre-wrap text-sm font-semibold text-[var(--color-fg)] leading-relaxed">{profile.bio}</p>
             </div>
           )}
 
