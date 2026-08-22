@@ -442,6 +442,17 @@ button, a {
 .stagger > *:nth-child(n+7) { animation: fade-up 0.4s 0.35s ease both; }
 
 /* ── AUTH GLASS SCREEN ── */
+/* Le schermate auth sono fullscreen: nascondi header/footer se presenti,
+   a prescindere dal rilevamento server-side del pathname. :has() sul body
+   applica la regola solo quando una .auth-screen e' effettivamente montata. */
+body:has(.auth-screen) > header,
+body:has(.auth-screen) > footer {
+  display: none !important;
+}
+body:has(.auth-screen) > main {
+  padding-top: 0 !important;
+}
+
 .auth-screen {
   position: fixed;
   inset: 0;
