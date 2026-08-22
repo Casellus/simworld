@@ -2,10 +2,11 @@ import { notFound } from "next/navigation";
 import Link from "next/link";
 import { createClient } from "@/lib/supabase/server";
 import { getUserId } from "@/lib/auth";
-import { Button } from "@/components/ui/button";
-import { Pencil } from "lucide-react";
+import { Pencil, Calendar, Cpu } from "lucide-react";
 import { one } from "@/lib/types";
+import { formatDate } from "@/lib/utils";
 import { ProfileAvatar } from "@/components/profile-avatar";
+import { SocialLinks } from "@/components/social-links";
 import { ProfileTabs } from "./profile-tabs";
 
 export default async function ProfiloPage({ params }: { params: Promise<{ username: string }> }) {
@@ -62,64 +63,113 @@ export default async function ProfiloPage({ params }: { params: Promise<{ userna
     games: one<{ name: string }>(ug.games),
   }));
 
-  return (
-    <div className="mx-auto max-w-5xl px-4 sm:px-6 py-6">
-      {/* ── CARD HEADER ── */}
-      <div className="rounded-2xl border border-[var(--color-border)] bg-[var(--color-bg-elev)]">
-        {/* COVER */}
-        <div className="relative h-44 sm:h-60 md:h-72 w-full rounded-t-2xl overflow-hidden">
-          {profile.cover_url ? (
-            // eslint-disable-next-line @next/next/no-img-element
-            <img src={profile.cover_url} alt="" className="h-full w-full object-cover" />
-          ) : (
-            <div className="h-full w-full bg-gradient-to-br from-[#0d1b3e] via-[#1a1a2e] to-[#050507]" />
-          )}
-          <div className="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent" />
-        </div>
+  const hasSocials = !!(profile.discord_id || profile.steam_id || profile.twitch || profile.instagram);
 
-        {/* AVATAR + NOME */}
-        <div className="px-4 sm:px-6 pb-4">
-          <div className="flex items-end gap-3 -mt-10 sm:-mt-12">
-            <div className="h-20 w-20 sm:h-24 sm:w-24 md:h-28 md:w-28 rounded-full bg-[var(--color-bg-elev-2)] border-4 border-[var(--color-bg-elev)] flex items-center justify-center overflow-hidden shrink-0 relative z-10">
+  return (
+    <div className="mx-auto max-w-6xl px-4 sm:px-6 py-6">
+      {/* COVER full-width */}
+      <div className="relative h-40 sm:h-52 md:h-60 w-full rounded-2xl overflow-hidden">
+        {profile.cover_url ? (
+          // eslint-disable-next-line @next/next/no-img-element
+          <img src={profile.cover_url} alt="" className="h-full w-full object-cover" />
+        ) : (
+          <div className="h-full w-full bg-gradient-to-br from-[#0d1b3e] via-[#1a1a2e] to-[#050507]" />
+        )}
+        <div className="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent" />
+      </div>
+
+      {/* LAYOUT 2 colonne */}
+      <div className="grid gap-5 lg:grid-cols-[300px_1fr] items-start -mt-12 relative">
+        {/* SIDEBAR */}
+        <aside className="rounded-2xl border border-[var(--color-border)] bg-[var(--color-bg-elev)] overflow-hidden lg:sticky lg:top-5">
+          {/* Avatar */}
+          <div className="px-5">
+            <div className="h-22 w-22 sm:h-24 sm:w-24 rounded-full bg-[var(--color-bg-elev-2)] border-4 border-[var(--color-bg-elev)] flex items-center justify-center overflow-hidden shrink-0 -mt-1" style={{ height: "88px", width: "88px" }}>
               <ProfileAvatar src={profile.avatar_url} />
             </div>
           </div>
-          <div className="flex items-start justify-between gap-3 mt-3 min-w-0">
-            <div className="min-w-0">
-              <h1 className="text-xl sm:text-2xl md:text-3xl font-extrabold tracking-tight break-words" style={{ fontFamily: "var(--font-heading)" }}>
-                {displayName}
-              </h1>
-              <p className="text-sm text-[var(--color-fg-muted)]">@{profile.username}</p>
-            </div>
-            {isOwner && (
-              <Link href="/dashboard/impostazioni" className="shrink-0 mt-1">
-                <Button variant="outline" size="sm">
-                  <Pencil className="h-4 w-4" />
-                  <span className="hidden sm:inline">Modifica profilo</span>
-                </Button>
-              </Link>
-            )}
+          {/* Nome */}
+          <div className="px-5 pt-3">
+            <h1 className="text-xl sm:text-2xl font-extrabold tracking-tight break-words" style={{ fontFamily: "var(--font-heading)" }}>
+              {displayName}
+            </h1>
+            <p className="text-sm text-[var(--color-fg-muted)]">@{profile.username}</p>
           </div>
+          {/* CTA modifica */}
+          {isOwner && (
+            <div className="px-5 mt-4">
+              <Link
+                href="/dashboard/impostazioni"
+                className="flex items-center justify-center gap-2 w-full rounded-xl py-2.5 text-sm font-semibold text-white transition-opacity hover:opacity-90"
+                style={{ background: "linear-gradient(90deg, var(--color-accent), #2b7fe0)" }}
+              >
+                <Pencil className="h-4 w-4" /> Modifica profilo
+              </Link>
+            </div>
+          )}
+
+          {/* Informazioni */}
+          <div className="px-5 pt-5 mt-5 border-t border-[var(--color-border)]">
+            <p className="text-[11px] font-bold uppercase tracking-widest text-[var(--color-fg-muted)] mb-3">Informazioni</p>
+            <InfoRow icon={Calendar} title={`Membro dal ${formatDate(profile.created_at)}`} sub="Pilota SimUniverse" />
+            {profile.hardware && <InfoRow icon={Cpu} title="Hardware" sub={profile.hardware} />}
+          </div>
+
+          {/* Bio */}
+          {profile.bio && (
+            <div className="px-5 pt-5 mt-5 border-t border-[var(--color-border)]">
+              <p className="text-[11px] font-bold uppercase tracking-widest text-[var(--color-fg-muted)] mb-2">Bio</p>
+              <p className="whitespace-pre-wrap text-sm text-[var(--color-fg-muted)] leading-relaxed">{profile.bio}</p>
+            </div>
+          )}
+
+          {/* Social */}
+          {hasSocials && (
+            <div className="px-5 pt-5 mt-5 border-t border-[var(--color-border)]">
+              <p className="text-[11px] font-bold uppercase tracking-widest text-[var(--color-fg-muted)] mb-3">Social</p>
+              <SocialLinks values={profile} />
+            </div>
+          )}
+
+          {/* Giochi */}
+          {userGamesClean.length > 0 && (
+            <div className="px-5 pt-5 mt-5 pb-5 border-t border-[var(--color-border)]">
+              <p className="text-[11px] font-bold uppercase tracking-widest text-[var(--color-fg-muted)] mb-3">Giochi</p>
+              <div className="space-y-2">
+                {userGamesClean.map((ug, i) => (
+                  <div key={i} className="flex items-center justify-between text-sm rounded-xl border border-[var(--color-border)] bg-[var(--color-bg-elev-2)] px-3 py-2.5">
+                    <span className="font-medium">{ug.games?.name}</span>
+                    {ug.skill_level && (
+                      <span className="text-[11px] font-semibold rounded-full px-2 py-0.5 text-[var(--color-accent)] border border-[var(--color-accent)]/35 bg-[var(--color-accent)]/12">
+                        {ug.skill_level}
+                      </span>
+                    )}
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+        </aside>
+
+        {/* MAIN: tab Assetti/Eventi */}
+        <div className="lg:pt-14">
+          <ProfileTabs setups={setupsClean} events={events} />
         </div>
       </div>
+    </div>
+  );
+}
 
-      {/* TABS — fuori dalla card header */}
-      <ProfileTabs
-        profile={{
-          country: profile.country,
-          hardware: profile.hardware,
-          // Social pubblici: mostrati come icone cliccabili.
-          discord_id: profile.discord_id,
-          steam_id: profile.steam_id,
-          twitch: profile.twitch,
-          instagram: profile.instagram,
-          bio: profile.bio,
-          created_at: profile.created_at,
-        }}
-        setups={setupsClean}
-        events={events}
-        userGames={userGamesClean}
-      />
+function InfoRow({ icon: Icon, title, sub }: { icon: React.ComponentType<{ className?: string }>; title: string; sub: string }) {
+  return (
+    <div className="flex items-start gap-3 mb-3.5 last:mb-0">
+      <div className="h-9 w-9 rounded-[10px] bg-[var(--color-accent)]/10 border border-[var(--color-accent)]/20 flex items-center justify-center shrink-0">
+        <Icon className="h-4 w-4 text-[var(--color-accent)]" />
+      </div>
+      <div className="min-w-0">
+        <div className="text-[13px] font-semibold text-[var(--color-fg)] break-words">{title}</div>
+        <div className="text-[11.5px] text-[var(--color-fg-muted)] break-words">{sub}</div>
+      </div>
     </div>
   );
 }
