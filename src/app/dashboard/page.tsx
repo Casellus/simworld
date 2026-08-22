@@ -3,7 +3,7 @@ import { requireProfile } from "@/lib/auth";
 import { createClient } from "@/lib/supabase/server";
 import { Card, CardBody, CardHeader, Badge } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Calendar, Users, Settings2, Plus, Settings } from "lucide-react";
+import { Calendar, Users, Settings2, Plus } from "lucide-react";
 import { NotificationsPanel } from "./notifications-panel";
 import { formatDate } from "@/lib/utils";
 
@@ -53,11 +53,6 @@ export default async function DashboardPage() {
           <Link href={`/profilo/${profile.username}`}>
             <Button variant="outline" size="sm">
               Vedi profilo pubblico
-            </Button>
-          </Link>
-          <Link href="/dashboard/impostazioni">
-            <Button variant="secondary" size="sm">
-              <Settings className="h-4 w-4" /> Impostazioni
             </Button>
           </Link>
         </div>

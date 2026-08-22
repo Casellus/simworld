@@ -42,7 +42,7 @@ export default async function ClassificaPage() {
   const [first, second, third] = ranked;
 
   return (
-    <div className="mx-auto max-w-3xl px-4 sm:px-6 py-10">
+    <div className="mx-auto max-w-3xl px-4 sm:px-6 py-6 sm:py-10">
       {/* HEADER */}
       <div className="text-center mb-10">
         <p className="inline-flex items-center gap-2 text-xs font-bold uppercase tracking-widest text-[var(--color-accent)]">
@@ -59,10 +59,11 @@ export default async function ClassificaPage() {
       {/* PODIO */}
       {ranked.length > 0 ? (
         <>
+          {/* Su mobile ordina 1-2-3 (order); su desktop 2-1-3 (podio). */}
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 sm:items-start max-w-2xl mx-auto mb-8">
-            {second ? <PodiumCard row={second} pos={1} /> : <div className="hidden sm:block" />}
-            {first && <PodiumCard row={first} pos={0} />}
-            {third ? <PodiumCard row={third} pos={2} /> : <div className="hidden sm:block" />}
+            {second ? <div className="order-2 sm:order-1"><PodiumCard row={second} pos={1} /></div> : <div className="hidden sm:block sm:order-1" />}
+            {first && <div className="order-1 sm:order-2"><PodiumCard row={first} pos={0} /></div>}
+            {third ? <div className="order-3"><PodiumCard row={third} pos={2} /></div> : <div className="hidden sm:block sm:order-3" />}
           </div>
 
           {/* CLASSIFICA ESTESA */}

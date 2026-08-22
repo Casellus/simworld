@@ -80,9 +80,9 @@ export function MobileHamburger({ isLoggedIn = false }: { isLoggedIn?: boolean }
           <X size={20} />
         </button>
 
-        {/* Nav links */}
+        {/* Nav links (Classifica solo per utenti loggati) */}
         <nav style={{ display: "flex", flexDirection: "column", gap: "0.5rem", width: "100%", maxWidth: 320, textAlign: "center" }}>
-          {nav.map((n) => {
+          {(isLoggedIn ? [...nav, { href: "/classifica", label: "Classifica" }] : nav).map((n) => {
             const active = n.href === "/"
               ? pathname === "/"
               : pathname === n.href || pathname.startsWith(n.href + "/");
