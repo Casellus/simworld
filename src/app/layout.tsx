@@ -29,7 +29,9 @@ export const metadata: Metadata = {
 export default async function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
   const h = await headers();
   const pathname = h.get("x-pathname") ?? "";
-  const standalone = pathname === "/coming-soon";
+  // Le schermate auth sono fullscreen (foto + card): niente header/footer,
+  // che altrimenti coprirebbero il pulsante Indietro su mobile.
+  const standalone = pathname === "/coming-soon" || pathname.startsWith("/auth/");
 
   return (
     <html lang="it" className={`${chakraPetch.variable} ${inter.variable} h-full antialiased`}>
