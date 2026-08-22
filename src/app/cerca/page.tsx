@@ -55,12 +55,12 @@ export default async function CercaPage({ searchParams }: { searchParams: SP }) 
   const userId = await getUserId();
 
   const userIds = [...new Set((posts ?? []).map((p) => p.user_id).filter(Boolean))];
-  const profileMap: Record<string, { display_name: string | null; username: string | null; avatar_url: string | null }> = {};
+  const profileMap: Record<string, { display_name: string | null; username: string | null; avatar_url: string | null; cover_url: string | null }> = {};
   if (userIds.length > 0) {
     // Standard client — profiles are world-readable via RLS, no service role needed.
     const { data: profiles } = await supabase
       .from("profiles")
-      .select("id, display_name, username, avatar_url")
+      .select("id, display_name, username, avatar_url, cover_url")
       .in("id", userIds);
     profiles?.forEach((p) => { profileMap[p.id] = p; });
   }
@@ -119,13 +119,33 @@ export default async function CercaPage({ searchParams }: { searchParams: SP }) 
             const authorName = profile?.display_name || profile?.username || "Utente";
             const gameName = Array.isArray(p.games) ? p.games[0]?.name : (p.games as { name: string } | null)?.name;
             return (
-              <div key={p.id} className="rounded-2xl overflow-hidden h-full flex flex-col shadow-xl hover:scale-[1.02] transition-transform duration-200 relative bg-[var(--color-bg-elev)]">
+              <div key={p.id} className="group rounded-2xl overflow-hidden h-full flex flex-col border border-[var(--color-border)] hover:border-[var(--color-border-strong)] shadow-xl hover:-translate-y-1 transition-all duration-200 relative bg-[var(--color-bg-elev)]">
                 <Link href={`/cerca/${p.id}`} className="absolute inset-0 z-[1]" aria-label={p.title} />
 
-                {/* Header: avatar + nome + badge */}
-                <div className="flex items-center gap-3 px-4 pt-4 pb-3">
-                  {/* Avatar */}
-                  <div className="h-11 w-11 rounded-xl overflow-hidden shrink-0 bg-[var(--color-primary)]/20 border border-[var(--color-border)] flex items-center justify-center text-sm font-bold text-[var(--color-primary)]">
+                {/* Cover del profilo (o gradiente racing di fallback) */}
+                <div className="relative h-24 overflow-hidden">
+                  {profile?.cover_url ? (
+                    // eslint-disable-next-line @next/next/no-img-element
+                    <img src={profile.cover_url} alt="" className="h-full w-full object-cover" />
+                  ) : (
+                    <div className="h-full w-full bg-gradient-to-br from-[#0d1b3e] via-[#1a1a2e] to-[#050507]" />
+                  )}
+                  {/* fade verso il corpo */}
+                  <div className="absolute inset-0 bg-gradient-to-t from-[var(--color-bg-elev)] to-transparent" />
+                  {/* badge tipo, sulla cover */}
+                  <span className={`absolute top-3 right-3 z-[2] inline-flex items-center gap-1 rounded-full px-2.5 py-1 text-xs font-semibold backdrop-blur-sm ${
+                    isPilota
+                      ? "bg-blue-500/25 text-blue-200 border border-blue-500/40"
+                      : "bg-emerald-500/25 text-emerald-200 border border-emerald-500/40"
+                  }`}>
+                    {isPilota ? <Flag className="w-3.5 h-3.5" /> : <User className="w-3.5 h-3.5" />}
+                    {isPilota ? "Cerca pilota" : "Cerca team"}
+                  </span>
+                </div>
+
+                {/* Avatar che sborda sulla cover */}
+                <div className="px-4 relative">
+                  <div className="absolute -top-7 h-14 w-14 rounded-full overflow-hidden border-[3px] border-[var(--color-bg-elev)] bg-[var(--color-bg-elev-2)] flex items-center justify-center text-sm font-bold text-[var(--color-primary)] z-[2]">
                     {profile?.avatar_url ? (
                       // eslint-disable-next-line @next/next/no-img-element
                       <img src={profile.avatar_url} alt={authorName} className="object-cover w-full h-full" />
@@ -133,48 +153,33 @@ export default async function CercaPage({ searchParams }: { searchParams: SP }) 
                       authorName.slice(0, 2).toUpperCase()
                     )}
                   </div>
-                  {/* Nome + badge */}
-                  <div className="flex-1 min-w-0">
-                    <p className="font-bold text-sm text-white leading-tight truncate">{authorName}</p>
-                    <span className={`inline-flex items-center gap-1 mt-0.5 rounded-full px-2 py-0.5 text-xs font-semibold ${
-                      isPilota
-                        ? "bg-blue-500/20 text-blue-300 border border-blue-500/30"
-                        : "bg-emerald-500/20 text-emerald-300 border border-emerald-500/30"
-                    }`}>
-                      {isPilota ? <Flag className="w-3.5 h-3.5" /> : <User className="w-3.5 h-3.5" />}
-                      {isPilota ? "Cerca pilota" : "Cerca team"}
-                    </span>
-                  </div>
                   {isOwner && (
-                    <div className="relative z-[2]">
+                    <div className="absolute right-4 -top-1 z-[2]">
                       <PostActions postId={p.id} />
                     </div>
                   )}
                 </div>
 
-                {/* Divider */}
-                <div className="h-px bg-[var(--color-border)] mx-4" />
-
-                {/* Body */}
-                <div className="flex flex-col flex-1 px-4 py-3 gap-1.5">
-                  {/* Gioco */}
+                {/* Body: nome + info */}
+                <div className="flex flex-col flex-1 px-4 pt-9 pb-3 gap-0.5">
+                  <p className="font-bold text-base text-white leading-tight truncate" style={{ fontFamily: "var(--font-heading)" }}>{authorName}</p>
                   {gameName && (
-                    <span className="text-xs font-semibold text-[var(--color-primary)] uppercase tracking-wide">{gameName}</span>
+                    <span className="text-xs font-semibold text-[var(--color-primary)] uppercase tracking-wide mt-1.5">{gameName}</span>
                   )}
-                  <h3 className="font-bold text-base text-white leading-tight">{p.title}</h3>
+                  <h3 className="font-semibold text-[15px] text-white leading-snug mt-0.5">{p.title}</h3>
                   {p.description && (
-                    <p className="text-sm text-[var(--color-fg-muted)] line-clamp-2 mt-0.5">{p.description}</p>
+                    <p className="text-sm text-[var(--color-fg-muted)] line-clamp-2 mt-1 leading-relaxed">{p.description}</p>
                   )}
                 </div>
 
                 {/* Footer: contatto */}
                 {p.contact && (
-                  <div className="px-4 pb-3 pt-1 border-t border-[var(--color-border)] mt-auto">
+                  <div className="px-4 pb-3.5 pt-2.5 border-t border-[var(--color-border)] mt-auto">
                     <span className="flex items-center gap-1.5 text-[var(--color-fg-muted)] text-xs z-[2] relative">
                       {contactIsUrl
-                        ? <ExternalLink className="h-3 w-3 text-[var(--color-primary)]" />
-                        : <Mail className="h-3 w-3 text-[var(--color-primary)]" />}
-                      <span className="truncate">{contactIsUrl ? p.contact : p.contact}</span>
+                        ? <ExternalLink className="h-3.5 w-3.5 text-[var(--color-primary)] shrink-0" />
+                        : <Mail className="h-3.5 w-3.5 text-[var(--color-primary)] shrink-0" />}
+                      <span className="truncate">{p.contact}</span>
                     </span>
                   </div>
                 )}
