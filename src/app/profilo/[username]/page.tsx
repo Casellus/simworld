@@ -1,7 +1,7 @@
 import { notFound } from "next/navigation";
 import Link from "next/link";
 import { createClient } from "@/lib/supabase/server";
-import { getUserId, getMyContacts } from "@/lib/auth";
+import { getUserId } from "@/lib/auth";
 import { Button } from "@/components/ui/button";
 import { Pencil } from "lucide-react";
 import { one } from "@/lib/types";
@@ -12,12 +12,12 @@ export default async function ProfiloPage({ params }: { params: Promise<{ userna
   const { username } = await params;
   const supabase = await createClient();
 
-  // discord_id/steam_id non sono qui: il ruolo del client non ha la SELECT su
-  // quelle colonne (security_migration_2.sql). Se chi guarda e' il proprietario
-  // li recuperiamo sotto, via la funzione my_contacts().
+  // I social (discord/steam/twitch/instagram) sono pubblici: si mostrano come
+  // icone cliccabili sul profilo, quindi rientrano nella select pubblica
+  // (migration_social.sql riconcede la SELECT su queste colonne).
   const { data: profile } = await supabase
     .from("profiles")
-    .select("id, username, display_name, country, bio, avatar_url, cover_url, hardware, created_at")
+    .select("id, username, display_name, country, bio, avatar_url, cover_url, hardware, created_at, discord_id, steam_id, twitch, instagram")
     .eq("username", username)
     .single();
 
@@ -44,11 +44,6 @@ export default async function ProfiloPage({ params }: { params: Promise<{ userna
 
   const displayName = profile.display_name || profile.username;
   const isOwner = viewerId === profile.id;
-
-  // Solo il proprietario vede i propri contatti.
-  const contacts = isOwner
-    ? await getMyContacts()
-    : { discord_id: null, steam_id: null };
 
   const events = (eventParticipants ?? [])
     .map((ep) => one<{ slug: string; title: string; event_type: string; start_at: string }>(ep.events))
@@ -113,10 +108,11 @@ export default async function ProfiloPage({ params }: { params: Promise<{ userna
         profile={{
           country: profile.country,
           hardware: profile.hardware,
-          // Vuoti se chi guarda non e' il proprietario: non arrivano nemmeno
-          // dal database, non solo dalla UI.
-          discord_id: contacts.discord_id,
-          steam_id: contacts.steam_id,
+          // Social pubblici: mostrati come icone cliccabili.
+          discord_id: profile.discord_id,
+          steam_id: profile.steam_id,
+          twitch: profile.twitch,
+          instagram: profile.instagram,
           bio: profile.bio,
           created_at: profile.created_at,
         }}

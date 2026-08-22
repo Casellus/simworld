@@ -19,6 +19,8 @@ export async function updateProfile(formData: FormData) {
   const hardware = text(formData.get("hardware"), LIMITS.hardware);
   const discord_id = text(formData.get("discord_id"), LIMITS.handle);
   const steam_id = text(formData.get("steam_id"), LIMITS.handle);
+  const twitch = text(formData.get("twitch"), LIMITS.handle);
+  const instagram = text(formData.get("instagram"), LIMITS.handle);
   const avatar_url = storageUrlOrNull(formData.get("avatar_url"));
   const cover_url = storageUrlOrNull(formData.get("cover_url"));
 
@@ -44,6 +46,8 @@ export async function updateProfile(formData: FormData) {
       hardware: hardware || null,
       discord_id: discord_id || null,
       steam_id: steam_id || null,
+      twitch: twitch || null,
+      instagram: instagram || null,
       avatar_url,
       cover_url,
       updated_at: new Date().toISOString(),

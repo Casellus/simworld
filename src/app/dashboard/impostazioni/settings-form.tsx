@@ -19,6 +19,8 @@ type Profile = {
   hardware: string | null;
   discord_id: string | null;
   steam_id: string | null;
+  twitch: string | null;
+  instagram: string | null;
   avatar_url: string | null;
   cover_url: string | null;
 };
@@ -240,14 +242,26 @@ export function SettingsForm({ profile, userGames }: { profile: Profile; userGam
         />
       </div>
 
-      <div className="grid grid-cols-2 gap-4">
-        <div>
-          <Label htmlFor="discord_id">Discord</Label>
-          <Input id="discord_id" name="discord_id" defaultValue={profile.discord_id || ""} placeholder="nickname#0000" />
-        </div>
-        <div>
-          <Label htmlFor="steam_id">Steam ID</Label>
-          <Input id="steam_id" name="steam_id" defaultValue={profile.steam_id || ""} placeholder="76561198..." />
+      <div>
+        <Label>Social</Label>
+        <p className="text-xs text-[var(--color-fg-muted)] mt-0.5 mb-2">Collega i tuoi profili: appariranno come icone cliccabili sul profilo pubblico.</p>
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <div>
+            <Label htmlFor="discord_id" className="text-xs">Discord</Label>
+            <Input id="discord_id" name="discord_id" defaultValue={profile.discord_id || ""} placeholder="username o discord.gg/invito" />
+          </div>
+          <div>
+            <Label htmlFor="steam_id" className="text-xs">Steam</Label>
+            <Input id="steam_id" name="steam_id" defaultValue={profile.steam_id || ""} placeholder="ID o link steamcommunity" />
+          </div>
+          <div>
+            <Label htmlFor="twitch" className="text-xs">Twitch</Label>
+            <Input id="twitch" name="twitch" defaultValue={profile.twitch || ""} placeholder="canale o twitch.tv/canale" />
+          </div>
+          <div>
+            <Label htmlFor="instagram" className="text-xs">Instagram</Label>
+            <Input id="instagram" name="instagram" defaultValue={profile.instagram || ""} placeholder="@username o link" />
+          </div>
         </div>
       </div>
 

@@ -3,8 +3,9 @@
 import { useState } from "react";
 import Link from "next/link";
 import { Badge } from "@/components/ui/card";
-import { Settings2, Trophy, MapPin, Cpu, Calendar, Gamepad2, MessageCircle } from "lucide-react";
+import { Settings2, Trophy, Cpu, Calendar } from "lucide-react";
 import { formatDate } from "@/lib/utils";
+import { SocialLinks } from "@/components/social-links";
 
 
 type Game = { name: string } | null;
@@ -17,6 +18,8 @@ type ProfileData = {
   hardware: string | null;
   discord_id: string | null;
   steam_id: string | null;
+  twitch: string | null;
+  instagram: string | null;
   bio: string | null;
   created_at: string;
 };
@@ -67,14 +70,20 @@ export function ProfileTabs({ profile, setups, events, userGames }: Props) {
             <div className="grid gap-x-10 gap-y-5 sm:grid-cols-2">
               <InfoRow icon={Calendar} title={`Membro dal ${formatDate(profile.created_at)}`} sub="Pilota SimUniverse" />
               {profile.hardware && <InfoRow icon={Cpu} title="Hardware" sub={profile.hardware} />}
-              {profile.discord_id && <InfoRow icon={MessageCircle} title={profile.discord_id} sub="Discord" />}
-              {profile.steam_id && <InfoRow icon={Gamepad2} title={profile.steam_id} sub="Steam ID" />}
             </div>
             {profile.bio && (
               <div className="mt-6 pt-5 border-t border-[var(--color-border)]">
                 <p className="whitespace-pre-wrap text-sm text-[var(--color-fg-muted)] leading-relaxed">{profile.bio}</p>
               </div>
             )}
+            {/* Social cliccabili */}
+            <div className="mt-6 pt-5 border-t border-[var(--color-border)]">
+              <p className="text-[11px] font-bold uppercase tracking-widest text-[var(--color-fg-muted)] mb-3">Social</p>
+              <SocialLinks values={profile} />
+              {!profile.discord_id && !profile.steam_id && !profile.twitch && !profile.instagram && (
+                <p className="text-sm text-[var(--color-fg-muted)]">Nessun social collegato.</p>
+              )}
+            </div>
           </div>
 
           {userGames.length > 0 && (
