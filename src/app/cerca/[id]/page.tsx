@@ -2,9 +2,8 @@ import { notFound } from "next/navigation";
 import Link from "next/link";
 import { BackButton } from "@/components/back-button";
 import { createClient } from "@/lib/supabase/server";
-import { Card, CardBody, Badge } from "@/components/ui/card";
 import { formatDate } from "@/lib/utils";
-import { Mail, ExternalLink, User as UserIcon } from "lucide-react";
+import { Mail, ExternalLink, User as UserIcon, Flag } from "lucide-react";
 import { PostActions } from "../post-actions";
 import { one } from "@/lib/types";
 import { getUserId } from "@/lib/auth";
@@ -22,63 +21,90 @@ export default async function AnnuncioDetailPage({ params }: { params: Promise<{
   if (!post) notFound();
 
   const [{ data: author }, userId] = await Promise.all([
-    supabase.from("profiles").select("username, display_name").eq("id", post.user_id).maybeSingle(),
+    supabase.from("profiles").select("username, display_name, avatar_url, cover_url").eq("id", post.user_id).maybeSingle(),
     getUserId(),
   ]);
 
   const game = one<{ name: string; slug: string }>(post.games);
   const team = one<{ name: string; slug: string }>(post.teams);
   const isOwner = !!userId && userId === post.user_id;
+  const isPilota = post.post_type === "cerca_pilota";
+  const authorName = author?.display_name || author?.username || "Utente";
 
   return (
     <div className="mx-auto max-w-3xl px-4 sm:px-6 py-10">
       <BackButton href="/cerca" label="Tutti gli annunci" />
 
-      <Card>
-        <CardBody className="space-y-5 p-6">
-          {/* Badge + owner actions */}
-          <div className="flex items-start justify-between gap-4 flex-wrap">
-            <div className="flex items-center gap-2 flex-wrap">
-              <Badge variant={post.post_type === "cerca_pilota" ? "accent" : "primary"}>
-                {post.post_type === "cerca_pilota" ? "Team cerca pilota" : "Pilota cerca team"}
-              </Badge>
-              {game?.name && <Badge>{game.name}</Badge>}
+      <div className="rounded-2xl overflow-hidden border border-[var(--color-border)] bg-[var(--color-bg-elev)] shadow-xl">
+        {/* Cover del profilo (o gradiente racing) */}
+        <div className="relative h-36 sm:h-44 overflow-hidden">
+          {author?.cover_url ? (
+            // eslint-disable-next-line @next/next/no-img-element
+            <img src={author.cover_url} alt="" className="h-full w-full object-cover" />
+          ) : (
+            <div className="h-full w-full bg-gradient-to-br from-[#0d1b3e] via-[#1a1a2e] to-[#050507]" />
+          )}
+          <div className="absolute inset-0 bg-gradient-to-t from-[var(--color-bg-elev)] to-transparent" />
+          {/* badge tipo */}
+          <span className={`absolute top-4 right-4 z-[2] inline-flex items-center gap-1.5 rounded-full px-3 py-1.5 text-xs font-semibold backdrop-blur-sm ${
+            isPilota
+              ? "bg-blue-500/25 text-blue-200 border border-blue-500/40"
+              : "bg-emerald-500/25 text-emerald-200 border border-emerald-500/40"
+          }`}>
+            {isPilota ? <Flag className="w-3.5 h-3.5" /> : <UserIcon className="w-3.5 h-3.5" />}
+            {isPilota ? "Team cerca pilota" : "Pilota cerca team"}
+          </span>
+        </div>
+
+        {/* Avatar che sborda + azioni owner */}
+        <div className="px-6 relative">
+          <div className="absolute -top-9 h-[72px] w-[72px] rounded-full overflow-hidden border-4 border-[var(--color-bg-elev)] bg-[var(--color-bg-elev-2)] flex items-center justify-center text-lg font-bold text-[var(--color-primary)] z-[2]">
+            {author?.avatar_url ? (
+              // eslint-disable-next-line @next/next/no-img-element
+              <img src={author.avatar_url} alt={authorName} className="object-cover w-full h-full" />
+            ) : (
+              authorName.slice(0, 2).toUpperCase()
+            )}
+          </div>
+          {isOwner && (
+            <div className="absolute right-6 top-3 z-[2]">
+              <PostActions postId={post.id} />
             </div>
-            {isOwner && (
-              <div className="relative z-[2]">
-                <PostActions postId={post.id} />
-              </div>
-            )}
+          )}
+        </div>
+
+        {/* Contenuto */}
+        <div className="px-6 pt-12 pb-6 space-y-5">
+          {/* Autore + meta */}
+          <div>
+            <p className="font-bold text-lg text-white leading-tight" style={{ fontFamily: "var(--font-heading)" }}>{authorName}</p>
+            <div className="flex flex-wrap items-center gap-x-2 gap-y-1 text-sm text-[var(--color-fg-muted)] mt-1">
+              {team && (
+                <Link href={`/team/${team.slug}`} className="hover:text-[var(--color-primary)] transition-colors">
+                  {team.name}
+                </Link>
+              )}
+              {team && <span>·</span>}
+              <span>{formatDate(post.created_at)}</span>
+            </div>
           </div>
 
-          {/* Title */}
-          <h1 className="text-2xl md:text-3xl font-extrabold tracking-tight leading-tight">
-            {post.title}
-          </h1>
-
-          {/* Meta */}
-          <div className="flex flex-wrap items-center gap-x-3 gap-y-1 text-sm text-[var(--color-fg-muted)]">
-            <span className="flex items-center gap-1.5">
-              <UserIcon className="h-3.5 w-3.5" />
-              {author?.display_name || author?.username || "Utente"}
-            </span>
-            {team && (
-              <Link
-                href={`/team/${team.slug}`}
-                className="hover:text-[var(--color-primary)] transition-colors"
-              >
-                · {team.name}
-              </Link>
+          {/* Gioco + titolo */}
+          <div>
+            {game?.name && (
+              <span className="text-xs font-semibold text-[var(--color-primary)] uppercase tracking-wide">{game.name}</span>
             )}
-            <span>· {formatDate(post.created_at)}</span>
+            <h1 className="text-2xl md:text-3xl font-extrabold tracking-tight leading-tight mt-1">
+              {post.title}
+            </h1>
           </div>
 
-          {/* Description */}
+          {/* Descrizione */}
           <div className="pt-4 border-t border-[var(--color-border)]">
             <p className="text-sm leading-relaxed whitespace-pre-wrap">{post.description}</p>
           </div>
 
-          {/* Contact */}
+          {/* Contatto */}
           {post.contact && (
             <div className="pt-4 border-t border-[var(--color-border)]">
               <h2 className="text-[11px] font-bold uppercase tracking-widest text-[var(--color-fg-muted)] mb-3">
@@ -87,8 +113,8 @@ export default async function AnnuncioDetailPage({ params }: { params: Promise<{
               <ContactDisplay contact={post.contact} />
             </div>
           )}
-        </CardBody>
-      </Card>
+        </div>
+      </div>
     </div>
   );
 }
