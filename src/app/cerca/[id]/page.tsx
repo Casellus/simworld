@@ -32,7 +32,7 @@ export default async function AnnuncioDetailPage({ params }: { params: Promise<{
   const authorName = author?.display_name || author?.username || "Utente";
 
   return (
-    <div className="mx-auto max-w-3xl px-4 sm:px-6 py-10">
+    <div className="mx-auto max-w-7xl px-4 sm:px-6 py-10">
       <BackButton href="/cerca" label="Tutti gli annunci" />
 
       <div className="rounded-2xl overflow-hidden border border-[var(--color-border)] bg-[var(--color-bg-elev)] shadow-xl">
