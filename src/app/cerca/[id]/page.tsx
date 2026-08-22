@@ -3,7 +3,8 @@ import Link from "next/link";
 import { BackButton } from "@/components/back-button";
 import { createClient } from "@/lib/supabase/server";
 import { formatDate } from "@/lib/utils";
-import { Mail, ExternalLink, User as UserIcon, Flag } from "lucide-react";
+import { Mail, User as UserIcon, Flag } from "lucide-react";
+import { BrandIcon } from "@/components/brand-icon";
 import { PostActions } from "../post-actions";
 import { one } from "@/lib/types";
 import { getUserId } from "@/lib/auth";
@@ -132,7 +133,7 @@ function ContactDisplay({ contact }: { contact: string }) {
         rel="noopener noreferrer"
         className="inline-flex items-center gap-2 px-4 py-2.5 rounded-lg bg-[var(--color-primary)]/10 border border-[var(--color-primary)]/30 text-[var(--color-primary)] text-sm font-semibold hover:bg-[var(--color-primary)]/20 transition-colors"
       >
-        <ExternalLink className="h-4 w-4" />
+        <BrandIcon contact={contact} className="h-4 w-4" />
         {label}
       </a>
     );
@@ -152,7 +153,7 @@ function ContactDisplay({ contact }: { contact: string }) {
 
   return (
     <span className="inline-flex items-center gap-2 text-sm text-[var(--color-fg-muted)]">
-      <Mail className="h-3.5 w-3.5 text-[var(--color-primary)]" />
+      <BrandIcon contact={contact} className="h-4 w-4 text-[var(--color-primary)]" />
       {contact}
     </span>
   );

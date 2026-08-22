@@ -4,7 +4,8 @@ import { getUserId } from "@/lib/auth";
 import { Card, CardBody } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { FilterChip } from "@/components/ui/filter-chip";
-import { Search, Plus, Mail, ExternalLink, Flag, User } from "lucide-react";
+import { Search, Plus, Flag, User } from "lucide-react";
+import { BrandIcon } from "@/components/brand-icon";
 import { GAMES } from "@/lib/constants";
 import { likePattern } from "@/lib/validation";
 import { Suspense } from "react";
@@ -113,7 +114,6 @@ export default async function CercaPage({ searchParams }: { searchParams: SP }) 
         <div className="stagger grid gap-4 md:grid-cols-2 lg:grid-cols-3">
           {posts.map((p) => {
             const isOwner = userId && p.user_id === userId;
-            const contactIsUrl = p.contact ? /^https?:\/\//i.test(p.contact.trim()) : false;
             const isPilota = p.post_type === "cerca_pilota";
             const profile = p.user_id ? profileMap[p.user_id] : null;
             const authorName = profile?.display_name || profile?.username || "Utente";
@@ -176,9 +176,7 @@ export default async function CercaPage({ searchParams }: { searchParams: SP }) 
                 {p.contact && (
                   <div className="px-4 pb-3.5 pt-2.5 border-t border-[var(--color-border)] mt-auto">
                     <span className="flex items-center gap-1.5 text-[var(--color-fg-muted)] text-xs z-[2] relative">
-                      {contactIsUrl
-                        ? <ExternalLink className="h-3.5 w-3.5 text-[var(--color-primary)] shrink-0" />
-                        : <Mail className="h-3.5 w-3.5 text-[var(--color-primary)] shrink-0" />}
+                      <BrandIcon contact={p.contact} className="h-3.5 w-3.5 text-[var(--color-primary)] shrink-0" />
                       <span className="truncate">{p.contact}</span>
                     </span>
                   </div>
