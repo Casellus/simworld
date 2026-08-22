@@ -61,7 +61,6 @@ export async function Header() {
               <>
                 <NotificationBell />
                 <RankBadge rank={profile.current_rank} xp={profile.monthly_xp} />
-                <UserMenu profile={profile} />
               </>
             ) : (
               <MobileNavAuthButton />
@@ -70,7 +69,10 @@ export async function Header() {
           <Link href="/" className="absolute left-1/2 -translate-x-1/2">
             <Logo size="sm" href={null} />
           </Link>
-          <MobileHamburger isLoggedIn={!!profile} />
+          <div className="flex items-center gap-1">
+            {profile && <UserMenu profile={profile} />}
+            <MobileHamburger isLoggedIn={!!profile} />
+          </div>
         </div>
 
       </div>
