@@ -2,7 +2,7 @@ import { notFound } from "next/navigation";
 import Link from "next/link";
 import { createClient } from "@/lib/supabase/server";
 import { getUserId } from "@/lib/auth";
-import { Pencil, Calendar, Cpu } from "lucide-react";
+import { Pencil } from "lucide-react";
 import { one } from "@/lib/types";
 import { formatDate } from "@/lib/utils";
 import { ProfileAvatar } from "@/components/profile-avatar";
@@ -111,8 +111,36 @@ export default async function ProfiloPage({ params }: { params: Promise<{ userna
           {/* Informazioni */}
           <div className="px-5 pt-5 mt-5 border-t border-[var(--color-border)]">
             <p className="text-[11px] font-bold uppercase tracking-widest text-[var(--color-fg-muted)] mb-3">Informazioni</p>
-            <InfoRow icon={Calendar} title={`Membro dal ${formatDate(profile.created_at)}`} sub="Pilota SimUniverse" />
-            {profile.hardware && <InfoRow icon={Cpu} title="Hardware" sub={profile.hardware} />}
+            <InfoRow
+              tone="accent"
+              title={`Membro dal ${formatDate(profile.created_at)}`}
+              sub="Pilota SimUniverse"
+              icon={
+                <>
+                  <path d="M7 12h3v4h-3l0 -4" />
+                  <path d="M10 6h-6a1 1 0 0 0 -1 1v12a1 1 0 0 0 1 1h16a1 1 0 0 0 1 -1v-12a1 1 0 0 0 -1 -1h-6" />
+                  <path d="M10 4a1 1 0 0 1 1 -1h2a1 1 0 0 1 1 1v3a1 1 0 0 1 -1 1h-2a1 1 0 0 1 -1 -1l0 -3" />
+                  <path d="M14 16h2" />
+                  <path d="M14 12h4" />
+                </>
+              }
+            />
+            {profile.hardware && (
+              <InfoRow
+                tone="primary"
+                title="Hardware"
+                sub={profile.hardware}
+                icon={
+                  <>
+                    <path d="M3 12a9 9 0 1 0 18 0a9 9 0 1 0 -18 0" />
+                    <path d="M10 12a2 2 0 1 0 4 0a2 2 0 1 0 -4 0" />
+                    <path d="M12 14l0 7" />
+                    <path d="M10 12l-6.75 -2" />
+                    <path d="M14 12l6.75 -2" />
+                  </>
+                }
+              />
+            )}
           </div>
 
           {/* Bio */}
@@ -160,11 +188,27 @@ export default async function ProfiloPage({ params }: { params: Promise<{ userna
   );
 }
 
-function InfoRow({ icon: Icon, title, sub }: { icon: React.ComponentType<{ className?: string }>; title: string; sub: string }) {
+function InfoRow({
+  icon,
+  title,
+  sub,
+  tone,
+}: {
+  icon: React.ReactNode;
+  title: string;
+  sub: string;
+  tone: "accent" | "primary";
+}) {
+  const color = tone === "primary" ? "var(--color-primary)" : "var(--color-accent)";
   return (
     <div className="flex items-start gap-3 mb-3.5 last:mb-0">
-      <div className="h-9 w-9 rounded-[10px] bg-[var(--color-accent)]/10 border border-[var(--color-accent)]/20 flex items-center justify-center shrink-0">
-        <Icon className="h-4 w-4 text-[var(--color-accent)]" />
+      <div
+        className="h-9 w-9 rounded-[10px] flex items-center justify-center shrink-0"
+        style={{ background: `color-mix(in srgb, ${color} 12%, transparent)`, border: `1px solid color-mix(in srgb, ${color} 25%, transparent)` }}
+      >
+        <svg viewBox="0 0 24 24" className="h-[18px] w-[18px]" fill="none" stroke={color} strokeWidth={2} strokeLinecap="round" strokeLinejoin="round" aria-hidden>
+          {icon}
+        </svg>
       </div>
       <div className="min-w-0">
         <div className="text-[13px] font-semibold text-[var(--color-fg)] break-words">{title}</div>
