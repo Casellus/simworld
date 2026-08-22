@@ -8,17 +8,37 @@ export const RANK_COLORS: Record<string, string> = {
   Leggenda: "#a855f7",
 };
 
-const ROSETTE =
-  "M12.01 2.011a3.2 3.2 0 0 1 2.113 .797l.154 .145l.698 .698a1.2 1.2 0 0 0 .71 .341l.135 .008h1a3.2 3.2 0 0 1 3.195 3.018l.005 .182v1c0 .27 .092 .533 .258 .743l.09 .1l.697 .698a3.2 3.2 0 0 1 .147 4.382l-.145 .154l-.698 .698a1.2 1.2 0 0 0 -.341 .71l-.008 .135v1a3.2 3.2 0 0 1 -3.018 3.195l-.182 .005h-1a1.2 1.2 0 0 0 -.743 .258l-.1 .09l-.698 .697a3.2 3.2 0 0 1 -4.382 .147l-.154 -.145l-.698 -.698a1.2 1.2 0 0 0 -.71 -.341l-.135 -.008h-1a3.2 3.2 0 0 1 -3.195 -3.018l-.005 -.182v-1a1.2 1.2 0 0 0 -.258 -.743l-.09 -.1l-.697 -.698a3.2 3.2 0 0 1 -.147 -4.382l.145 -.154l.698 -.698a1.2 1.2 0 0 0 .341 -.71l.008 -.135v-1l.005 -.182a3.2 3.2 0 0 1 3.013 -3.013l.182 -.005h1a1.2 1.2 0 0 0 .743 -.258l.1 -.09l.698 -.697a3.2 3.2 0 0 1 2.269 -.944z";
 const CROWN =
   "M19 19h-14c-.5 0 -.9 -.3 -1 -.8l-2 -10c0 -.4 .1 -.8 .5 -1.1c.4 -.2 .8 -.2 1.1 0l4.1 3.3l3.4 -5.1c.4 -.6 1.3 -.6 1.7 0l3.4 5.1l4.1 -3.3c.3 -.3 .8 -.3 1.1 0c.4 .2 .5 .6 .5 1.1l-2 10c0 .5 -.5 .8 -1 .8z";
 
-export function RankMedal({ rank, className = "h-4 w-4" }: { rank: string; className?: string }) {
-  const color = RANK_COLORS[rank] ?? RANK_COLORS.Bronzo;
-  const path = rank === "Leggenda" ? CROWN : ROSETTE;
+// Medaglia vera: nastro a V sopra + disco pieno col colore metallo + stella
+// centrale piu' chiara. Costruita a mano (non un'icona a contorno).
+function Medal({ color, className }: { color: string; className: string }) {
   return (
-    <svg viewBox="0 0 24 24" className={className} fill={color} aria-hidden>
-      <path d={path} />
+    <svg viewBox="0 0 24 24" className={className} aria-hidden>
+      {/* nastro */}
+      <path d="M8.5 2 L12 9 L9 10.5 L5.5 3.5 Z" fill={color} opacity="0.55" />
+      <path d="M15.5 2 L18.5 3.5 L15 10.5 L12 9 Z" fill={color} opacity="0.55" />
+      {/* disco */}
+      <circle cx="12" cy="15.5" r="6.2" fill={color} />
+      {/* stella centrale (piu' chiara) */}
+      <path
+        d="M12 12.1l1.02 2.07l2.28.33l-1.65 1.61l.39 2.27L12 17.35l-2.04 1.07l.39 -2.27l-1.65 -1.61l2.28 -.33z"
+        fill="#0a0a0f"
+        opacity="0.35"
+      />
     </svg>
   );
+}
+
+export function RankMedal({ rank, className = "h-4 w-4" }: { rank: string; className?: string }) {
+  const color = RANK_COLORS[rank] ?? RANK_COLORS.Bronzo;
+  if (rank === "Leggenda") {
+    return (
+      <svg viewBox="0 0 24 24" className={className} fill={color} aria-hidden>
+        <path d={CROWN} />
+      </svg>
+    );
+  }
+  return <Medal color={color} className={className} />;
 }
