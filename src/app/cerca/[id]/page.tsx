@@ -1,5 +1,6 @@
 import { notFound } from "next/navigation";
 import Link from "next/link";
+import { BackButton } from "@/components/back-button";
 import { createClient } from "@/lib/supabase/server";
 import { Card, CardBody, Badge } from "@/components/ui/card";
 import { formatDate } from "@/lib/utils";
@@ -31,12 +32,7 @@ export default async function AnnuncioDetailPage({ params }: { params: Promise<{
 
   return (
     <div className="mx-auto max-w-3xl px-4 sm:px-6 py-10">
-      <Link
-        href="/cerca"
-        className="text-sm text-[var(--color-fg-muted)] hover:text-[var(--color-fg)] mb-6 inline-block"
-      >
-        ← Tutti gli annunci
-      </Link>
+      <BackButton href="/cerca" label="Tutti gli annunci" />
 
       <Card>
         <CardBody className="space-y-5 p-6">

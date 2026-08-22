@@ -1,5 +1,6 @@
 import { notFound } from "next/navigation";
 import Link from "next/link";
+import { BackButton } from "@/components/back-button";
 import { createClient } from "@/lib/supabase/server";
 import { Card, CardBody, CardHeader, Badge } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -45,9 +46,7 @@ export default async function EventDetailPage({ params }: { params: Promise<{ sl
 
   return (
     <div className="mx-auto max-w-5xl px-4 sm:px-6 py-10">
-      <Link href="/eventi" className="text-sm text-[var(--color-fg-muted)] hover:text-[var(--color-fg)] mb-4 inline-block">
-        ← Tutti gli eventi
-      </Link>
+      <BackButton href="/eventi" label="Tutti gli eventi" />
 
       {event.banner_url && (
         <div className="w-full h-48 md:h-64 rounded-xl overflow-hidden mb-6 border border-[var(--color-border)]">

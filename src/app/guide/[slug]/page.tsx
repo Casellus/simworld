@@ -1,5 +1,5 @@
 import { notFound } from "next/navigation";
-import Link from "next/link";
+import { BackButton } from "@/components/back-button";
 import { createClient } from "@/lib/supabase/server";
 import { Badge } from "@/components/ui/card";
 import { formatDate } from "@/lib/utils";
@@ -20,9 +20,7 @@ export default async function GuidaPage({ params }: { params: Promise<{ slug: st
 
   return (
     <article className="mx-auto max-w-3xl px-4 sm:px-6 py-10">
-      <Link href="/guide" className="text-sm text-[var(--color-fg-muted)] hover:text-[var(--color-fg)] mb-4 inline-block">
-        ← Tutte le guide
-      </Link>
+      <BackButton href="/guide" label="Tutte le guide" />
       <div className="flex items-center gap-2 flex-wrap mb-4">
         {guide.category && <Badge variant="accent">{guide.category}</Badge>}
         {guide.games?.name && <Badge>{guide.games.name}</Badge>}

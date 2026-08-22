@@ -1,5 +1,6 @@
 import { notFound } from "next/navigation";
 import Link from "next/link";
+import { BackButton } from "@/components/back-button";
 import { createClient } from "@/lib/supabase/server";
 import { Card, CardBody, CardHeader, Badge } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -73,9 +74,7 @@ export default async function TeamDetailPage({ params }: { params: Promise<{ slu
 
   return (
     <div className="mx-auto max-w-5xl px-4 sm:px-6 py-10">
-      <Link href="/team" className="text-sm text-[var(--color-fg-muted)] hover:text-[var(--color-fg)] mb-4 inline-block">
-        ← Tutti i team
-      </Link>
+      <BackButton href="/team" label="Tutti i team" />
 
       <div className="flex flex-wrap items-start gap-6 mb-8">
         <div className="h-20 w-20 rounded-lg bg-[var(--color-bg-elev-2)] border border-[var(--color-border)] flex items-center justify-center overflow-hidden">

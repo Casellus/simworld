@@ -1,5 +1,6 @@
 import { notFound } from "next/navigation";
 import Link from "next/link";
+import { BackButton } from "@/components/back-button";
 import Image from "next/image";
 import { createClient } from "@/lib/supabase/server";
 import { getUserId } from "@/lib/auth";
@@ -73,9 +74,7 @@ export default async function SetupDetailPage({ params }: { params: Promise<{ id
 
   return (
     <div className="mx-auto max-w-4xl px-4 sm:px-6 py-10">
-      <Link href="/assetti" className="text-sm text-[var(--color-fg-muted)] hover:text-[var(--color-fg)] mb-4 inline-block">
-        ← Tutti gli assetti
-      </Link>
+      <BackButton href="/assetti" label="Tutti gli assetti" />
 
       {setup.photo_url && (
         <div className="mb-8 rounded-xl overflow-hidden w-full relative h-80">
