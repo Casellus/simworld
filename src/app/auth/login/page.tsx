@@ -1,11 +1,14 @@
 import Link from "next/link";
 import { LoginForm } from "./login-form";
+import { BackButton } from "@/components/back-button";
 
 export const metadata = { title: "Accedi · SimUniverse" };
 
 export default function LoginPage() {
   return (
     <div className="auth-screen">
+      <div className="w-full" style={{ maxWidth: "26rem" }}>
+      <BackButton href="/" label="Indietro" />
       <div className="auth-card">
         <Link href="/" className="flex items-center justify-center mb-6">
           <span className="text-xl font-extrabold" style={{ fontFamily: "var(--font-heading)" }}>
@@ -28,6 +31,7 @@ export default function LoginPage() {
             Registrati
           </Link>
         </p>
+      </div>
       </div>
     </div>
   );

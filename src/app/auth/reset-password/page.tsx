@@ -1,12 +1,15 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { ResetPasswordForm } from "./reset-password-form";
+import { BackButton } from "@/components/back-button";
 
 export const metadata: Metadata = { title: "Nuova password · SimUniverse" };
 
 export default function ResetPasswordPage() {
   return (
     <div className="auth-screen">
+      <div className="w-full" style={{ maxWidth: "26rem" }}>
+      <BackButton href="/auth/login" label="Indietro" />
       <div className="auth-card">
         <Link href="/" className="flex items-center justify-center mb-6">
           <span className="text-xl font-extrabold" style={{ fontFamily: "var(--font-heading)" }}>
@@ -23,6 +26,7 @@ export default function ResetPasswordPage() {
           Scegli una nuova password sicura per il tuo account.
         </p>
         <ResetPasswordForm />
+      </div>
       </div>
     </div>
   );
