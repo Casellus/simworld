@@ -5,6 +5,7 @@ import { BackButton } from "@/components/back-button";
 import { GAMES, GUIDE_CATEGORIES } from "@/lib/constants";
 import { one } from "@/lib/types";
 import { updateGuide } from "../../actions";
+import { GuideCoverUpload } from "../../nuovo/guide-cover-upload";
 
 export const metadata = { title: "Modifica guida · SimUniverse" };
 
@@ -60,6 +61,10 @@ export default async function ModificaGuidaPage({ params }: { params: Promise<{ 
         </div>
         <Field label="Link video (YouTube o Vimeo)">
           <input name="video_url" type="url" defaultValue={guide.video_url ?? ""} className={inputCls} />
+        </Field>
+
+        <Field label="Copertina">
+          <GuideCoverUpload defaultUrl={guide.cover_url ?? ""} />
         </Field>
         <Field label="Contenuto" required>
           <textarea name="body" required rows={12} defaultValue={guide.body} className="w-full rounded-lg border border-[var(--color-border)] bg-[var(--color-bg-elev)] px-3 py-2.5 text-sm leading-relaxed focus:border-[var(--color-primary)] focus:outline-none resize-y" />

@@ -4,6 +4,7 @@ import { getUserId } from "@/lib/auth";
 import { BackButton } from "@/components/back-button";
 import { GAMES, GUIDE_CATEGORIES } from "@/lib/constants";
 import { createGuide } from "../actions";
+import { GuideCoverUpload } from "./guide-cover-upload";
 
 export const metadata = { title: "Nuova guida · SimUniverse" };
 
@@ -61,6 +62,10 @@ export default async function NuovaGuidaPage() {
 
         <Field label="Link video (YouTube o Vimeo)">
           <input name="video_url" type="url" className={inputCls} placeholder="https://youtu.be/..." />
+        </Field>
+
+        <Field label="Copertina">
+          <GuideCoverUpload />
         </Field>
 
         <Field label="Contenuto" required>

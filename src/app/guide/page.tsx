@@ -131,7 +131,6 @@ export default async function GuidePage({ searchParams }: { searchParams: SP }) 
                   ) : (
                     <div className="h-full w-full bg-gradient-to-br from-[#0d1b3e] via-[#1a1a2e] to-[#050507]" />
                   )}
-                  <div className="absolute inset-0 bg-gradient-to-t from-[var(--color-bg-elev)] to-transparent" />
                   {catLabel && (
                     <span className="absolute top-3 left-3 z-[2] rounded-full px-2.5 py-1 text-[11px] font-semibold bg-[var(--color-accent)]/25 text-blue-100 border border-[var(--color-accent)]/40 backdrop-blur-sm">
                       {catLabel}
