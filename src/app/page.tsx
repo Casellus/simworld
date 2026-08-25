@@ -8,7 +8,7 @@ import { Badge } from "@/components/ui/card";
 import { createClient } from "@/lib/supabase/server";
 import { getUserId } from "@/lib/auth";
 import { formatDate } from "@/lib/utils";
-import { Calendar, Settings2, ArrowRight, LayoutDashboard, ChevronRight, Trophy, Car, Gamepad2, Handshake, Award, Zap, Flame, Flag, BookOpen } from "lucide-react";
+import { Calendar, Settings2, ArrowRight, LayoutDashboard, ChevronRight, Trophy, Award, Zap, Flame } from "lucide-react";
 
 export default async function Home() {
   const supabase = await createClient();
@@ -179,13 +179,13 @@ export default async function Home() {
                   per chi vive di curve, settaggi e gomme che si scaldano.
                 </p>
               </div>
-              <div className="grid gap-5 md:grid-cols-3">
-                <FeatureBlock emoji={<Trophy className="w-10 h-10 text-yellow-400" />} title="Organizza eventi" desc="Tornei, campionati, gare endurance. Crea, gestisci iscrizioni e raduna piloti in pochi clic." />
-                <FeatureBlock emoji={<Car className="w-10 h-10 text-blue-400" />} title="Costruisci il tuo team" desc="Logo, lineup, descrizione. Recluta nuovi piloti tramite la bacheca pubblica." />
-                <FeatureBlock emoji={<Settings2 className="w-10 h-10 text-slate-300" />} title="Condividi assetti" desc="Setup per ogni auto e tracciato. Vota, scarica, contribuisci alla libreria della community." />
-                <FeatureBlock emoji={<Gamepad2 className="w-10 h-10 text-purple-400" />} title="Tutti i sim principali" desc="ACC, iRacing, LMU, Assetto Corsa, AC EVO, F1 25. Un solo profilo, tutti i tuoi sim." />
-                <FeatureBlock emoji={<Handshake className="w-10 h-10 text-green-400" />} title="Trova compagni" desc="Cerca piloti del tuo livello o team aperti al reclutamento. Niente più gare in solitaria." />
-                <FeatureBlock emoji={<BookOpen className="w-10 h-10 text-cyan-400" />} title="Guide & Tutorial" desc="Tecniche di guida, setup spiegati passo per passo, configurazione hardware. Impara dai piloti più esperti." />
+              <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+                <FeatureBlock img="/home/eventi.jpg"   kicker="Eventi"      title="Organizza eventi" desc="Tornei, campionati, gare endurance. Crea, gestisci iscrizioni e raduna piloti in pochi clic." />
+                <FeatureBlock img="/home/team.jpg"     kicker="Team"        title="Costruisci il tuo team" desc="Logo, lineup, descrizione. Recluta nuovi piloti tramite la bacheca pubblica." />
+                <FeatureBlock img="/home/assetti.jpg"  kicker="Assetti"     title="Condividi assetti" desc="Setup per ogni auto e tracciato. Vota, scarica, contribuisci alla libreria della community." />
+                <FeatureBlock img="/home/sim.jpg"      kicker="Simulatori"  title="Tutti i sim principali" desc="ACC, iRacing, LMU, Assetto Corsa, AC EVO, F1 25. Un solo profilo, tutti i tuoi sim." />
+                <FeatureBlock img="/home/compagni.jpg" kicker="Community"   title="Trova compagni" desc="Cerca piloti del tuo livello o team aperti al reclutamento. Niente più gare in solitaria." />
+                <FeatureBlock img="/home/guide.jpg"    kicker="Guide"       title="Guide & Tutorial" desc="Tecniche di guida, setup spiegati passo per passo, configurazione hardware. Impara dai piloti più esperti." />
               </div>
             </div>
           </section>
@@ -430,15 +430,23 @@ function PostCard({ post }: { post: PostShape }) {
 
 
 
-function FeatureBlock({ emoji, title, desc }: { emoji: React.ReactNode; title: string; desc: string }) {
+function FeatureBlock({ img, kicker, title, desc }: { img: string; kicker: string; title: string; desc: string }) {
   return (
-    <div className="group relative p-6 rounded-2xl border border-[var(--color-border)] bg-[var(--color-bg-elev)] hover:border-[var(--color-primary)]/60 transition-all duration-200 overflow-hidden">
-      <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none"
-        style={{ background: "radial-gradient(ellipse at top left, rgba(46,125,255,0.07), transparent 70%)" }} />
-      <div className="text-4xl mb-4 leading-none">{emoji}</div>
-      <h3 className="font-bold text-lg mb-2 text-white" style={{ fontFamily: "var(--font-heading)" }}>{title}</h3>
-      <p className="text-sm text-[var(--color-fg-muted)] leading-relaxed">{desc}</p>
-      <div className="absolute bottom-0 left-0 h-0.5 w-0 group-hover:w-full bg-[var(--color-primary)] transition-all duration-300" />
+    <div
+      className="group relative h-60 rounded-2xl overflow-hidden border border-[var(--color-border)] flex flex-col justify-end p-5 transition-transform duration-300 hover:-translate-y-1 bg-cover bg-center"
+      style={{ backgroundImage: `url('${img}')` }}
+    >
+      {/* overlay scuro per leggibilita' */}
+      <div className="absolute inset-0 transition-all duration-300 bg-gradient-to-t from-[#06060a]/95 via-[#06060a]/55 to-[#06060a]/15 group-hover:from-[#06060a]/95 group-hover:via-[#06060a]/60" />
+      <span className="relative text-[11px] font-bold uppercase tracking-wider text-[var(--color-accent)] mb-1.5 translate-y-1 opacity-90 group-hover:translate-y-0 group-hover:opacity-100 transition-all">
+        {kicker}
+      </span>
+      <h3 className="relative font-bold text-xl text-white leading-tight" style={{ fontFamily: "var(--font-heading)" }}>{title}</h3>
+      <p className="relative text-sm text-[#cfcfd6] leading-relaxed max-h-0 opacity-0 overflow-hidden group-hover:max-h-24 group-hover:opacity-100 group-hover:mt-1.5 transition-all duration-300">
+        {desc}
+      </p>
+      {/* linea accento */}
+      <div className="absolute bottom-0 left-0 h-[3px] w-0 group-hover:w-full bg-[var(--color-accent)] transition-all duration-300" />
     </div>
   );
 }
