@@ -1,8 +1,10 @@
 import Link from "next/link";
 import { createClient } from "@/lib/supabase/server";
+import { getUserId } from "@/lib/auth";
 import { Card, CardBody, Badge } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
 import { SortSelect } from "@/components/ui/sort-select";
-import { BookOpen } from "lucide-react";
+import { BookOpen, Plus } from "lucide-react";
 import { formatDate } from "@/lib/utils";
 import { one } from "@/lib/types";
 import { Suspense } from "react";
@@ -30,11 +32,18 @@ export default async function GuidePage({ searchParams }: { searchParams: SP }) 
   const { col, asc } = ORDER_MAP[ordina] ?? ORDER_MAP.recenti;
 
   const supabase = await createClient();
-  const { data: guides } = await supabase
-    .from("guides")
-    .select("id, slug, title, excerpt, category, cover_url, created_at, games(name)")
-    .eq("published", true)
-    .order(col, { ascending: asc });
+  const userId = await getUserId();
+  const [{ data: guides }, creator] = await Promise.all([
+    supabase
+      .from("guides")
+      .select("id, slug, title, excerpt, category, cover_url, video_url, created_at, games(name)")
+      .eq("published", true)
+      .order(col, { ascending: asc }),
+    userId
+      ? supabase.from("profiles").select("can_write_guides").eq("id", userId).single()
+      : Promise.resolve({ data: null }),
+  ]);
+  const canWrite = !!(creator?.data?.can_write_guides);
 
   return (
     <div className="mx-auto max-w-7xl px-4 sm:px-6 py-10">
@@ -43,9 +52,16 @@ export default async function GuidePage({ searchParams }: { searchParams: SP }) 
           <h1 className="text-3xl md:text-4xl font-extrabold tracking-tight">Guide</h1>
           <p className="text-[var(--color-fg-muted)] mt-1">Consigli, tutorial, FFB, hardware, tecniche di guida.</p>
         </div>
-        <Suspense>
-          <SortSelect options={SORT_OPTIONS} />
-        </Suspense>
+        <div className="flex items-center gap-2">
+          {canWrite && (
+            <Link href="/guide/nuovo">
+              <Button><Plus className="h-4 w-4" /> Nuova guida</Button>
+            </Link>
+          )}
+          <Suspense>
+            <SortSelect options={SORT_OPTIONS} />
+          </Suspense>
+        </div>
       </div>
 
       {guides && guides.length > 0 ? (

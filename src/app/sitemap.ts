@@ -19,34 +19,34 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   ];
 
   const [eventi, team, assetti, guide] = await Promise.all([
-    supabase.from("events").select("slug, updated_at").eq("is_public", true),
-    supabase.from("teams").select("slug, updated_at").eq("is_public", true),
-    supabase.from("setups").select("id, updated_at").eq("is_public", true),
-    supabase.from("guides").select("slug, updated_at").eq("is_published", true),
+    supabase.from("events").select("slug, created_at"),
+    supabase.from("teams").select("slug, created_at"),
+    supabase.from("setups").select("id, created_at"),
+    supabase.from("guides").select("slug, created_at").eq("published", true),
   ]);
 
   const dynamicRoutes: MetadataRoute.Sitemap = [
     ...(eventi.data ?? []).map((e) => ({
       url: `${BASE}/eventi/${e.slug}`,
-      lastModified: e.updated_at,
+      lastModified: e.created_at,
       changeFrequency: "daily" as const,
       priority: 0.7,
     })),
     ...(team.data ?? []).map((t) => ({
       url: `${BASE}/team/${t.slug}`,
-      lastModified: t.updated_at,
+      lastModified: t.created_at,
       changeFrequency: "weekly" as const,
       priority: 0.6,
     })),
     ...(assetti.data ?? []).map((s) => ({
       url: `${BASE}/assetti/${s.id}`,
-      lastModified: s.updated_at,
+      lastModified: s.created_at,
       changeFrequency: "monthly" as const,
       priority: 0.5,
     })),
     ...(guide.data ?? []).map((g) => ({
       url: `${BASE}/guide/${g.slug}`,
-      lastModified: g.updated_at,
+      lastModified: g.created_at,
       changeFrequency: "monthly" as const,
       priority: 0.6,
     })),

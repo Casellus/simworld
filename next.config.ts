@@ -18,6 +18,8 @@ const csp = [
   "img-src 'self' data: blob: https://*.supabase.co https://flagcdn.com",
   "media-src 'self' blob:",
   "connect-src 'self' https://*.supabase.co wss://*.supabase.co",
+  // Video guide: solo iframe YouTube/Vimeo (embed dei creator).
+  "frame-src https://www.youtube.com https://www.youtube-nocookie.com https://player.vimeo.com",
   "frame-ancestors 'none'",
   "form-action 'self'",
   "base-uri 'self'",

@@ -23,7 +23,7 @@ export const getUserId = cache(async () => {
 // Colonne del profilo lette dal proprietario. I social (discord/steam/twitch/
 // instagram) sono pubblici (migration_social.sql), quindi inclusi qui.
 const PROFILE_COLUMNS =
-  "id, username, display_name, country, bio, avatar_url, cover_url, hardware, created_at, updated_at, monthly_xp, current_rank, discord_id, steam_id, twitch, instagram";
+  "id, username, display_name, country, bio, avatar_url, cover_url, hardware, created_at, updated_at, monthly_xp, current_rank, discord_id, steam_id, twitch, instagram, can_write_guides";
 
 export const getProfile = cache(async () => {
   const userId = await getUserId();

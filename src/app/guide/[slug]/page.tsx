@@ -2,6 +2,7 @@ import { notFound } from "next/navigation";
 import { BackButton } from "@/components/back-button";
 import { createClient } from "@/lib/supabase/server";
 import { Badge } from "@/components/ui/card";
+import { VideoEmbed } from "@/components/video-embed";
 import { formatDate } from "@/lib/utils";
 
 export const revalidate = 60;
@@ -29,6 +30,13 @@ export default async function GuidaPage({ params }: { params: Promise<{ slug: st
       <p className="text-sm text-[var(--color-fg-muted)] mt-3">
         {guide.profiles?.display_name || guide.profiles?.username || "—"} · {formatDate(guide.created_at)}
       </p>
+
+      {guide.video_url && (
+        <div className="mt-8">
+          <VideoEmbed url={guide.video_url} />
+        </div>
+      )}
+
       <div className="prose prose-invert mt-8 max-w-none whitespace-pre-wrap text-[var(--color-fg)] leading-relaxed">
         {guide.body}
       </div>
