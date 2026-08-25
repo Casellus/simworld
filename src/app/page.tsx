@@ -174,9 +174,10 @@ export default async function Home() {
                   <span className="text-accent-glow">Sim Racing.</span>
                 </h2>
                 <p className="text-base sm:text-lg text-[var(--color-fg-muted)] leading-relaxed">
-                  SimUniverse nasce per riunire la community italiana del sim racing in un unico spazio.
-                  Niente forum dispersivi, niente gruppi WhatsApp scollegati — solo strumenti pensati
-                  per chi vive di curve, settaggi e gomme che si scaldano.
+                  SimUniverse è l&apos;hub definitivo per la community italiana del sim racing: una piattaforma unica,
+                  progettata per chi ha la passione della pista. Qui ogni millesimo conta, la telemetria si fa conversazione
+                  e la competizione diventa condivisione. Allacciati le cinture, scendi in pista con noi e vivi il sim racing
+                  senza compromessi.
                 </p>
               </div>
               <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
