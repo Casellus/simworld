@@ -9,12 +9,13 @@ import { BookOpen, Plus, PlayCircle } from "lucide-react";
 import { formatDate } from "@/lib/utils";
 import { one } from "@/lib/types";
 import { GAMES, GUIDE_CATEGORIES } from "@/lib/constants";
+import { likePattern } from "@/lib/validation";
 import { Suspense } from "react";
 
 export const revalidate = 60;
 export const metadata = { title: "Guide · SimUniverse" };
 
-type SP = Promise<{ ordina?: string; categoria?: string; gioco?: string }>;
+type SP = Promise<{ ordina?: string; categoria?: string; gioco?: string; q?: string }>;
 
 const SORT_OPTIONS = [
   { value: "recenti", label: "Più recenti" },
@@ -50,6 +51,7 @@ export default async function GuidePage({ searchParams }: { searchParams: SP }) 
     .order(col, { ascending: asc });
   if (sp.categoria) q = q.eq("category", sp.categoria);
   if (gameId) q = q.eq("game_id", gameId);
+  if (sp.q) q = q.ilike("title", likePattern(sp.q));
 
   const [{ data: guides }, creator] = await Promise.all([
     q,
@@ -66,16 +68,30 @@ export default async function GuidePage({ searchParams }: { searchParams: SP }) 
           <h1 className="text-3xl md:text-4xl font-extrabold tracking-tight">Guide</h1>
           <p className="text-[var(--color-fg-muted)] mt-1">Consigli, tutorial, FFB, hardware, tecniche di guida.</p>
         </div>
-        <div className="flex items-center gap-2">
-          {canWrite && (
-            <Link href="/guide/nuovo">
-              <Button><Plus className="h-4 w-4" /> Nuova guida</Button>
-            </Link>
-          )}
-          <Suspense>
-            <SortSelect options={SORT_OPTIONS} />
-          </Suspense>
-        </div>
+        {canWrite && (
+          <Link href="/guide/nuovo">
+            <Button><Plus className="h-4 w-4" /> Nuova guida</Button>
+          </Link>
+        )}
+      </div>
+
+      {/* RICERCA + ORDINAMENTO */}
+      <div className="flex flex-col sm:flex-row gap-2 mb-6">
+        <form action="/guide" method="get" className="flex flex-1 gap-2 min-w-0">
+          {sp.categoria && <input type="hidden" name="categoria" value={sp.categoria} />}
+          {sp.gioco && <input type="hidden" name="gioco" value={sp.gioco} />}
+          {sp.ordina && <input type="hidden" name="ordina" value={sp.ordina} />}
+          <input
+            name="q"
+            defaultValue={sp.q || ""}
+            placeholder="Cerca guide..."
+            className="min-w-0 flex-1 h-10 rounded border border-[var(--color-border)] bg-[var(--color-bg-elev)] px-3 text-sm focus:border-[var(--color-primary)] focus:outline-none"
+          />
+          <Button type="submit" variant="secondary" className="shrink-0">Cerca</Button>
+        </form>
+        <Suspense>
+          <SortSelect options={SORT_OPTIONS} />
+        </Suspense>
       </div>
 
       {/* FILTRI */}
