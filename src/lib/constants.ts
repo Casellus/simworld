@@ -25,6 +25,16 @@ export const SIM_CATEGORIES = [
   { value: "generale",  label: "Generale" },
 ] as const;
 
+// Categorie delle guide (usate nel form e nei filtri della pagina Guide).
+export const GUIDE_CATEGORIES = [
+  { value: "tecniche",     label: "Tecniche di guida" },
+  { value: "setup",        label: "Assetti & Setup" },
+  { value: "hardware",     label: "Hardware" },
+  { value: "ffb",          label: "Force Feedback" },
+  { value: "principianti", label: "Principianti" },
+  { value: "avanzato",     label: "Avanzato" },
+] as const;
+
 export const SKILL_LEVELS = [
   { value: "principiante", label: "Principiante" },
   { value: "intermedio", label: "Intermedio" },

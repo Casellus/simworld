@@ -2,7 +2,7 @@ import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 import { getUserId } from "@/lib/auth";
 import { BackButton } from "@/components/back-button";
-import { GAMES } from "@/lib/constants";
+import { GAMES, GUIDE_CATEGORIES } from "@/lib/constants";
 import { createGuide } from "../actions";
 
 export const metadata = { title: "Nuova guida · SimUniverse" };
@@ -42,7 +42,12 @@ export default async function NuovaGuidaPage() {
 
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           <Field label="Categoria">
-            <input name="category" maxLength={200} className={inputCls} placeholder="es. Tecniche di guida" />
+            <select name="category" className={inputCls} defaultValue="">
+              <option value="">— Nessuna —</option>
+              {GUIDE_CATEGORIES.map((c) => (
+                <option key={c.value} value={c.value}>{c.label}</option>
+              ))}
+            </select>
           </Field>
           <Field label="Gioco">
             <select name="game" className={inputCls} defaultValue="">
