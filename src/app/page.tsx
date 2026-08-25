@@ -438,11 +438,11 @@ function FeatureBlock({ img, kicker, title, desc }: { img: string; kicker: strin
     >
       {/* overlay scuro per leggibilita' */}
       <div className="absolute inset-0 transition-all duration-300 bg-gradient-to-t from-[#06060a]/95 via-[#06060a]/55 to-[#06060a]/15 group-hover:from-[#06060a]/95 group-hover:via-[#06060a]/60" />
-      <span className="relative text-[11px] font-bold uppercase tracking-wider text-[var(--color-accent)] mb-1.5 translate-y-1 opacity-90 group-hover:translate-y-0 group-hover:opacity-100 transition-all">
+      <span className="relative text-[11px] font-bold uppercase tracking-wider text-[var(--color-accent)] mb-1.5">
         {kicker}
       </span>
       <h3 className="relative font-bold text-xl text-white leading-tight" style={{ fontFamily: "var(--font-heading)" }}>{title}</h3>
-      <p className="relative text-sm text-[#cfcfd6] leading-relaxed max-h-0 opacity-0 overflow-hidden group-hover:max-h-24 group-hover:opacity-100 group-hover:mt-1.5 transition-all duration-300">
+      <p className="relative text-sm text-[#cfcfd6] leading-relaxed mt-1.5">
         {desc}
       </p>
       {/* linea accento */}
@@ -476,12 +476,12 @@ function StepBlock({ num, title, desc }: { num: string; title: string; desc: str
 function AudienceBlock({ img, title, desc }: { img: string; title: string; desc: string }) {
   return (
     <div
-      className="group relative h-44 rounded-2xl overflow-hidden border border-[var(--color-border)] flex flex-col justify-end p-4 transition-transform duration-300 hover:-translate-y-1 bg-cover bg-center"
+      className="group relative h-48 rounded-2xl overflow-hidden border border-[var(--color-border)] flex flex-col justify-end p-4 transition-transform duration-300 hover:-translate-y-1 bg-cover bg-center"
       style={{ backgroundImage: `url('${img}')` }}
     >
       <div className="absolute inset-0 bg-gradient-to-t from-[#06060a]/95 via-[#06060a]/55 to-[#06060a]/15 transition-all duration-300 group-hover:via-[#06060a]/60" />
       <h3 className="relative font-bold text-base text-white" style={{ fontFamily: "var(--font-heading)" }}>{title}</h3>
-      <p className="relative text-xs text-[#cfcfd6] leading-relaxed max-h-0 opacity-0 overflow-hidden group-hover:max-h-16 group-hover:opacity-100 group-hover:mt-1 transition-all duration-300">
+      <p className="relative text-xs text-[#cfcfd6] leading-relaxed mt-1">
         {desc}
       </p>
       <div className="absolute bottom-0 left-0 h-[3px] w-0 group-hover:w-full bg-[var(--color-accent)] transition-all duration-300" />
