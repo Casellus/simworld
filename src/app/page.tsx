@@ -8,7 +8,7 @@ import { Badge } from "@/components/ui/card";
 import { createClient } from "@/lib/supabase/server";
 import { getUserId } from "@/lib/auth";
 import { formatDate } from "@/lib/utils";
-import { Calendar, Settings2, ArrowRight, LayoutDashboard, ChevronRight, Trophy, Award, Zap, Flame } from "lucide-react";
+import { Calendar, Settings2, ArrowRight, LayoutDashboard, ChevronRight } from "lucide-react";
 
 export default async function Home() {
   const supabase = await createClient();
@@ -224,10 +224,10 @@ export default async function Home() {
                   </p>
                 </div>
                 <div className="grid gap-4 sm:grid-cols-2">
-                  <AudienceBlock emoji={<Award className="w-8 h-8 text-amber-600" />} title="Principianti" desc="Trova team, primi tornei, guide per iniziare." />
-                  <AudienceBlock emoji={<Zap className="w-8 h-8 text-yellow-400" />} title="Amatori" desc="Gare settimanali, assetti condivisi, community attiva." />
-                  <AudienceBlock emoji={<Trophy className="w-8 h-8 text-yellow-400" />} title="Competitivi" desc="Campionati seri, lineup di team, sfide ad alto livello." />
-                  <AudienceBlock emoji={<Flame className="w-8 h-8 text-orange-500" />} title="Pro" desc="Esports, endurance, eventi premium e visibilità." />
+                  <AudienceBlock img="/home/principianti.jpg" title="Principianti" desc="Trova team, primi tornei, guide per iniziare." />
+                  <AudienceBlock img="/home/amatori.jpg" title="Amatori" desc="Gare settimanali, assetti condivisi, community attiva." />
+                  <AudienceBlock img="/home/competitivi.jpg" title="Competitivi" desc="Campionati seri, lineup di team, sfide ad alto livello." />
+                  <AudienceBlock img="/home/pro.jpg" title="Pro" desc="Esports, endurance, eventi premium e visibilità." />
                 </div>
               </div>
             </div>
@@ -453,31 +453,38 @@ function FeatureBlock({ img, kicker, title, desc }: { img: string; kicker: strin
 
 function StepBlock({ num, title, desc }: { num: string; title: string; desc: string }) {
   return (
-    <div className="relative p-6 sm:p-8 rounded-2xl border border-[var(--color-border)] bg-[var(--color-bg-elev)] overflow-hidden">
-      <div className="absolute top-0 right-0 text-[120px] font-extrabold leading-none select-none pointer-events-none"
-        style={{ color: "rgba(46,125,255,0.06)", fontFamily: "var(--font-heading)", lineHeight: 1, transform: "translate(10px,-10px)" }}>
+    <div className="group relative p-7 sm:p-8 rounded-2xl border border-[var(--color-border)] bg-[var(--color-bg-elev)] overflow-hidden transition-all duration-300 hover:border-[var(--color-accent)]/60 hover:-translate-y-1">
+      {/* numero gigante di sfondo che si accende all'hover */}
+      <div
+        className="absolute -top-6 right-1 text-[130px] font-extrabold leading-none select-none pointer-events-none transition-colors duration-300"
+        style={{ color: "rgba(59,157,255,0.06)", fontFamily: "var(--font-heading)" }}
+      >
         {num}
       </div>
       <div className="relative">
-        <div className="inline-flex items-center justify-center h-10 w-10 rounded-xl bg-[var(--color-primary)]/15 border border-[var(--color-primary)]/30 mb-4">
-          <span className="text-sm font-extrabold text-[var(--color-primary)]">{num}</span>
+        <div className="inline-flex items-center justify-center h-12 w-12 rounded-2xl bg-[var(--color-accent)]/10 border border-[var(--color-accent)]/30 mb-5 transition-all duration-300 group-hover:bg-[var(--color-accent)] group-hover:border-[var(--color-accent)]">
+          <span className="text-base font-extrabold text-[var(--color-accent)] transition-colors duration-300 group-hover:text-white" style={{ fontFamily: "var(--font-heading)" }}>{num}</span>
         </div>
         <h3 className="font-bold text-xl mb-2 text-white" style={{ fontFamily: "var(--font-heading)" }}>{title}</h3>
         <p className="text-sm text-[var(--color-fg-muted)] leading-relaxed">{desc}</p>
       </div>
+      <div className="absolute bottom-0 left-0 h-[3px] w-0 group-hover:w-full bg-[var(--color-accent)] transition-all duration-300" />
     </div>
   );
 }
 
-function AudienceBlock({ emoji, title, desc }: { emoji: React.ReactNode; title: string; desc: string }) {
+function AudienceBlock({ img, title, desc }: { img: string; title: string; desc: string }) {
   return (
-    <div className="group relative p-5 rounded-2xl border border-[var(--color-border)] bg-[var(--color-bg-elev)] hover:border-[var(--color-primary)]/60 transition-all duration-200 overflow-hidden">
-      <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none"
-        style={{ background: "radial-gradient(ellipse at top left, rgba(46,125,255,0.07), transparent 70%)" }} />
-      <div className="text-3xl mb-3 leading-none">{emoji}</div>
-      <h3 className="font-bold text-base text-white mb-1" style={{ fontFamily: "var(--font-heading)" }}>{title}</h3>
-      <p className="text-sm text-[var(--color-fg-muted)] leading-relaxed">{desc}</p>
-      <div className="absolute bottom-0 left-0 h-0.5 w-0 group-hover:w-full bg-[var(--color-primary)] transition-all duration-300" />
+    <div
+      className="group relative h-44 rounded-2xl overflow-hidden border border-[var(--color-border)] flex flex-col justify-end p-4 transition-transform duration-300 hover:-translate-y-1 bg-cover bg-center"
+      style={{ backgroundImage: `url('${img}')` }}
+    >
+      <div className="absolute inset-0 bg-gradient-to-t from-[#06060a]/95 via-[#06060a]/55 to-[#06060a]/15 transition-all duration-300 group-hover:via-[#06060a]/60" />
+      <h3 className="relative font-bold text-base text-white" style={{ fontFamily: "var(--font-heading)" }}>{title}</h3>
+      <p className="relative text-xs text-[#cfcfd6] leading-relaxed max-h-0 opacity-0 overflow-hidden group-hover:max-h-16 group-hover:opacity-100 group-hover:mt-1 transition-all duration-300">
+        {desc}
+      </p>
+      <div className="absolute bottom-0 left-0 h-[3px] w-0 group-hover:w-full bg-[var(--color-accent)] transition-all duration-300" />
     </div>
   );
 }
