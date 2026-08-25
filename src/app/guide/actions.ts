@@ -83,3 +83,66 @@ export async function createGuide(formData: FormData): Promise<void> {
   revalidatePath("/guide");
   redirect(published ? `/guide/${slug}` : "/guide");
 }
+
+export async function updateGuide(guideId: string, formData: FormData): Promise<void> {
+  const supabase = await createClient();
+  const { data: { user } } = await supabase.auth.getUser();
+  if (!user) throw new Error("Non autorizzato");
+
+  // Solo l'autore della guida.
+  const { data: guide } = await supabase.from("guides").select("id, slug, author_id").eq("id", guideId).single();
+  if (!guide || guide.author_id !== user.id) throw new Error("Non autorizzato");
+
+  const title = text(formData.get("title"), LIMITS.title);
+  const excerpt = textOrNull(formData.get("excerpt"), LIMITS.short);
+  const body = text(formData.get("body"), LIMITS.notes);
+  const category = textOrNull(formData.get("category"), LIMITS.short);
+  const cover_url = storageUrlOrNull(formData.get("cover_url"));
+  const game_slug = String(formData.get("game") || "");
+  const rawVideo = String(formData.get("video_url") || "").trim();
+  const published = formData.get("published") === "on";
+
+  if (!title || !body) throw new Error("Titolo e contenuto sono obbligatori.");
+
+  let video_url: string | null = null;
+  if (rawVideo) {
+    if (!isEmbeddableVideo(rawVideo)) throw new Error("Il link video deve essere di YouTube o Vimeo.");
+    video_url = rawVideo;
+  }
+
+  let game_id: string | null = null;
+  if (game_slug) {
+    const { data: g } = await supabase.from("games").select("id").eq("slug", game_slug).single();
+    if (g) game_id = g.id;
+  }
+
+  const { error } = await supabase
+    .from("guides")
+    .update({ title, excerpt, body, category, game_id, cover_url, video_url, published })
+    .eq("id", guideId);
+  if (error) {
+    console.error("updateGuide failed:", error.message);
+    throw new Error(GENERIC_ERROR);
+  }
+
+  revalidatePath("/guide");
+  revalidatePath(`/guide/${guide.slug}`);
+  redirect(published ? `/guide/${guide.slug}` : "/guide");
+}
+
+export async function deleteGuide(guideId: string): Promise<{ error?: string }> {
+  const supabase = await createClient();
+  const { data: { user } } = await supabase.auth.getUser();
+  if (!user) return { error: "Non autorizzato" };
+
+  const { data: guide } = await supabase.from("guides").select("id, author_id").eq("id", guideId).single();
+  if (!guide || guide.author_id !== user.id) return { error: "Non autorizzato" };
+
+  const { error } = await supabase.from("guides").delete().eq("id", guideId);
+  if (error) {
+    console.error("deleteGuide failed:", error.message);
+    return { error: GENERIC_ERROR };
+  }
+  revalidatePath("/guide");
+  return {};
+}

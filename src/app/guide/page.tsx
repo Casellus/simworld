@@ -10,6 +10,7 @@ import { formatDate } from "@/lib/utils";
 import { one } from "@/lib/types";
 import { GAMES, GUIDE_CATEGORIES } from "@/lib/constants";
 import { likePattern } from "@/lib/validation";
+import { videoThumbnail } from "@/components/video-embed";
 import { Suspense } from "react";
 
 export const revalidate = 60;
@@ -117,14 +118,16 @@ export default async function GuidePage({ searchParams }: { searchParams: SP }) 
             const author = one<{ username: string; display_name: string | null; avatar_url: string | null }>(g.profiles);
             const authorName = author?.display_name || author?.username || "Autore";
             const catLabel = GUIDE_CATEGORIES.find((c) => c.value === g.category)?.label ?? g.category;
+            // Cover: quella caricata, altrimenti la thumbnail del video YouTube.
+            const cover = g.cover_url || videoThumbnail(g.video_url);
             return (
             <Link key={g.id} href={`/guide/${g.slug}`} className="group block h-full">
               <div className="h-full rounded-2xl overflow-hidden border border-[var(--color-border)] bg-[var(--color-bg-elev)] hover:border-[var(--color-primary)] hover:-translate-y-1 transition-all duration-200 flex flex-col">
                 {/* Cover */}
                 <div className="relative h-40 overflow-hidden shrink-0">
-                  {g.cover_url ? (
+                  {cover ? (
                     // eslint-disable-next-line @next/next/no-img-element
-                    <img src={g.cover_url} alt="" className="h-full w-full object-cover" />
+                    <img src={cover} alt="" className="h-full w-full object-cover" />
                   ) : (
                     <div className="h-full w-full bg-gradient-to-br from-[#0d1b3e] via-[#1a1a2e] to-[#050507]" />
                   )}

@@ -42,6 +42,20 @@ export function isEmbeddableVideo(url: string): boolean {
   return parseEmbed(url) !== null;
 }
 
+/**
+ * Thumbnail derivabile dal video, usata come cover automatica.
+ * YouTube: si ricava dall'ID senza chiamate esterne. Vimeo richiede una
+ * API per la thumb, quindi non e' derivabile qui -> null.
+ */
+export function videoThumbnail(url: string | null | undefined): string | null {
+  if (!url) return null;
+  const embed = parseEmbed(url);
+  if (!embed) return null;
+  const m = embed.match(/youtube\.com\/embed\/([^/?]+)/);
+  if (m) return `https://i.ytimg.com/vi/${m[1]}/hqdefault.jpg`;
+  return null;
+}
+
 export function VideoEmbed({ url }: { url: string }) {
   const src = parseEmbed(url);
   if (!src) return null;

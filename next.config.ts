@@ -15,7 +15,7 @@ const csp = [
   scriptSrc,
   "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
   "font-src 'self' https://fonts.gstatic.com",
-  "img-src 'self' data: blob: https://*.supabase.co https://flagcdn.com",
+  "img-src 'self' data: blob: https://*.supabase.co https://flagcdn.com https://i.ytimg.com https://cdn.discordapp.com",
   "media-src 'self' blob:",
   "connect-src 'self' https://*.supabase.co wss://*.supabase.co",
   // Video guide: solo iframe YouTube/Vimeo (embed dei creator).
