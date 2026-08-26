@@ -132,6 +132,17 @@ export function RegisterForm() {
       setLoading(false);
       return;
     }
+    // Formato email valido (es. manca il punto nel dominio: gmailcom).
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+      setError("L'indirizzo email non è valido. Controlla di averlo scritto bene.");
+      setLoading(false);
+      return;
+    }
+    if (password.length < 8) {
+      setError("La password deve avere almeno 8 caratteri.");
+      setLoading(false);
+      return;
+    }
     if (!acceptedAge || !acceptedTerms) {
       setError("Devi confermare età e accettare i Termini per continuare.");
       setLoading(false);
@@ -163,11 +174,13 @@ export function RegisterForm() {
       // Messaggi noti mappati in italiano; il resto resta generico per non
       // esporre dettagli di Supabase Auth.
       const msg = error.message.toLowerCase();
-      if (msg.includes("password")) {
-        setError("La password non rispetta i requisiti (minimo 8 caratteri).");
-      } else if (msg.includes("email") && msg.includes("invalid")) {
-        setError("Indirizzo email non valido.");
-      } else if (msg.includes("rate") || msg.includes("limit")) {
+      if (msg.includes("email") && (msg.includes("invalid") || msg.includes("valid") || msg.includes("format"))) {
+        setError("L'indirizzo email non è valido. Controlla di averlo scritto bene.");
+      } else if (msg.includes("password") && (msg.includes("weak") || msg.includes("short") || msg.includes("least") || msg.includes("6") || msg.includes("8"))) {
+        setError("La password è troppo debole. Usa almeno 8 caratteri.");
+      } else if (msg.includes("password")) {
+        setError("La password non rispetta i requisiti.");
+      } else if (msg.includes("rate") || msg.includes("limit") || msg.includes("many")) {
         setError("Troppi tentativi. Attendi qualche minuto e riprova.");
       } else {
         setError("Registrazione non riuscita. Riprova più tardi.");
