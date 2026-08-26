@@ -492,12 +492,13 @@ function StepBlock({ num, title, desc }: { num: string; title: string; desc: str
 function AudienceBlock({ img, title, desc }: { img: string; title: string; desc: string }) {
   return (
     <div
-      className="group relative h-48 rounded-2xl overflow-hidden border border-[var(--color-border)] flex flex-col justify-end p-4 transition-transform duration-300 hover:-translate-y-1 bg-cover bg-center"
+      className="group relative h-60 rounded-2xl overflow-hidden border border-[var(--color-border)] flex flex-col justify-end p-5 transition-transform duration-300 hover:-translate-y-1 bg-cover bg-center"
       style={{ backgroundImage: `url('${img}')` }}
     >
-      <div className="absolute inset-0 bg-gradient-to-t from-[#06060a]/95 via-[#06060a]/55 to-[#06060a]/15 transition-all duration-300 group-hover:via-[#06060a]/60" />
-      <h3 className="relative font-bold text-base text-white" style={{ fontFamily: "var(--font-heading)" }}>{title}</h3>
-      <p className="relative text-xs text-[#cfcfd6] leading-relaxed mt-1">
+      {/* overlay piu' scuro */}
+      <div className="absolute inset-0 bg-gradient-to-t from-[#06060a]/97 via-[#06060a]/78 to-[#06060a]/45 transition-all duration-300 group-hover:via-[#06060a]/82" />
+      <h3 className="relative font-bold text-xl text-white" style={{ fontFamily: "var(--font-heading)" }}>{title}</h3>
+      <p className="relative text-sm text-[#cfcfd6] leading-relaxed mt-1.5">
         {desc}
       </p>
       <div className="absolute bottom-0 left-0 h-[3px] w-0 group-hover:w-full bg-[var(--color-accent)] transition-all duration-300" />
