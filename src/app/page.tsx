@@ -212,22 +212,24 @@ export default async function Home() {
           {/* ── PER CHI ── */}
           <section>
             <div className="mx-auto max-w-7xl px-4 sm:px-6 py-20 sm:py-28">
-              <div className="text-center max-w-2xl mx-auto mb-14">
-                <p className="text-xs font-semibold tracking-widest uppercase text-[var(--color-accent)] mb-4">Per chi è</p>
-                <h2 className="text-3xl sm:text-4xl md:text-5xl font-extrabold tracking-tight" style={{ fontFamily: "var(--font-heading)" }}>
-                  Dal principiante<br />
-                  <span className="text-accent-glow">al professionista.</span>
-                </h2>
-                <p className="text-base sm:text-lg text-[var(--color-fg-muted)] leading-relaxed mt-5">
-                  Non serve essere un professionista. SimUniverse è aperto a chiunque ami il sim racing:
-                  da chi ha appena acceso il volante per la prima volta a chi è già esperto nel settore.
-                </p>
-              </div>
-              <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-                <AudienceBlock img="/home/principianti.jpg" title="Principianti" desc="Trova team, primi tornei, guide per iniziare." />
-                <AudienceBlock img="/home/amatori.jpg" title="Amatori" desc="Gare settimanali, assetti condivisi, community attiva." />
-                <AudienceBlock img="/home/competitivi.jpg" title="Competitivi" desc="Campionati seri, lineup di team, sfide ad alto livello." />
-                <AudienceBlock img="/home/pro.jpg" title="Professionista" desc="Esports, endurance, eventi premium e visibilità." />
+              <div className="grid gap-12 lg:grid-cols-2 items-center">
+                <div>
+                  <p className="text-xs font-semibold tracking-widest uppercase text-[var(--color-accent)] mb-4">Per chi è</p>
+                  <h2 className="text-3xl sm:text-4xl md:text-5xl font-extrabold tracking-tight mb-6" style={{ fontFamily: "var(--font-heading)" }}>
+                    Dal principiante<br />
+                    <span className="text-accent-glow">al professionista.</span>
+                  </h2>
+                  <p className="text-base sm:text-lg text-[var(--color-fg-muted)] leading-relaxed">
+                    Non serve essere un professionista. SimUniverse è aperto a chiunque ami il sim racing:
+                    da chi ha appena acceso il volante per la prima volta a chi è già esperto nel settore.
+                  </p>
+                </div>
+                <div className="grid gap-4 sm:grid-cols-2">
+                  <AudienceBlock img="/home/principianti.jpg" title="Principianti" desc="Trova team, primi tornei, guide per iniziare." />
+                  <AudienceBlock img="/home/amatori.jpg" title="Amatori" desc="Gare settimanali, assetti condivisi, community attiva." />
+                  <AudienceBlock img="/home/competitivi.jpg" title="Competitivi" desc="Campionati seri, lineup di team, sfide ad alto livello." />
+                  <AudienceBlock img="/home/pro.jpg" title="Professionista" desc="Esports, endurance, eventi premium e visibilità." />
+                </div>
               </div>
             </div>
           </section>
