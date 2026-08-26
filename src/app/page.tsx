@@ -181,12 +181,12 @@ export default async function Home() {
                 </p>
               </div>
               <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-                <FeatureBlock img="/home/eventi.jpg"   kicker="Eventi"      title="Organizza eventi" desc="Tornei, campionati, gare endurance. Crea, gestisci iscrizioni e raduna piloti in pochi clic." />
-                <FeatureBlock img="/home/team.jpg"     kicker="Team"        title="Costruisci il tuo team" desc="Logo, lineup, descrizione. Recluta nuovi piloti tramite la bacheca pubblica." />
-                <FeatureBlock img="/home/assetti.jpg"  kicker="Assetti"     title="Condividi assetti" desc="Setup per ogni auto e tracciato. Vota, scarica, contribuisci alla libreria della community." />
-                <FeatureBlock img="/home/sim.jpg"      kicker="Simulatori"  title="Tutti i sim principali" desc="ACC, iRacing, LMU, Assetto Corsa, AC EVO, F1 25. Un solo profilo, tutti i tuoi sim." />
-                <FeatureBlock img="/home/compagni.jpg" kicker="Community"   title="Trova compagni" desc="Cerca piloti del tuo livello o team aperti al reclutamento. Niente più gare in solitaria." />
-                <FeatureBlock img="/home/guide.jpg"    kicker="Guide"       title="Guide & Tutorial" desc="Tecniche di guida, setup spiegati passo per passo, configurazione hardware. Impara dai piloti più esperti." />
+                <FeatureBlock img="/home/eventi.jpg"   icon="flag"     kicker="Eventi"      title="Organizza eventi" desc="Tornei, campionati, gare endurance. Crea, gestisci iscrizioni e raduna piloti in pochi clic." />
+                <FeatureBlock img="/home/team.jpg"     icon="group"    kicker="Team"        title="Costruisci il tuo team" desc="Logo, lineup, descrizione. Recluta nuovi piloti tramite la bacheca pubblica." />
+                <FeatureBlock img="/home/assetti.jpg"  icon="wheel"    kicker="Assetti"     title="Condividi assetti" desc="Setup per ogni auto e tracciato. Vota, scarica, contribuisci alla libreria della community." />
+                <FeatureBlock img="/home/sim.jpg"      icon="monitor"  kicker="Simulatori"  title="Tutti i sim principali" desc="ACC, iRacing, LMU, Assetto Corsa, AC EVO, F1 25. Un solo profilo, tutti i tuoi sim." />
+                <FeatureBlock img="/home/compagni.jpg" icon="handshake" kicker="Community"  title="Trova compagni" desc="Cerca piloti del tuo livello o team aperti al reclutamento. Niente più gare in solitaria." />
+                <FeatureBlock img="/home/guide.jpg"    icon="book"     kicker="Guide"       title="Guide & Tutorial" desc="Tecniche di guida, setup spiegati passo per passo, configurazione hardware. Impara dai piloti più esperti." />
               </div>
             </div>
           </section>
@@ -431,14 +431,29 @@ function PostCard({ post }: { post: PostShape }) {
 
 
 
-function FeatureBlock({ img, kicker, title, desc }: { img: string; kicker: string; title: string; desc: string }) {
+const FEATURE_ICONS: Record<string, string> = {
+  flag: "M5 5a5 5 0 0 1 7 0a5 5 0 0 0 7 0v9a5 5 0 0 1 -7 0a5 5 0 0 0 -7 0v-9M5 21v-7",
+  group: "M12 4a4 4 0 1 0 0 8a4 4 0 0 0 0 -8M6 21v-2a4 4 0 0 1 4 -4h4a4 4 0 0 1 4 4v2",
+  wheel: "M3 12a9 9 0 1 0 18 0a9 9 0 1 0 -18 0M10 12a2 2 0 1 0 4 0a2 2 0 1 0 -4 0M12 14v7M10 12l-6.75 -2M14 12l6.75 -2",
+  monitor: "M3 4a1 1 0 0 1 1 -1h16a1 1 0 0 1 1 1v10a1 1 0 0 1 -1 1h-16a1 1 0 0 1 -1 -1zM7 20h10M9 16v4M15 16v4",
+  handshake: "M12 5.5l-1.5 -1.5a3.5 3.5 0 0 0 -5 5l6.5 6.5l6.5 -6.5a3.5 3.5 0 0 0 -5 -5z",
+  book: "M12 7v14M3 18a1 1 0 0 1 -1 -1V4a1 1 0 0 1 1 -1h5a4 4 0 0 1 4 4a4 4 0 0 1 4 -4h5a1 1 0 0 1 1 1v13a1 1 0 0 1 -1 1h-6a3 3 0 0 0 -3 3a3 3 0 0 0 -3 -3z",
+};
+
+function FeatureBlock({ img, icon, kicker, title, desc }: { img: string; icon: string; kicker: string; title: string; desc: string }) {
   return (
     <div
       className="group relative h-60 rounded-2xl overflow-hidden border border-[var(--color-border)] flex flex-col justify-end p-5 transition-transform duration-300 hover:-translate-y-1 bg-cover bg-center"
       style={{ backgroundImage: `url('${img}')` }}
     >
-      {/* overlay scuro per leggibilita' */}
-      <div className="absolute inset-0 transition-all duration-300 bg-gradient-to-t from-[#06060a]/95 via-[#06060a]/55 to-[#06060a]/15 group-hover:from-[#06060a]/95 group-hover:via-[#06060a]/60" />
+      {/* overlay scuro (piu' scuro per far risaltare testo e icona) */}
+      <div className="absolute inset-0 transition-all duration-300 bg-gradient-to-t from-[#06060a]/97 via-[#06060a]/78 to-[#06060a]/45 group-hover:from-[#06060a]/97 group-hover:via-[#06060a]/82" />
+      {/* icona sopra il titolo */}
+      <span className="relative mb-3 inline-flex h-11 w-11 items-center justify-center rounded-xl bg-[var(--color-accent)]/15 border border-[var(--color-accent)]/30 backdrop-blur-sm">
+        <svg viewBox="0 0 24 24" className="h-[22px] w-[22px]" fill="none" stroke="var(--color-accent)" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round" aria-hidden>
+          <path d={FEATURE_ICONS[icon]} />
+        </svg>
+      </span>
       <span className="relative text-[11px] font-bold uppercase tracking-wider text-[var(--color-accent)] mb-1.5">
         {kicker}
       </span>
