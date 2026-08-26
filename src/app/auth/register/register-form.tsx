@@ -9,7 +9,7 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { checkRegisterAllowed } from "./actions";
 import { Eye, EyeOff } from "lucide-react";
 
-function EmailConfirmWaiting() {
+function EmailConfirmWaiting({ email, password }: { email?: string; password?: string }) {
   const router = useRouter();
   const [confirmed, setConfirmed] = useState(false);
   const [checking, setChecking] = useState(false);
@@ -45,9 +45,10 @@ function EmailConfirmWaiting() {
 
   async function handleManualCheck() {
     setChecking(true);
+    setNotYetConfirmed(false);
     const supabase = createClient();
 
-    // Check for session first (same-device confirmation)
+    // Sessione gia' presente (conferma sullo stesso dispositivo) -> confermata.
     const { data: { session } } = await supabase.auth.getSession();
     if (session) {
       sessionStorage.removeItem("pendingEmailConfirm");
@@ -56,9 +57,27 @@ function EmailConfirmWaiting() {
       return;
     }
 
-    // No local session — this was likely confirmed on another device.
-    // Send the user to login; sign-in only succeeds once the email is confirmed,
-    // so login is the authoritative confirmation check (no enumeration oracle).
+    // Verifica autoritativa: tentiamo il login con le credenziali appena usate.
+    // Se l'email NON e' confermata Supabase rifiuta ("Email not confirmed").
+    // Non e' un oracle: serve conoscere email+password (le ha solo il proprietario).
+    if (email && password) {
+      const { error } = await supabase.auth.signInWithPassword({ email, password });
+      setChecking(false);
+      if (!error) {
+        // Login riuscito -> email confermata -> entra.
+        sessionStorage.removeItem("pendingEmailConfirm");
+        setConfirmed(true);
+        setTimeout(() => router.push("/"), 1500);
+        return;
+      }
+      // Email non ancora confermata (o link non cliccato).
+      setNotYetConfirmed(true);
+      return;
+    }
+
+    // Fallback (credenziali non disponibili, es. pagina ricaricata): manda al
+    // login, che riesce solo se l'email e' stata confermata.
+    setChecking(false);
     sessionStorage.removeItem("pendingEmailConfirm");
     router.push("/auth/login?message=email_confirmed");
   }
@@ -101,7 +120,7 @@ function EmailConfirmWaiting() {
         {checking ? "Verifica in corso..." : "Ho già confermato l'email →"}
       </button>
       {notYetConfirmed && (
-        <p className="text-xs text-[var(--color-danger)]">Email non ancora confermata. Controlla la tua casella di posta.</p>
+        <p className="text-sm text-[var(--color-danger)]">L&apos;email non risulta ancora verificata. Controlla la tua casella di posta (anche lo spam) e clicca sul link.</p>
       )}
       </div>
     </div>
@@ -117,6 +136,9 @@ export function RegisterForm() {
   const [showPassword, setShowPassword] = useState(false);
   const [acceptedTerms, setAcceptedTerms] = useState(false);
   const [acceptedAge, setAcceptedAge] = useState(false);
+  // Credenziali tenute solo in memoria (mai persistite) per verificare in modo
+  // autoritativo lo stato di conferma email col pulsante "Ho gia' confermato".
+  const [cred, setCred] = useState<{ email: string; password: string } | null>(null);
 
   async function register(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
@@ -168,6 +190,7 @@ export function RegisterForm() {
       // Show the same confirmation screen as a fresh signup instead.
       if (/already registered|already exists/i.test(error.message)) {
         sessionStorage.setItem("pendingEmailConfirm", "1");
+        setCred({ email, password });
         setSuccess(true);
         return;
       }
@@ -188,10 +211,11 @@ export function RegisterForm() {
       return;
     }
     sessionStorage.setItem("pendingEmailConfirm", "1");
+    setCred({ email, password });
     setSuccess(true);
   }
 
-  if (success) return <EmailConfirmWaiting />;
+  if (success) return <EmailConfirmWaiting email={cred?.email} password={cred?.password} />;
 
   return (
     <div className="space-y-6">
