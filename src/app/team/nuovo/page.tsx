@@ -157,7 +157,7 @@ export default function NuovoTeamPage() {
                         : "border-[var(--color-border)] bg-[var(--color-bg-elev)] hover:border-[var(--color-primary)]/40"
                     }`}
                   >
-                    <label className="flex items-center gap-3 text-sm font-medium cursor-pointer select-none">
+                    <div className="flex items-center gap-3 text-sm font-medium select-none">
                       <span className={`flex-shrink-0 h-5 w-5 rounded-md border-2 flex items-center justify-center transition-all duration-150 ${
                         selectedGames.includes(g.slug)
                           ? "border-[var(--color-primary)] bg-[var(--color-primary)]"
@@ -168,10 +168,10 @@ export default function NuovoTeamPage() {
                             <path d="M2 6l3 3 5-5" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
                           </svg>
                         )}
-                        <input type="checkbox" name="games" value={g.slug} checked={selectedGames.includes(g.slug)} onChange={() => {}} className="sr-only" />
                       </span>
                       {g.short}
-                    </label>
+                    </div>
+                    <input type="checkbox" name="games" value={g.slug} checked={selectedGames.includes(g.slug)} readOnly className="sr-only" />
                   </div>
                 ))}
               </div>
@@ -190,7 +190,7 @@ export default function NuovoTeamPage() {
                   : "border-[var(--color-border)] bg-[var(--color-bg-elev)] hover:border-[var(--color-primary)]/40"
               }`}
             >
-              <label className="flex items-center gap-3 text-sm font-medium cursor-pointer select-none">
+              <div className="flex items-center gap-3 text-sm font-medium select-none">
                 <span className={`flex-shrink-0 h-5 w-5 rounded-md border-2 flex items-center justify-center transition-all duration-150 ${
                   recruiting
                     ? "border-[var(--color-primary)] bg-[var(--color-primary)]"
@@ -201,10 +201,10 @@ export default function NuovoTeamPage() {
                       <path d="M2 6l3 3 5-5" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
                     </svg>
                   )}
-                  <input type="checkbox" name="recruiting" checked={recruiting} onChange={() => {}} className="sr-only" />
                 </span>
                 Aperto al reclutamento
-              </label>
+              </div>
+              <input type="checkbox" name="recruiting" checked={recruiting} readOnly className="sr-only" />
             </div>
 
             {error && <p className="text-sm text-red-500">{error}</p>}
