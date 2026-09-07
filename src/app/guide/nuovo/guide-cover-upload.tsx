@@ -33,7 +33,7 @@ export function GuideCoverUpload({ defaultUrl = "" }: { defaultUrl?: string }) {
     if (upErr) { setError("Errore durante il caricamento."); setUploading(false); return; }
 
     const { data: pub } = supabase.storage.from("event-banners").getPublicUrl(path);
-    setUrl(`${pub.publicUrl}?v=${Date.now()}`);
+    setUrl(pub.publicUrl);
     setUploading(false);
   }
 

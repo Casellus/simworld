@@ -47,7 +47,7 @@ function CaricaForm() {
     if (upErr) { setError("Errore durante il caricamento della foto."); setUploadingPhoto(false); return; }
 
     const { data: urlData } = supabase.storage.from("setups").getPublicUrl(path);
-    setPhotoUrl(`${urlData.publicUrl}?v=${Date.now()}`);
+    setPhotoUrl(urlData.publicUrl);
     setUploadingPhoto(false);
   }
 

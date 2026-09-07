@@ -51,7 +51,6 @@ export default async function AssettiPage({ searchParams }: { searchParams: SP }
 
   const { data: rawSetups, error: setupsError } = await q;
   if (setupsError) console.error("SETUPS ERROR:", JSON.stringify(setupsError));
-  const debugErr = process.env.NODE_ENV === "production" && setupsError ? setupsError.message : null;
 
   // Fetch profiles separatamente per evitare problemi RLS con join
   const userIds = [...new Set((rawSetups ?? []).map((s) => s.user_id).filter(Boolean))];
@@ -116,12 +115,6 @@ export default async function AssettiPage({ searchParams }: { searchParams: SP }
           ))}
         </div>
       </Suspense>
-
-      {debugErr && (
-        <div className="mb-6 rounded-lg border border-[var(--color-danger)] bg-[var(--color-danger)]/10 px-4 py-3 text-sm text-[var(--color-danger)]">
-          DEBUG query assetti: {debugErr}
-        </div>
-      )}
 
       {setups && setups.length > 0 ? (
         <GameGroups setups={setups} tipo={tipo} />
