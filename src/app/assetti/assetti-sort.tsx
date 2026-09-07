@@ -12,7 +12,7 @@ const OPTIONS = [
 
 export function AssettiSort({ current, tipo, gioco, q }: {
   current: string;
-  tipo: string;
+  tipo?: string;
   gioco?: string;
   q?: string;
 }) {
@@ -20,7 +20,7 @@ export function AssettiSort({ current, tipo, gioco, q }: {
 
   function onChange(e: React.ChangeEvent<HTMLSelectElement>) {
     const params = new URLSearchParams();
-    params.set("tipo", tipo);
+    if (tipo) params.set("tipo", tipo);
     if (gioco) params.set("gioco", gioco);
     if (q) params.set("q", q);
     if (e.target.value !== "recenti") params.set("ordina", e.target.value);

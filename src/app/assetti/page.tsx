@@ -18,7 +18,9 @@ type SP = Promise<{ gioco?: string; q?: string; tipo?: string; ordina?: string }
 
 export default async function AssettiPage({ searchParams }: { searchParams: SP }) {
   const sp = await searchParams;
-  const tipo: "auto" | "simulatore" = sp.tipo === "simulatore" ? "simulatore" : "auto";
+  // undefined = nessun tab selezionato -> mostra sia auto che simulatore.
+  const tipo: "auto" | "simulatore" | undefined =
+    sp.tipo === "auto" ? "auto" : sp.tipo === "simulatore" ? "simulatore" : undefined;
   const ordina = sp.ordina ?? "recenti";
   const supabase = await createClient();
 
@@ -39,11 +41,12 @@ export default async function AssettiPage({ searchParams }: { searchParams: SP }
     .order(col, { ascending: asc })
     .limit(50);
 
-  // NULL setup_type = assetto auto (retrocompatibilità con record precedenti)
+  // NULL setup_type = assetto auto (retrocompatibilità con record precedenti).
+  // tipo undefined = nessun tab selezionato -> nessun filtro, mostra tutto.
   if (tipo === "auto") {
     q = q.or("setup_type.eq.auto,setup_type.is.null");
-  } else {
-    q = q.eq("setup_type", tipo);
+  } else if (tipo === "simulatore") {
+    q = q.eq("setup_type", "simulatore");
   }
 
   if (gameId) q = q.eq("game_id", gameId);
@@ -75,7 +78,7 @@ export default async function AssettiPage({ searchParams }: { searchParams: SP }
           <h1 className="text-3xl md:text-4xl font-extrabold tracking-tight">Assetti</h1>
           <p className="text-[var(--color-fg-muted)] mt-1">Setup e configurazioni condivisi dalla community.</p>
         </div>
-        <Link href={`/assetti/carica?tipo=${tipo}`}>
+        <Link href={`/assetti/carica?tipo=${tipo ?? "auto"}`}>
           <Button><Plus className="h-4 w-4" /> Carica assetto</Button>
         </Link>
       </div>
@@ -90,13 +93,13 @@ export default async function AssettiPage({ searchParams }: { searchParams: SP }
 
       <div className="flex flex-col sm:flex-row gap-2 mb-6">
         <form action="/assetti" method="get" className="flex flex-1 gap-2 min-w-0">
-          <input type="hidden" name="tipo" value={tipo} />
+          {tipo && <input type="hidden" name="tipo" value={tipo} />}
           {sp.gioco && <input type="hidden" name="gioco" value={sp.gioco} />}
           {ordina !== "recenti" && <input type="hidden" name="ordina" value={ordina} />}
           <input
             name="q"
             defaultValue={sp.q || ""}
-            placeholder={tipo === "auto" ? "Cerca per titolo, auto o pista..." : "Cerca per titolo..."}
+            placeholder={tipo === "simulatore" ? "Cerca per titolo..." : "Cerca per titolo, auto o pista..."}
             className="min-w-0 flex-1 h-10 rounded border border-[var(--color-border)] bg-[var(--color-bg-elev)] px-3 text-sm focus:border-[var(--color-primary)] focus:outline-none"
           />
           <Button type="submit" variant="secondary" className="shrink-0">Cerca</Button>
@@ -128,7 +131,7 @@ export default async function AssettiPage({ searchParams }: { searchParams: SP }
               {tipo === "simulatore" ? "Nessuna configurazione" : "Nessun assetto"}
             </h3>
             <p className="text-sm text-[var(--color-fg-muted)] mb-4">Carica il primo.</p>
-            <Link href={`/assetti/carica?tipo=${tipo}`}><Button>Carica</Button></Link>
+            <Link href={`/assetti/carica?tipo=${tipo ?? "auto"}`}><Button>Carica</Button></Link>
           </CardBody>
         </Card>
       )}
@@ -145,7 +148,7 @@ type S = {
   profiles: { username: string; display_name: string | null } | null;
 };
 
-function GameGroups({ setups, tipo }: { setups: S[]; tipo: string }) {
+function GameGroups({ setups, tipo }: { setups: S[]; tipo?: string }) {
   const gameOrder: string[] = GAMES.map((g) => g.slug);
   const groups = new Map<string, { name: string; slug: string; items: S[] }>();
 
