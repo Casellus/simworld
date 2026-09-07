@@ -3,8 +3,11 @@ import { createClient } from "@/lib/supabase/server";
 import { requireAdmin } from "@/lib/admin";
 import { Card, CardBody, CardHeader } from "@/components/ui/card";
 import { AdminDeleteButton } from "./delete-button";
-import { adminDeleteSetup, adminDeleteEvent, adminDeleteTeam, adminDeletePost } from "./actions";
+import { GuideWriterToggle } from "./guide-writer-toggle";
+import { GuideWriterAdd } from "./guide-writer-add";
+import { adminDeleteSetup, adminDeleteEvent, adminDeleteTeam, adminDeletePost, adminDeleteGuide, adminSetGuideWriter, adminSetGuideWriterByUsername } from "./actions";
 import { formatDate } from "@/lib/utils";
+import Link from "next/link";
 
 export const metadata = { title: "Admin · SimUniverse" };
 
@@ -19,11 +22,15 @@ export default async function AdminPage() {
     { data: events },
     { data: teams },
     { data: posts },
+    { data: guides },
+    { data: writers },
   ] = await Promise.all([
     supabase.from("setups").select("id, title, car, track, created_at, user_id").order("created_at", { ascending: false }),
     supabase.from("events").select("id, slug, title, event_type, start_at, host_user_id").order("created_at", { ascending: false }),
     supabase.from("teams").select("id, slug, name, created_at, owner_id").order("created_at", { ascending: false }),
     supabase.from("recruitment_posts").select("id, title, post_type, active, created_at, user_id").order("created_at", { ascending: false }),
+    supabase.from("guides").select("id, slug, title, category, published, created_at, author_id").order("created_at", { ascending: false }),
+    supabase.from("profiles").select("id, username, display_name, can_write_guides").eq("can_write_guides", true).order("username"),
   ]);
 
   return (
@@ -79,6 +86,48 @@ export default async function AdminPage() {
             action={<AdminDeleteButton action={adminDeletePost.bind(null, p.id)} />}
           />
         ))}
+      </AdminSection>
+
+      <AdminSection title={`Guide (${guides?.length ?? 0})`}>
+        {guides?.map((g) => (
+          <Row
+            key={g.id}
+            label={g.title}
+            sub={`${g.category ?? "senza categoria"}${g.published === false ? " · bozza" : ""}`}
+            meta={formatDate(g.created_at)}
+            action={
+              <div className="flex items-center gap-1">
+                <Link
+                  href={`/guide/${g.slug}/modifica`}
+                  className="rounded-lg border border-[var(--color-border)] px-2.5 py-1 text-xs font-semibold hover:border-[var(--color-primary)] hover:text-[var(--color-primary)]"
+                >
+                  Modifica
+                </Link>
+                <AdminDeleteButton action={adminDeleteGuide.bind(null, g.id)} />
+              </div>
+            }
+          />
+        ))}
+      </AdminSection>
+
+      <AdminSection title={`Creator autorizzati (${writers?.length ?? 0})`}>
+        <p className="pb-2 text-xs text-[var(--color-fg-muted)]">
+          Chi ha il ruolo può creare e pubblicare guide. Autorizza un utente qui sotto tramite username.
+        </p>
+        {writers?.map((w) => (
+          <Row
+            key={w.id}
+            label={w.display_name || w.username || w.id}
+            sub={w.username ? `@${w.username}` : "senza username"}
+            meta="creator"
+            action={
+              <GuideWriterToggle userId={w.id} enabled action={adminSetGuideWriter} />
+            }
+          />
+        ))}
+        <div className="pt-3">
+          <GuideWriterAdd action={adminSetGuideWriterByUsername} />
+        </div>
       </AdminSection>
     </div>
   );

@@ -1,6 +1,7 @@
 import { redirect, notFound } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 import { getUserId } from "@/lib/auth";
+import { requireAdmin } from "@/lib/admin";
 import { BackButton } from "@/components/back-button";
 import { GAMES, GUIDE_CATEGORIES } from "@/lib/constants";
 import { one } from "@/lib/types";
@@ -22,7 +23,11 @@ export default async function ModificaGuidaPage({ params }: { params: Promise<{ 
     .single();
 
   if (!guide) notFound();
-  if (guide.author_id !== userId) redirect(`/guide/${slug}`);
+  // L'autore modifica la propria guida; l'admin può modificare qualsiasi guida.
+  if (guide.author_id !== userId) {
+    const admin = await requireAdmin();
+    if (!admin) redirect(`/guide/${slug}`);
+  }
 
   const gameSlug = one<{ slug: string }>(guide.games)?.slug ?? "";
   const action = updateGuide.bind(null, guide.id);

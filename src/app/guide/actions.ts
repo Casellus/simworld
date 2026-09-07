@@ -2,10 +2,11 @@
 
 import { redirect } from "next/navigation";
 import { revalidatePath } from "next/cache";
-import { createClient } from "@/lib/supabase/server";
+import { createClient, createAdminClient } from "@/lib/supabase/server";
 import { slugify } from "@/lib/utils";
 import { text, textOrNull, storageUrlOrNull, LIMITS, GENERIC_ERROR } from "@/lib/validation";
 import { isEmbeddableVideo } from "@/components/video-embed";
+import { requireAdmin } from "@/lib/admin";
 
 // Verifica che l'utente sia un creator autorizzato (can_write_guides).
 async function requireCreator() {
@@ -89,9 +90,14 @@ export async function updateGuide(guideId: string, formData: FormData): Promise<
   const { data: { user } } = await supabase.auth.getUser();
   if (!user) throw new Error("Non autorizzato");
 
-  // Solo l'autore della guida.
+  // L'autore modifica la propria guida; l'admin può modificarne qualsiasi.
   const { data: guide } = await supabase.from("guides").select("id, slug, author_id").eq("id", guideId).single();
-  if (!guide || guide.author_id !== user.id) throw new Error("Non autorizzato");
+  if (!guide) throw new Error("Non autorizzato");
+  const isAuthor = guide.author_id === user.id;
+  const admin = isAuthor ? null : await requireAdmin();
+  if (!isAuthor && !admin) throw new Error("Non autorizzato");
+  // L'admin scrive righe altrui: serve il service-role (bypassa la RLS owner-scoped).
+  const writeClient = isAuthor ? supabase : createAdminClient();
 
   const title = text(formData.get("title"), LIMITS.title);
   const excerpt = textOrNull(formData.get("excerpt"), LIMITS.short);
@@ -116,7 +122,7 @@ export async function updateGuide(guideId: string, formData: FormData): Promise<
     if (g) game_id = g.id;
   }
 
-  const { error } = await supabase
+  const { error } = await writeClient
     .from("guides")
     .update({ title, excerpt, body, category, game_id, cover_url, video_url, published })
     .eq("id", guideId);
