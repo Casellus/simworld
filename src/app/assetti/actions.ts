@@ -41,7 +41,7 @@ export async function createSetupRecord(formData: FormData): Promise<{ error?: s
 
     if (dbErr) {
       console.error("createSetupRecord failed:", dbErr.message);
-      return { error: GENERIC_ERROR };
+      return { error: `DB: ${dbErr.message}` };
     }
     if (!created?.id) return { error: "Inserimento non riuscito." };
 
@@ -52,7 +52,7 @@ export async function createSetupRecord(formData: FormData): Promise<{ error?: s
     return { id: created.id };
   } catch (e) {
     console.error("createSetupRecord threw:", e);
-    return { error: GENERIC_ERROR };
+    return { error: `EXC: ${e instanceof Error ? e.message : String(e)}` };
   }
 }
 
